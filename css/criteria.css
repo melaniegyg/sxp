@@ -1,0 +1,169 @@
+/* ============================================================
+   TOP CHOICE — promo header, status banner, criteria sections
+   ============================================================ */
+
+:root {
+  --tc-met: #00763d;
+  --tc-met-weak: #e8f8ef;
+  --tc-not-met: #b42318;
+  --tc-not-met-weak: #ffe8ed;
+  --tc-promo-bg: #f2f5f8;
+}
+
+/* --- Promo header ------------------------------------------ */
+
+.tc-promo {
+  background: var(--tc-promo-bg);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.tc-promo__title { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
+.tc-promo__desc { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 0; max-width: 900px; }
+
+.tc-promo__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 8px;
+}
+.tc-promo__card {
+  background: var(--gyg-background-primary);
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tc-promo__icon { color: var(--gyg-brand); display: inline-flex; }
+.tc-promo__card-title { font: var(--font-body-strong); color: var(--gyg-label-primary); margin: 0; }
+.tc-promo__card-desc { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 0; }
+
+.tc-promo__cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gyg-background-primary);
+  border: 1px solid var(--gyg-interactive-primary);
+  color: var(--gyg-interactive-primary);
+  border-radius: var(--radius-pill);
+  padding: 10px 20px;
+  font: var(--font-body-strong);
+}
+.tc-promo__cta:hover { background: #f0f7ff; }
+
+/* --- Status icon -------------------------------------------- */
+
+.tc-status { display: inline-flex; flex-shrink: 0; }
+.tc-status--met { color: var(--tc-met); }
+.tc-status--not-met { color: var(--tc-not-met); }
+
+/* --- Status banner ------------------------------------------ */
+
+.tc-banner {
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tc-banner--met { background: var(--tc-met-weak); }
+.tc-banner--not-met { background: var(--tc-not-met-weak); }
+.tc-banner__head { display: flex; align-items: center; gap: 12px; }
+.tc-banner__title { font: var(--font-title-4); font-weight: 700; color: var(--gyg-label-primary); margin: 0; }
+.tc-banner__desc { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 0; }
+
+/* --- Section ------------------------------------------------ */
+
+.tc-sections-wrap { display: flex; flex-direction: column; gap: 32px; }
+.tc-heading { display: flex; flex-direction: column; gap: 8px; }
+.tc-sections { display: flex; flex-direction: column; gap: 24px; }
+
+.tc-section {
+  position: relative;
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--gyg-background-primary);
+}
+/* Left rail — green while every row passes, red as soon as one fails. */
+.tc-section::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 8px;
+}
+.tc-section--met::before { background: var(--tc-met); }
+.tc-section--not-met::before { background: var(--tc-not-met); }
+
+.tc-section__head { padding: 16px 24px 0 32px; }
+.tc-section__title { font: var(--font-title-3); color: var(--gyg-label-primary); margin: 0; }
+.tc-section__rows { padding: 8px 24px 16px 32px; }
+
+/* --- Row ---------------------------------------------------- */
+
+.tc-row {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--gyg-separator-primary);
+}
+.tc-section__rows > .tc-row:first-child { border-top: none; }
+.tc-row__body { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tc-row__label { font: var(--font-body-strong); color: var(--gyg-label-primary); margin: 0; }
+.tc-row__desc { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 0; }
+.tc-row__count { font: var(--font-caption); color: var(--gyg-label-tertiary); font-weight: 400; }
+.tc-row__help {
+  font: var(--font-caption);
+  color: var(--tc-not-met);
+  margin: 4px 0 0;
+}
+
+/* --- Metric row --------------------------------------------- */
+
+.tc-row--metric { align-items: flex-start; }
+.tc-metric {
+  width: 122px;
+  flex-shrink: 0;
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 8px;
+  padding: 17px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.tc-metric__value { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
+.tc-metric__bar { font: var(--font-label); color: var(--gyg-label-secondary); margin: 0; }
+
+.tc-details {
+  align-self: flex-start;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: var(--font-body-strong);
+  color: var(--gyg-interactive-primary);
+}
+.tc-details:hover { text-decoration: underline; }
+.tc-details svg { transition: transform 0.15s; }
+.tc-details.open svg { transform: rotate(180deg); }
+
+.tc-details__panel {
+  margin-top: 12px;
+  border: 1px dashed var(--gyg-border-non-interactive);
+  border-radius: 8px;
+  padding: 24px;
+}
+.tc-details__placeholder {
+  font: var(--font-caption);
+  color: var(--gyg-label-tertiary);
+  margin: 0;
+  text-align: center;
+}
