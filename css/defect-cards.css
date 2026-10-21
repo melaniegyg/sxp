@@ -1,0 +1,193 @@
+/* ============================================================
+   DEFECT CARDS — portable styles (GYG design)
+   Self-contained: bundles the GYG design tokens the cards use.
+   If the host page already defines these --gyg-* / --font-* / --radius-*
+   variables, the values here are identical and harmless.
+
+   Fonts: these tokens reference "GT Eesti Pro Display". If the host page
+   ships the GYG webfont, cards match exactly; otherwise they fall back to
+   the system sans-serif stack below.
+   ============================================================ */
+:root {
+  --gyg-label-primary: #1a2b49;
+  --gyg-label-secondary: #63687a;
+  --gyg-interactive-primary: #0071eb;
+  --gyg-background-secondary: #ebeef1;
+  --gyg-separator-primary: #ebeef1;
+  --gyg-border-non-interactive: #ebeef1;
+
+  --font-family: "GT Eesti Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-caption: 400 14px/20px var(--font-family);
+  --font-body: 400 16px/22px var(--font-family);
+  --font-body-strong: 500 16px/22px var(--font-family);
+  --font-title-4: 500 18px/24px var(--font-family);
+  --font-title-3: 700 20px/24px var(--font-family);
+
+  --radius-lg: 8px;
+  --radius-pill: 32px;
+}
+
+/* Box sizing for the card subtree (safe if the host already sets this) */
+.defect-cards, .defect-cards *, .defect-cards *::before, .defect-cards *::after { box-sizing: border-box; }
+
+/* Shared button used by the Recommended Action + CTA row */
+.defect-cards .btn-primary {
+  background: var(--gyg-interactive-primary);
+  color: #fff;
+  border: 2px solid var(--gyg-interactive-primary);
+  border-radius: var(--radius-pill);
+  padding: 10px 24px;
+  font: var(--font-body-strong);
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: opacity 0.15s;
+}
+.defect-cards .btn-primary:hover { opacity: 0.88; }
+
+/* ---- Cards ---- */
+.defect-cards { display: flex; flex-direction: column; gap: 12px; }
+.defect-cards__empty {
+  background: #fff;
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  padding: 32px 24px;
+  font: var(--font-body);
+  color: var(--gyg-label-secondary);
+  text-align: center;
+}
+
+.category-card {
+  background: #fff;
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Body layout: [ left: title + defect rail ] | [ right: chevron + content ] */
+.category-card__body {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) 1fr;
+  gap: 32px;
+  padding: 24px;
+}
+
+/* LEFT column */
+.cc-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-right: 1px solid var(--gyg-separator-primary);
+  padding-right: 28px;
+}
+.cc-left__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0;
+  cursor: pointer;
+  color: var(--gyg-label-primary);
+}
+.cc-icon { display: inline-flex; color: var(--gyg-label-primary); flex-shrink: 0; }
+.cc-title { font: var(--font-title-3); color: var(--gyg-label-primary); }
+
+/* Defect selector rail */
+.defect-nav { display: flex; flex-direction: column; gap: 4px; }
+.defect-nav-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.defect-nav-item:hover { background: var(--gyg-background-secondary); }
+.defect-nav-item.is-active { background: #e1f0ff; }
+.defect-nav-item__title { font: var(--font-body-strong); color: var(--gyg-label-primary); }
+.defect-nav-item.is-active .defect-nav-item__title { color: var(--gyg-interactive-primary); }
+.defect-nav-item__desc { font: var(--font-caption); color: var(--gyg-label-secondary); }
+
+/* RIGHT column */
+.cc-right { position: relative; min-width: 0; }
+.cc-collapse {
+  position: absolute;
+  top: 0; right: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gyg-label-primary);
+  padding: 0;
+  display: inline-flex;
+}
+.category-card__chevron { transition: transform 0.2s ease; }
+.category-card.is-collapsed .category-card__chevron { transform: rotate(180deg); }
+.cc-content { display: flex; flex-direction: column; gap: 24px; padding-right: 40px; }
+
+/* Collapsed: keep only the title (left) and chevron (right) on one row */
+.category-card.is-collapsed .defect-nav,
+.category-card.is-collapsed .cc-content { display: none; }
+.category-card.is-collapsed .cc-left { border-right: none; padding-right: 0; gap: 0; }
+
+/* Content row: "What you can do" + optional "FAQ resources" */
+.dp-top { display: flex; gap: 48px; align-items: flex-start; }
+.dp-advice { flex: 1 1 auto; min-width: 0; }
+.dp-faq { flex: 0 0 300px; }
+.dp-heading { font: var(--font-title-4); color: var(--gyg-label-primary); margin: 0 0 16px; }
+
+.wycd-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 10px; }
+.wycd-list li { font: var(--font-body); color: var(--gyg-label-primary); }
+.dp-empty { font: var(--font-body); color: var(--gyg-label-secondary); margin: 0; }
+
+.faq-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+.faq-list a { font: var(--font-body-strong); color: var(--gyg-interactive-primary); text-decoration: none; }
+.faq-list a svg { display: inline-block; vertical-align: -0.25em; margin-left: 4px; }
+
+/* Recommended-action card (bottom) */
+.dp-ra { display: flex; flex-direction: column; gap: 12px; }
+.dp-ra-card {
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.dp-ra-card__main { display: flex; align-items: flex-start; gap: 14px; min-width: 0; }
+.dp-ra-card__icon { color: var(--gyg-label-secondary); flex-shrink: 0; display: inline-flex; margin-top: 1px; }
+.dp-ra-card__title { font: var(--font-body-strong); color: var(--gyg-label-primary); margin: 0; }
+.dp-ra-card__desc { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 4px 0 0; max-width: 620px; }
+.dp-ra-card__btn { flex-shrink: 0; width: auto; }
+
+/* Bottom CTA button row (only when no RA card) */
+.dp-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-secondary {
+  background: #fff;
+  color: var(--gyg-interactive-primary);
+  border: 2px solid var(--gyg-interactive-primary);
+  border-radius: var(--radius-pill);
+  padding: 8px 22px;
+  font: var(--font-body-strong);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.btn-secondary:hover { background: #e1f0ff; }
+.dp-actions .btn-primary { width: auto; }
+
+/* Responsive: stack the two columns on narrow screens */
+@media (max-width: 720px) {
+  .category-card__body { grid-template-columns: 1fr; }
+  .cc-left { border-right: none; padding-right: 0; border-bottom: 1px solid var(--gyg-separator-primary); padding-bottom: 20px; }
+  .cc-content { padding-right: 0; }
+  .dp-top { flex-direction: column; gap: 24px; }
+  .dp-faq { flex-basis: auto; }
+}
