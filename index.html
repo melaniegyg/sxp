@@ -6,6 +6,7 @@
   <title>SXP — Supplier Portal concept</title>
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/defect-cards.css">
   <!-- Skip the password gate if already unlocked this session (avoids flash) -->
   <script>try{if(sessionStorage.getItem('sxp-auth')==='1')document.documentElement.className+=' authed';}catch(e){}</script>
 </head>
@@ -118,14 +119,12 @@
       <!-- ===================== CONTENT ===================== -->
       <section class="page-section">
         <div>
-          <h2 class="section-heading">Section heading</h2>
-          <p class="section-desc" style="margin-top:8px;">Replace this section with the view you're prototyping.</p>
+          <h2 class="section-heading">Key drivers</h2>
+          <p class="section-desc" style="margin-top:8px;">Cards rendered by the portable defect-cards module. Swap <code>js/cards-data.js</code> for this project's real data.</p>
         </div>
 
-        <div class="card">
-          <p class="card__title">Card title</p>
-          <p class="card__subtitle">Shell, tokens and fonts are wired up — start building here.</p>
-        </div>
+        <!-- Defect cards mount — rendered by js/defect-cards.js -->
+        <div id="cards"></div>
       </section>
 
       <!-- Bottom spacer -->
@@ -145,6 +144,9 @@
   </button>
 
   <script src="js/interactions.js"></script>
+  <script src="js/defect-cards.js"></script>
+  <script src="js/cards-data.js"></script>
+  <script>DefectCards.render("#cards", window.CARDS_DATA);</script>
   <script src="js/auth-gate.js"></script>
 </body>
 </html>
