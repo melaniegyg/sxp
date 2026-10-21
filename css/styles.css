@@ -1,0 +1,334 @@
+/* ============================================================
+   PORTAL SHELL
+   ============================================================ */
+
+html { min-width: 1440px; }
+
+/* Top nav */
+.topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: var(--gyg-background-primary);
+  border-bottom: 1px solid var(--gyg-border-non-interactive);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 100;
+}
+.topnav__logo { height: 32px; }
+.topnav__user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.topnav__avatar {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #c7d2fe, #818cf8);
+}
+.topnav__user-info { display: flex; flex-direction: column; }
+.topnav__name { font: var(--font-caption-strong); color: var(--gyg-label-primary); }
+.topnav__company { font: var(--font-label); color: var(--gyg-label-secondary); }
+.topnav__chevron { color: var(--gyg-label-tertiary); }
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 60px; left: 0;
+  width: 56px;
+  height: calc(100vh - 60px);
+  background: var(--gyg-background-primary);
+  border-right: 1px solid var(--gyg-border-non-interactive);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 4px;
+  gap: 4px;
+  z-index: 90;
+}
+.sidebar__item {
+  width: 32px; height: 32px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gyg-label-tertiary);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.sidebar__item:hover { background: var(--gyg-background-secondary); }
+.sidebar__item--active {
+  background: var(--gyg-background-secondary);
+  color: var(--gyg-label-primary);
+}
+.sidebar__spacer { flex: 1; }
+
+/* ============================================================
+   PAGE LAYOUT
+   ============================================================ */
+
+.page-main {
+  margin-left: 56px;
+  margin-top: 60px;
+  padding: 24px;
+  min-height: calc(100vh - 60px);
+  background: var(--gyg-background-page);
+}
+.page-inner {
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: var(--font-body);
+  color: var(--gyg-interactive-primary);
+  margin-bottom: -24px;
+}
+.back-link:hover { text-decoration: underline; }
+
+.page-title {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 44px;
+  color: var(--gyg-label-primary);
+  margin: 0;
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+
+.perf-tabs {
+  display: flex;
+  gap: 32px;
+  border-bottom: 2px solid #dcdfe4;
+  margin: 16px 0 4px;
+}
+.perf-tab {
+  background: none;
+  border: none;
+  padding: 12px 2px;
+  margin-bottom: -2px;
+  font: var(--font-body-strong);
+  color: var(--gyg-label-secondary);
+  border-bottom: 2px solid transparent;
+}
+.perf-tab:hover { color: var(--gyg-label-primary); }
+.perf-tab--active { color: var(--gyg-interactive-primary); border-bottom-color: var(--gyg-interactive-primary); }
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
+
+.page-section { display: flex; flex-direction: column; gap: 20px; }
+
+.section-heading {
+  font: var(--font-title-3);
+  color: var(--gyg-label-primary);
+  margin: 0;
+}
+.section-desc {
+  font: var(--font-body);
+  color: var(--gyg-label-secondary);
+  margin: 0;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.card {
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  padding: 24px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.card__title {
+  font: var(--font-body-strong);
+  color: var(--gyg-label-primary);
+  margin: 0;
+}
+.card__subtitle {
+  font: var(--font-body);
+  color: var(--gyg-label-secondary);
+  margin: 0;
+}
+
+/* ============================================================
+   FORM CONTROLS
+   ============================================================ */
+
+.select-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #6b7280;
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-width: 160px;
+  cursor: pointer;
+  font: var(--font-body);
+  color: var(--gyg-label-secondary);
+  background: white;
+  box-shadow: 0 1px 1px rgba(18,18,23,0.05);
+}
+.select-input svg { flex-shrink: 0; }
+
+.toggle-switch {
+  width: 48px; height: 28px;
+  background: #d1d5db;
+  border-radius: 30px;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.toggle-switch.on { background: var(--gyg-interactive-primary); }
+.toggle-handle {
+  position: absolute;
+  top: 4px; left: 4px;
+  width: 20px; height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: left 0.2s;
+}
+.toggle-switch.on .toggle-handle { left: 24px; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn-primary {
+  background: var(--gyg-interactive-primary);
+  color: white;
+  border: 2px solid var(--gyg-interactive-primary);
+  border-radius: var(--radius-pill);
+  padding: 10px 24px;
+  font: var(--font-body-strong);
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  transition: opacity 0.15s;
+}
+.btn-primary:hover { opacity: 0.88; }
+
+.btn-dismiss {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--gyg-label-tertiary);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+.btn-dismiss:hover { color: var(--gyg-label-primary); }
+
+/* ============================================================
+   CHARTS
+   ============================================================ */
+
+.chart-wrapper { width: 100%; overflow: hidden; }
+.line-chart { width: 100%; display: block; }
+
+text.chart-axis {
+  font-family: var(--font-family);
+  font-size: 12px;
+  fill: #7c8db5;
+}
+
+/* ============================================================
+   HELP BUTTON (fixed)
+   ============================================================ */
+
+.help-btn {
+  position: fixed;
+  bottom: 30px; right: 30px;
+  background: var(--gyg-label-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 11px 20px;
+  font: var(--font-body-strong);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 200;
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+
+.hidden { display: none !important; }
+
+/* ============================================================
+   PASSWORD GATE (cosmetic — see js/auth-gate.js)
+   ============================================================ */
+
+.auth-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--gyg-background-page);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.authed .auth-gate { display: none; }
+.auth-gate__card {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  padding: 32px 28px;
+  box-shadow: var(--shadow-modal);
+}
+.auth-gate__logo { height: 26px; width: auto; margin: 0 auto 8px; }
+.auth-gate__title { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
+.auth-gate__desc { font: var(--font-body); color: var(--gyg-label-secondary); margin: 0 0 8px; }
+.auth-gate__input {
+  font: var(--font-body);
+  color: var(--gyg-label-primary);
+  padding: 11px 14px;
+  border: 1px solid #dcdfe4;
+  border-radius: 8px;
+  width: 100%;
+}
+.auth-gate__input:focus { outline: none; border-color: var(--gyg-interactive-primary); }
+.auth-gate__btn {
+  background: var(--gyg-interactive-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 11px 22px;
+  font: var(--font-body-strong);
+}
+.auth-gate__btn:hover { opacity: 0.9; }
+.auth-gate__error { font: var(--font-caption-strong); color: var(--gyg-tag-critical-text); margin: 4px 0 0; }

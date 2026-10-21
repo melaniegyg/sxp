@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SXP — Supplier Portal concept</title>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Skip the password gate if already unlocked this session (avoids flash) -->
+  <script>try{if(sessionStorage.getItem('sxp-auth')==='1')document.documentElement.className+=' authed';}catch(e){}</script>
+</head>
+<body>
+
+  <!-- ===================== PASSWORD GATE (cosmetic — see js/auth-gate.js) ===================== -->
+  <div id="auth-gate" class="auth-gate">
+    <form class="auth-gate__card" id="auth-form">
+      <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="auth-gate__logo">
+      <h1 class="auth-gate__title">Protected preview</h1>
+      <p class="auth-gate__desc">Enter the password to view this prototype.</p>
+      <input type="password" id="auth-input" class="auth-gate__input" placeholder="Password" autocomplete="current-password" aria-label="Password">
+      <button type="submit" class="auth-gate__btn">Enter</button>
+      <p class="auth-gate__error hidden" id="auth-error">Incorrect password. Try again.</p>
+    </form>
+  </div>
+
+  <!-- ===================== TOP NAV ===================== -->
+  <header class="topnav">
+    <div style="display:flex;align-items:center;gap:24px;">
+      <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="topnav__logo">
+    </div>
+    <div class="topnav__user">
+      <div class="topnav__avatar"></div>
+      <div class="topnav__user-info">
+        <span class="topnav__name">Marie</span>
+        <span class="topnav__company">BusTravel Iceland</span>
+      </div>
+      <svg class="topnav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="#858995" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <!-- Products -->
+    <button class="sidebar__item" aria-label="Products">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <!-- Create -->
+    <button class="sidebar__item" aria-label="Create">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <!-- Manage -->
+    <button class="sidebar__item" aria-label="Manage">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <!-- Bookings -->
+    <button class="sidebar__item" aria-label="Bookings">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M5 2v2M11 2v2M2 7h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <!-- Performance (active) -->
+    <button class="sidebar__item sidebar__item--active" aria-label="Performance">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect x="2" y="9" width="3" height="5" rx="1" fill="currentColor"/>
+        <rect x="6.5" y="6" width="3" height="8" rx="1" fill="currentColor"/>
+        <rect x="11" y="3" width="3" height="11" rx="1" fill="currentColor"/>
+        <circle cx="13" cy="2.5" r="1.5" stroke="currentColor" stroke-width="1.1"/>
+        <path d="M3.5 8.5l3.5-3 3 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <!-- Finance -->
+    <button class="sidebar__item" aria-label="Finance">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 2v12M5 5.5C5 4.12 6.34 3 8 3s3 1.12 3 2.5c0 1.37-1.34 2.5-3 2.5s-3 1.13-3 2.5C5 11.88 6.34 13 8 13s3-1.12 3-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div class="sidebar__spacer"></div>
+    <!-- Settings -->
+    <button class="sidebar__item" aria-label="Settings">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M8 10a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M13.2 6.4l-.8-1.3-1.5.5a4.6 4.6 0 00-1-.6L9.6 3.5h-1.6L7.7 5a4.6 4.6 0 00-1 .6l-1.5-.5-.8 1.3 1.1 1a5 5 0 000 1.2l-1.1 1 .8 1.3 1.5-.5c.3.23.64.43 1 .6l.3 1.5h1.6l.3-1.5c.36-.17.7-.37 1-.6l1.5.5.8-1.3-1.1-1a5 5 0 000-1.2l1.1-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </aside>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="page-main">
+    <div class="page-inner">
+
+      <!-- BACK LINK -->
+      <a href="#" class="back-link">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back
+      </a>
+
+      <!-- PAGE TITLE -->
+      <h1 class="page-title">SXP concept</h1>
+
+      <!-- ===================== TABS ===================== -->
+      <nav class="perf-tabs" role="tablist">
+        <button class="perf-tab perf-tab--active" role="tab" aria-selected="true">Overview</button>
+        <button class="perf-tab" role="tab" aria-selected="false">Second tab</button>
+      </nav>
+
+      <!-- ===================== CONTENT ===================== -->
+      <section class="page-section">
+        <div>
+          <h2 class="section-heading">Section heading</h2>
+          <p class="section-desc" style="margin-top:8px;">Replace this section with the view you're prototyping.</p>
+        </div>
+
+        <div class="card">
+          <p class="card__title">Card title</p>
+          <p class="card__subtitle">Shell, tokens and fonts are wired up — start building here.</p>
+        </div>
+      </section>
+
+      <!-- Bottom spacer -->
+      <div style="height:60px;"></div>
+
+    </div><!-- /page-inner -->
+  </main>
+
+  <!-- HELP BUTTON (fixed) -->
+  <button class="help-btn" aria-label="Help">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="7.5" stroke="white" stroke-width="1.5"/>
+      <path d="M7 7c0-1.1.9-2 2-2s2 .9 2 2c0 1.1-.9 1.7-1.5 2.2S9 10.2 9 11" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="9" cy="13.5" r=".75" fill="white"/>
+    </svg>
+    Help
+  </button>
+
+  <script src="js/interactions.js"></script>
+  <script src="js/auth-gate.js"></script>
+</body>
+</html>
