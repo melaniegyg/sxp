@@ -18,8 +18,16 @@
   const ICON_NOT_MET =
     '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 12.75h-2v-6h2zM12 16.75a1.15 1.15 0 1 1 0-2.3 1.15 1.15 0 0 1 0 2.3"/><path fill-rule="evenodd" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2m0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16" clip-rule="evenodd"/></svg>';
 
-  const icon = (status) =>
-    `<span class="tc-status tc-status--${status}">${status === "met" ? ICON_MET : ICON_NOT_MET}</span>`;
+  // status / circle-slash — "blocked, prohibited, denied". Used where a gate
+  // fails and the outcome is a hard ineligibility rather than a shortfall.
+  const ICON_BLOCKED =
+    '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2m0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16" clip-rule="evenodd"/><path d="m6.343 16.243 9.9-9.9 1.414 1.414-9.9 9.9z"/></svg>';
+
+  const icon = (status, variant) => {
+    const glyph =
+      status === "met" ? ICON_MET : variant === "blocked" ? ICON_BLOCKED : ICON_NOT_MET;
+    return `<span class="tc-status tc-status--${status}">${glyph}</span>`;
+  };
 
   function renderRow(row) {
     const failing = row.status === "not-met";
@@ -57,13 +65,19 @@
         </div>`;
     }
 
+    // Some gates replace their description outright when they fail, rather
+    // than keeping it and adding a note underneath.
+    const replaced = failing && row.failDescription;
+    const body = replaced
+      ? `<p class="tc-row__fail-desc">${esc(row.failDescription)}</p>`
+      : `<p class="tc-row__desc">${esc(row.description)}</p>${help}`;
+
     return `
       <div class="tc-row" data-row="${esc(row.id)}">
-        ${icon(row.status)}
-        <div class="tc-row__body">
+        ${icon(row.status, row.failIcon)}
+        <div class="tc-row__body${replaced ? " tc-row__body--replaced" : ""}">
           <p class="tc-row__label">${esc(row.label)}</p>
-          <p class="tc-row__desc">${esc(row.description)}</p>
-          ${help}
+          ${body}
         </div>
       </div>`;
   }
@@ -80,32 +94,29 @@
       </section>`;
   }
 
+  // Copy is verbatim from the design — met 516:50892, not-met 555:53045 —
+  // including its lowercase ‘top choice’ and curly quotes. The award date is
+  // templated in from the data; the clause drops when a fixture has none.
   function renderBanner(badge) {
+    const date = badge.awardDate ? esc(badge.awardDate) : null;
+
     if (badge.earned) {
-      // Copy follows the design (node 516:50324), with "GetYourGuide's choice"
-      // swapped for the "Top Choice" working title. The award date is appended
-      // only when the data carries one — see badge.awardDate in criteria-model.
-      const onDate = badge.awardDate ? ` on ${esc(badge.awardDate)}` : "";
       return `
         <div class="tc-banner tc-banner--met">
           <div class="tc-banner__head">
             ${icon("met")}
-            <p class="tc-banner__title">You currently meet the requirements to be awarded a Top Choice badge${onDate}</p>
+            <p class="tc-banner__title">Nice work! This activity will receive a &lsquo;top choice&rsquo; badge${date ? ` from ${date}` : ""}</p>
           </div>
-          <p class="tc-banner__desc">As long as you stay in the green for all the criteria you will see the badge appear on your activity${onDate}.</p>
+          <p class="tc-banner__desc">As long as you continue to meet all the requirements below, the badge will appear on your listing${date ? ` on ${date}` : ""}.</p>
         </div>`;
     }
-    // Clears the global minimum but not the stricter bar for a crowded city.
-    const cityNote = badge.blockedByCityBar
-      ? ` Activities in ${esc(badge.city)} are held to a stricter bar than the global minimum.`
-      : "";
     return `
       <div class="tc-banner tc-banner--not-met">
         <div class="tc-banner__head">
-          ${icon("not-met")}
-          <p class="tc-banner__title">You don't currently meet the requirements for a Top Choice badge</p>
+          ${icon("not-met", "blocked")}
+          <p class="tc-banner__title">You currently don&rsquo;t meet the requirements to be awarded the &lsquo;top choice&rsquo; badge${date ? ` on ${date}` : ""}</p>
         </div>
-        <p class="tc-banner__desc">Here's what to work on before the end of the assessment period.${cityNote}</p>
+        <p class="tc-banner__desc">This activity doesn&rsquo;t meet the minimum quality standards to receive the badge. Keep working on it so you can get awarded with it next time.</p>
       </div>`;
   }
 

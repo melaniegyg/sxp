@@ -42,7 +42,13 @@
   // naming is settled.
   const QUALITY_RATE_LABEL = "Disrupted Booking Rate";
 
-  const pct = (n) => (n * 100).toFixed(n * 100 < 1 ? 2 : 1).replace(/\.0+$/, "") + "%";
+  // Design writes one decimal ("2.0%", "1.5%", "1.2%"), two below 1% ("0.58%")
+  // and a bare "0%" for zero. Don't strip the trailing zero — "≤ 2%" is wrong.
+  const pct = (n) => {
+    if (!n) return "0%";
+    const v = n * 100;
+    return v.toFixed(v < 1 ? 2 : 1) + "%";
+  };
   const rating = (n) => n.toFixed(2).replace(/0$/, "");
   const status = (ok) => (ok ? "met" : "not-met");
 
@@ -98,8 +104,12 @@
             // of a different activity — see `scope` below.
             status: status(a.crit_ts_no_severe_case && a.crit_ts_case_rate && a.crit_ts_tag_rate),
             scope: a.crit_ts_no_severe_case ? "supplier" : "activity",
-            failHelp:
-              "Contact your Account Manager or customer care to understand what was reported.",
+            // Design 516:51696. When this gate fails the description is replaced
+            // wholesale and no detail is offered — deliberate, for traveller
+            // safety — so there is no Account Manager prompt here.
+            failIcon: "blocked",
+            failDescription:
+              "We have identified a high number of cases related to this activity and therefore it is ineligible. To protect traveler safety we cannot provide you more details at this time.",
           },
         ],
       },

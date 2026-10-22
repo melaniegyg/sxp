@@ -1,23 +1,8 @@
 {
-  "_note": "Fixtures offered in the top-right switcher. Add a fixture to data/ and a line here — nothing else needs changing. `file` is relative to data/.",
+  "_note": "Fixtures offered in the top-right switcher. Add a fixture to data/ and a line here — nothing else needs changing. `file` is relative to data/. The switcher shows the supplier name read from the fixture's own `supplier_name` field (falling back to `Supplier <id>`); `label` below is the smaller second line.",
   "activities": [
-    {
-      "id": "pass",
-      "file": "activity-21293.json",
-      "label": "Meets all criteria",
-      "sublabel": "Murano & Burano · Venice"
-    },
-    {
-      "id": "rating-miss",
-      "file": "activity-21293-rating-miss.json",
-      "label": "Misses rating",
-      "sublabel": "Murano & Burano · Venice"
-    },
-    {
-      "id": "ts-miss",
-      "file": "activity-21293-ts-miss.json",
-      "label": "Misses Trust & Safety",
-      "sublabel": "Murano & Burano · Venice"
-    }
+    { "id": "pass", "file": "activity-21293.json", "label": "Meets all criteria" },
+    { "id": "rating-miss", "file": "activity-48871-rating-miss.json", "label": "Misses rating" },
+    { "id": "ts-miss", "file": "activity-60233-ts-miss.json", "label": "Misses Trust & Safety" }
   ]
 }

@@ -17,6 +17,12 @@
   const esc = (s) =>
     String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+  // The sxp_activity_criteria export carries supplier_id but no supplier name,
+  // so fixtures can add `supplier_name` (and optionally `supplier_company`).
+  // Without one we show the id rather than invent a company.
+  const supplierName = (a) =>
+    a.supplier_name || a.supplier_company || "Supplier " + a.supplier_id;
+
   function init(opts) {
     const root = document.getElementById("activity-switcher");
     const menu = document.getElementById("switcher-menu");
@@ -36,33 +42,47 @@
     }
 
     function select(entry, pushHash) {
-      label.textContent = entry.label;
-      sublabel.textContent = entry.sublabel || "";
+      // Primary line is the supplier; the scenario sits underneath so fixtures
+      // for the same supplier stay tellable apart.
+      label.textContent = entry.supplier;
+      sublabel.textContent = entry.label;
       menu.querySelectorAll("li").forEach((li) =>
         li.setAttribute("aria-selected", String(li.dataset.id === entry.id))
       );
       if (pushHash) history.replaceState(null, "", "#" + entry.id);
       close();
-
-      fetch("data/" + entry.file + "?cb=" + Date.now())
-        .then((r) => {
-          if (!r.ok) throw new Error(r.status + " fetching " + entry.file);
-          return r.json();
-        })
-        .then((activity) => opts.onSelect(activity, entry))
-        .catch((err) => opts.onError && opts.onError(err, entry));
+      opts.onSelect(entry.activity, entry);
     }
 
     return fetch(MANIFEST + "?cb=" + Date.now())
       .then((r) => r.json())
-      .then((m) => {
-        entries = m.activities || [];
+      .then((m) =>
+        // Load every fixture up front so the menu can label each one from its
+        // own data rather than from hand-written strings in the manifest.
+        Promise.all(
+          (m.activities || []).map((e) =>
+            fetch("data/" + e.file + "?cb=" + Date.now())
+              .then((r) => {
+                if (!r.ok) throw new Error(r.status + " fetching " + e.file);
+                return r.json();
+              })
+              .then((activity) => ({ ...e, activity, supplier: supplierName(activity) }))
+              .catch((err) => {
+                if (opts.onError) opts.onError(err, e);
+                return null;
+              })
+          )
+        )
+      )
+      .then((loaded) => {
+        entries = loaded.filter(Boolean);
+        if (!entries.length) return;
         menu.innerHTML = entries
           .map(
             (e) => `
           <li class="switcher-menu__item" role="option" data-id="${esc(e.id)}" aria-selected="false" tabindex="0">
-            <span class="switcher-menu__label">${esc(e.label)}</span>
-            <span class="switcher-menu__sub">${esc(e.sublabel || "")}</span>
+            <span class="switcher-menu__label">${esc(e.supplier)}</span>
+            <span class="switcher-menu__sub">${esc(e.label)}</span>
           </li>`
           )
           .join("");

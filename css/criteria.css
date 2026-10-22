@@ -160,6 +160,15 @@
   color: var(--tc-not-met);
   margin: 4px 0 0;
 }
+/* Replaces the description on gates that fail outright. Body size and the
+   primary label colour — not red — so it reads as an explanation, not an
+   error string (Figma 516:51713). */
+.tc-row__fail-desc {
+  font: var(--font-body);
+  color: var(--gyg-label-primary);
+  margin: 0;
+}
+.tc-row__body--replaced { gap: 16px; }
 
 /* --- Metric row --------------------------------------------- */
 
