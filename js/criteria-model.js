@@ -46,9 +46,18 @@
   const rating = (n) => n.toFixed(2).replace(/0$/, "");
   const status = (ok) => (ok ? "met" : "not-met");
 
-  const DATE_FMT = { year: "numeric", month: "short", day: "numeric" };
-  const fmtDate = (iso) =>
-    new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", { ...DATE_FMT, timeZone: "UTC" });
+  // The design uses US date style in two forms: abbreviated month for the
+  // assessment period ("Jul 1, 2027") and full month for the award date in
+  // the status banner ("January 1, 2026").
+  const fmtDate = (iso, month) =>
+    new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", {
+      year: "numeric",
+      month,
+      day: "numeric",
+      timeZone: "UTC",
+    });
+  const fmtShort = (iso) => fmtDate(iso, "short");
+  const fmtLong = (iso) => fmtDate(iso, "long");
 
   function build(a) {
     const sections = [
@@ -61,9 +70,6 @@
             label: `At least ${MIN_REVIEWS} reviews`,
             description: "This allows us to build enough signal about your performance.",
             status: status(a.crit_min_reviews),
-            // The design shows pass/fail only. The actual count is far more
-            // useful when failing ("38 of 50"), so we carry it through.
-            count: a.reviews_in_window,
             failHelp:
               "Keep collecting reviews — we check again at the end of each assessment period.",
           },
@@ -150,11 +156,17 @@
         blockedByCityBar: !a.has_badge && a.has_badge_min,
         city: a.home_city,
         cityStep: a.destination_step,
+        // TODO(data): the design names the date the badge would appear
+        // ("on January 1, 2026"). The activity export has no such field —
+        // and the criteria deck lists award cadence as still undecided. Read
+        // from the fixture so it can vary; the copy drops the clause when
+        // absent rather than inventing a date.
+        awardDate: a.next_award_date ? fmtLong(a.next_award_date) : null,
       },
       period: {
-        start: fmtDate(a.window_start),
-        end: fmtDate(a.window_end),
-        text: `Assessment period: ${fmtDate(a.window_start)} – ${fmtDate(a.window_end)}`,
+        start: fmtShort(a.window_start),
+        end: fmtShort(a.window_end),
+        text: `Assessment period: ${fmtShort(a.window_start)} – ${fmtShort(a.window_end)}`,
       },
       sections,
     };

@@ -57,16 +57,11 @@
         </div>`;
     }
 
-    const count =
-      row.count != null
-        ? `<span class="tc-row__count">${row.count.toLocaleString("en-GB")} in this period</span>`
-        : "";
-
     return `
       <div class="tc-row" data-row="${esc(row.id)}">
         ${icon(row.status)}
         <div class="tc-row__body">
-          <p class="tc-row__label">${esc(row.label)} ${count}</p>
+          <p class="tc-row__label">${esc(row.label)}</p>
           <p class="tc-row__desc">${esc(row.description)}</p>
           ${help}
         </div>
@@ -87,13 +82,17 @@
 
   function renderBanner(badge) {
     if (badge.earned) {
+      // Copy follows the design (node 516:50324), with "GetYourGuide's choice"
+      // swapped for the "Top Choice" working title. The award date is appended
+      // only when the data carries one — see badge.awardDate in criteria-model.
+      const onDate = badge.awardDate ? ` on ${esc(badge.awardDate)}` : "";
       return `
         <div class="tc-banner tc-banner--met">
           <div class="tc-banner__head">
             ${icon("met")}
-            <p class="tc-banner__title">You currently meet the requirements to be awarded a Top Choice badge</p>
+            <p class="tc-banner__title">You currently meet the requirements to be awarded a Top Choice badge${onDate}</p>
           </div>
-          <p class="tc-banner__desc">As long as you stay in the green for all the criteria you will see the badge appear on your activity.</p>
+          <p class="tc-banner__desc">As long as you stay in the green for all the criteria you will see the badge appear on your activity${onDate}.</p>
         </div>`;
     }
     // Clears the global minimum but not the stricter bar for a crowded city.

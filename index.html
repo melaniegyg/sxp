@@ -30,15 +30,18 @@
     <div style="display:flex;align-items:center;gap:24px;">
       <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="topnav__logo">
     </div>
-    <div class="topnav__user">
+    <!-- Prototype affordance: switches which fixture in data/ the page renders. -->
+    <div class="topnav__user" id="activity-switcher" role="button" tabindex="0"
+         aria-haspopup="listbox" aria-expanded="false" aria-label="Switch activity">
       <div class="topnav__avatar"></div>
       <div class="topnav__user-info">
-        <span class="topnav__name">Marie</span>
-        <span class="topnav__company">BusTravel Iceland</span>
+        <span class="topnav__name" id="switcher-label">&nbsp;</span>
+        <span class="topnav__company" id="switcher-sublabel">&nbsp;</span>
       </div>
       <svg class="topnav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M4 6l4 4 4-4" stroke="#858995" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
+      <ul class="switcher-menu" id="switcher-menu" role="listbox" aria-label="Activities" hidden></ul>
     </div>
   </header>
 
@@ -169,20 +172,21 @@
   <script src="js/interactions.js"></script>
   <script src="js/criteria-model.js"></script>
   <script src="js/criteria-render.js"></script>
+  <script src="js/activity-switcher.js"></script>
   <script>
-    // Swap the file here to render a different activity / failing state.
-    fetch("data/activity-21293.json")
-      .then((r) => r.json())
-      .then((activity) => {
+    // The switcher picks the fixture; add new ones in data/activities.json.
+    ActivitySwitcher.init({
+      onSelect(activity) {
         const model = TopChoice.build(activity);
         document.getElementById("activity-title").textContent = model.activityTitle;
         document.title = model.activityTitle + " — Top Choice";
         TopChoiceRender.render("#criteria", model);
-      })
-      .catch((err) => {
+      },
+      onError(err, entry) {
         document.getElementById("criteria").innerHTML =
-          '<p class="section-desc">Could not load activity data: ' + err.message + "</p>";
-      });
+          '<p class="section-desc">Could not load ' + entry.file + ": " + err.message + "</p>";
+      },
+    });
   </script>
   <script src="js/auth-gate.js"></script>
 </body>

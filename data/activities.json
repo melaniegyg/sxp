@@ -1,0 +1,23 @@
+{
+  "_note": "Fixtures offered in the top-right switcher. Add a fixture to data/ and a line here — nothing else needs changing. `file` is relative to data/.",
+  "activities": [
+    {
+      "id": "pass",
+      "file": "activity-21293.json",
+      "label": "Meets all criteria",
+      "sublabel": "Murano & Burano · Venice"
+    },
+    {
+      "id": "rating-miss",
+      "file": "activity-21293-rating-miss.json",
+      "label": "Misses rating",
+      "sublabel": "Murano & Burano · Venice"
+    },
+    {
+      "id": "ts-miss",
+      "file": "activity-21293-ts-miss.json",
+      "label": "Misses Trust & Safety",
+      "sublabel": "Murano & Burano · Venice"
+    }
+  ]
+}
