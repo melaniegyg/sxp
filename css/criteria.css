@@ -10,6 +10,8 @@
      and critical-weak, per the design (Figma 516:50324, 516:50342). */
   --tc-met-weak: #d1f6e2;
   --tc-not-met-weak: #ffe8ed;
+  /* gyg/label/critical — outlines a metric tile whose bar was missed. */
+  --tc-critical-border: #c72a3d;
   --tc-promo-bg: #f2f5f8;
 }
 
@@ -153,7 +155,7 @@
 }
 .tc-section__rows > .tc-row:first-child { border-top: none; }
 .tc-row__body { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.tc-row__label { font: var(--font-title-4-bold); color: var(--gyg-label-primary); margin: 0; }
+.tc-row__label { font: var(--font-body-strong); color: var(--gyg-label-primary); margin: 0; }
 .tc-row__desc { font: var(--font-caption-compact); color: var(--gyg-label-secondary); margin: 0; }
 .tc-row__help {
   font: var(--font-caption-compact);
@@ -170,6 +172,35 @@
 }
 .tc-row__body--replaced { gap: 16px; }
 
+/* --- Confirmed Trust & Safety cases table (516:51482) ------- */
+
+.tc-cases {
+  width: 100%;
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  border-collapse: collapse;
+  overflow: hidden;
+  table-layout: fixed;
+  background: var(--gyg-background-primary);
+}
+.tc-cases__th,
+.tc-cases__td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid #dcdfe4;
+  color: var(--gyg-label-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tc-cases__th { font: var(--font-body-strong); height: 48px; }
+.tc-cases__td { font: var(--font-body); height: 52px; }
+.tc-cases tbody tr:last-child .tc-cases__td { border-bottom: none; }
+.tc-cases__col--activity { width: 38%; }
+.tc-cases__col--date { width: 17%; }
+.tc-cases__col--case_number { width: 16%; }
+.tc-cases__col--notes { width: 29%; }
+
 /* --- Metric row --------------------------------------------- */
 
 .tc-row--metric { align-items: flex-start; }
@@ -183,6 +214,8 @@
   flex-direction: column;
   gap: 10px;
 }
+/* A missed bar outlines the whole tile in critical (516:51043). */
+.tc-metric--not-met { border-color: var(--tc-critical-border); }
 .tc-metric__value { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
 /* Figma marks this node whitespace-nowrap; at 14px "Criteria: ≤ 1.5%" is a
    few px wider than the 122px tile's inner width, so let it run rather than wrap. */

@@ -103,13 +103,23 @@
             // ALL of the supplier's activities, so this row can fail because
             // of a different activity — see `scope` below.
             status: status(a.crit_ts_no_severe_case && a.crit_ts_case_rate && a.crit_ts_tag_rate),
-            scope: a.crit_ts_no_severe_case ? "supplier" : "activity",
-            // Design 516:51696. When this gate fails the description is replaced
-            // wholesale and no detail is offered — deliberate, for traveller
-            // safety — so there is no Account Manager prompt here.
-            failIcon: "blocked",
-            failDescription:
-              "We have identified a high number of cases related to this activity and therefore it is ineligible. To protect traveler safety we cannot provide you more details at this time.",
+            // Two distinct failures live behind this one row, and the design
+            // treats them very differently:
+            //
+            //   confirmed severe case (crit_ts_no_severe_case) — 516:50949
+            //     names the offending activities in a table.
+            //   case/tag rate (crit_ts_case_rate, crit_ts_tag_rate) — 516:51696
+            //     gives no detail at all, deliberately.
+            //
+            // Severe takes precedence when both fail: it is the stronger claim
+            // and the only one that comes with evidence.
+            failDescription: !a.crit_ts_no_severe_case
+              ? "Due to the fact that you have multiple confirmed cases in your catalog, all of your activities are ineligible for badge status for 6 months from the date of the confirmation."
+              : "We have identified a high number of cases related to this activity and therefore it is ineligible. To protect traveler safety we cannot provide you more details at this time.",
+            // TODO(data): the export carries supplier_valid_sev12_cases as a
+            // bare count — no activity, date, case number or ban expiry. These
+            // rows come from a `ts_cases` field the fixtures add by hand.
+            cases: !a.crit_ts_no_severe_case ? a.ts_cases || [] : null,
           },
         ],
       },
@@ -121,7 +131,7 @@
             id: "rating",
             label: "Rating",
             description:
-              "The average star rating received from customer reviews of your products. Recent reviews have more influence than older ones, to ensure that customers see a fair representation of your current quality.",
+              "The average star rating received from customer reviews of your products.",
             status: status(a.crit_rating),
             metric: {
               value: rating(a.rating_in_window),
