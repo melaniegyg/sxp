@@ -27,11 +27,15 @@
   // Confirmed Trust & Safety cases, itemised (design 516:51482). Columns the
   // export can't fill yet render empty rather than being dropped, so the shape
   // stays honest about what's missing.
+  //
+  // "Excluded until" holds a bare date. An earlier revision (720:66815) titled
+  // it "Notes" and carried prose ("Ban effective until Jan 1, 2027"); 516:51482
+  // moves the wording into the header, so the cells are dates only.
   const CASE_COLS = [
     { key: "activity", label: "Activity" },
-    { key: "date", label: "Date" },
-    { key: "case_number", label: "Case #" },
-    { key: "notes", label: "Notes" },
+    { key: "confirmed", label: "Case confirmed" },
+    { key: "case_number", label: "Case number" },
+    { key: "excluded_until", label: "Excluded until" },
   ];
 
   function renderCases(cases) {
@@ -79,26 +83,34 @@
     }
 
     if (row.details.disruptions && row.details.disruptions.length) {
-      const wrap = document.createElement("div");
-      wrap.className = "tc-disruptions";
-      panel.appendChild(wrap);
-      // accordion:false keeps the single card open — there is nothing to
-      // collapse against when each metric shows one category.
-      DefectCards.render(wrap, row.details.disruptions, { accordion: false });
-
-      // The card is already inside a collapsible row, so its own collapse
-      // affordance is redundant: drop the chevron, and demote the heading from
-      // a toggle button to plain text rather than leaving a button that does
-      // nothing. Done here so the shared module stays untouched for the DBR
-      // portal, which still needs the collapsing behaviour.
-      wrap.querySelectorAll(".cc-collapse").forEach((b) => b.remove());
-      wrap.querySelectorAll(".cc-left__head").forEach((head) => {
-        const plain = document.createElement("div");
-        plain.className = head.className;
-        plain.innerHTML = head.innerHTML;
-        head.replaceWith(plain);
-      });
+      mountDisruptions(panel, row.details.disruptions);
     }
+  }
+
+  // Renders the shared defect-cards rail into `host` and strips the affordances
+  // that only make sense in the DBR portal. Used by the metric detail panels
+  // and, inline, by the Trust & Safety tag-rate failure (516:52273).
+  function mountDisruptions(host, disruptions, opts) {
+    const wrap = document.createElement("div");
+    wrap.className = "tc-disruptions" + (opts && opts.inline ? " tc-disruptions--inline" : "");
+    host.appendChild(wrap);
+    // accordion:false keeps the single card open — there is nothing to
+    // collapse against when each metric shows one category.
+    DefectCards.render(wrap, disruptions, { accordion: false });
+
+    // The card is already inside a collapsible row, so its own collapse
+    // affordance is redundant: drop the chevron, and demote the heading from
+    // a toggle button to plain text rather than leaving a button that does
+    // nothing. Done here so the shared module stays untouched for the DBR
+    // portal, which still needs the collapsing behaviour.
+    wrap.querySelectorAll(".cc-collapse").forEach((b) => b.remove());
+    wrap.querySelectorAll(".cc-left__head").forEach((head) => {
+      const plain = document.createElement("div");
+      plain.className = head.className;
+      plain.innerHTML = head.innerHTML;
+      head.replaceWith(plain);
+    });
+    return wrap;
   }
 
   function renderRow(row) {
@@ -136,9 +148,16 @@
     // Some gates replace their description outright when they fail, rather
     // than keeping it and adding a note underneath.
     const replaced = failing && row.failDescription;
+    // The T&S tag-rate failure shows its tag rail inline, with no "See details"
+    // toggle — the design puts it straight under the copy (516:52273). The
+    // placeholder is filled after innerHTML, since defect-cards mounts to a node.
+    const inlineRail =
+      failing && row.details && row.details.disruptions && row.details.disruptions.length
+        ? `<div data-inline-disruptions="${esc(row.id)}"></div>`
+        : "";
     const body = replaced
-      ? `<p class="tc-row__fail-desc">${esc(row.failDescription)}</p>${renderCases(row.cases)}`
-      : `<p class="tc-row__desc">${esc(row.description)}</p>${help}`;
+      ? `<p class="tc-row__fail-desc">${esc(row.failDescription)}</p>${renderCases(row.cases)}${inlineRail}`
+      : `<p class="tc-row__desc">${esc(row.description)}</p>${help}${inlineRail}`;
 
     return `
       <div class="tc-row" data-row="${esc(row.id)}">
@@ -177,7 +196,7 @@
             ${icon("met")}
             <p class="tc-banner__title">Nice work! This activity will receive an &lsquo;Excellent experience&rsquo; badge${date ? ` from ${date}` : ""}.</p>
           </div>
-          <p class="tc-banner__desc">As long as you continue to meet all the requirements below, the badge will appear on your listing${date ? ` on ${date}` : ""}.</p>
+          <p class="tc-banner__desc">As long as you continue to meet all the requirements below, the badge will appear on your listing${date ? ` from ${date}` : ""}.</p>
         </div>`;
     }
     return `
@@ -207,6 +226,15 @@
     // worth rendering once a supplier actually opens the row.
     const rowsById = {};
     model.sections.forEach((s) => s.rows.forEach((r) => (rowsById[r.id] = r)));
+
+    // Inline rails (Trust & Safety tag rate) are not behind a toggle, so they
+    // mount immediately rather than on first open.
+    el.querySelectorAll("[data-inline-disruptions]").forEach((slot) => {
+      const row = rowsById[slot.dataset.inlineDisruptions];
+      if (row && row.details && row.details.disruptions) {
+        mountDisruptions(slot, row.details.disruptions, { inline: true });
+      }
+    });
 
     el.querySelectorAll(".tc-details").forEach((btn) => {
       btn.addEventListener("click", () => {

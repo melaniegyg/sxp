@@ -42,6 +42,32 @@
   // back to a placeholder in the renderer.
   const detailsFor = (a, id) => (a.details && a.details[id]) || null;
 
+  // --- Badge outcome, with the pickup bar scoped to pickup activities -------
+  // The export fails 15,671 activities on `crit_pickup_rate` that have
+  // `has_pickup = false` — a bar the criteria deck says applies only "if the
+  // activity has pickup". For 112 of them it is the ONLY failure, so taking
+  // has_badge at face value denies a badge no visible criterion explains.
+  //
+  // So the outcome is recomputed here rather than read from has_badge, with
+  // pickup ignored when the activity has none. Verified safe to derive: among
+  // the 10,190 rows that reach Gate 4,
+  //   meets_excellence === crit_rating && crit_defect_rate && crit_pickup_rate
+  // holds exactly, and
+  //   has_badge === crit_in_scope && meets_entry && meets_ts && meets_excellence
+  // holds for all 207,496 rows.
+  //
+  // NOTE: this makes the page disagree with `has_badge` for those 112
+  // activities, deliberately. The export is the thing that needs fixing.
+  const earnedBadge = (a, min) => {
+    const rating = min ? a.crit_rating_min : a.crit_rating;
+    const defect = min ? a.crit_defect_rate_min : a.crit_defect_rate;
+    const pickup = min ? a.crit_pickup_rate_min : a.crit_pickup_rate;
+    const pickupOk = a.has_pickup ? pickup : true;
+    return Boolean(
+      a.crit_in_scope && a.meets_entry && a.meets_ts && rating && defect && pickupOk
+    );
+  };
+
   // --- Labels -------------------------------------------------
   // NOTE(naming): the design calls this row "Disrupted Booking Rate" and
   // reuses the DBR definition. It is NOT DBR — DBR counts all 42 defect
@@ -112,23 +138,36 @@
             // ALL of the supplier's activities, so this row can fail because
             // of a different activity — see `scope` below.
             status: status(a.crit_ts_no_severe_case && a.crit_ts_case_rate && a.crit_ts_tag_rate),
-            // Two distinct failures live behind this one row, and the design
-            // treats them very differently:
+            // THREE distinct failures live behind this one row, and the design
+            // treats each differently. Precedence is severe > tag rate > case
+            // rate: severe is the strongest claim and the only one with case
+            // evidence; between the other two, the tag rule is the one the
+            // design is willing to explain.
             //
-            //   confirmed severe case (crit_ts_no_severe_case) — 516:50949
+            //   confirmed severe case (crit_ts_no_severe_case) — 516:51482
             //     names the offending activities in a table.
-            //   case/tag rate (crit_ts_case_rate, crit_ts_tag_rate) — 516:51696
-            //     gives no detail at all, deliberately.
-            //
-            // Severe takes precedence when both fail: it is the stronger claim
-            // and the only one that comes with evidence.
+            //   T&S tag rate (crit_ts_tag_rate) — 516:52273
+            //     shows the tags driving it, with advice. Tags are AI-classified
+            //     review text, not investigated cases, so they can be shared.
+            //   investigated case rate (crit_ts_case_rate) — 516:51696
+            //     gives no detail at all, deliberately — real T&S cases.
             failDescription: !a.crit_ts_no_severe_case
-              ? "Due to the fact that you have multiple confirmed cases in your catalog, all of your activities are ineligible for badge status for 6 months from the date of the confirmation."
-              : "We have identified a high number of cases related to this activity and therefore it is ineligible. To protect traveler safety we cannot provide you more details at this time.",
+              ? "We track complaints and reviews related to serious issues across all your activities. As you have multiple confirmed cases (below), all your activities are excluded from the program for the current assessment period."
+              : !a.crit_ts_tag_rate
+                ? "We track complaints and reviews related to serious issues across all your activities. This activity has been tagged with a high number of safety issues and it is therefore excluded from the program for the current assessment period. Review the key trends below and take action to improve."
+                : "We track complaints and reviews related to serious issues across all your activities. We have identified a high number of cases or investigations related to this activity and it is therefore excluded from the program for the current assessment period. To protect traveler safety, we can’t provide further details at this time.",
             // TODO(data): the export carries supplier_valid_sev12_cases as a
             // bare count — no activity, date, case number or ban expiry. These
             // rows come from a `ts_cases` field the fixtures add by hand.
             cases: !a.crit_ts_no_severe_case ? a.ts_cases || [] : null,
+            // Only the tag-rate failure shows a breakdown, and only when it is
+            // the reason — a severe case supersedes it with the table above.
+            // TODO(data): the export has supplier_ts_tag_bookings as a count
+            // with no tag split, so fixtures supply details["trust-safety"].
+            details:
+              a.crit_ts_no_severe_case && !a.crit_ts_tag_rate
+                ? detailsFor(a, "trust-safety")
+                : null,
           },
         ],
       },
@@ -140,7 +179,7 @@
             id: "rating",
             label: "Rating",
             description:
-              "The average star rating received from customer reviews of your products.",
+              "The average star rating from customer reviews received in this assessment period.",
             status: status(a.crit_rating),
             metric: {
               value: rating(a.rating_in_window),
@@ -154,7 +193,7 @@
             id: "quality-rate",
             label: QUALITY_RATE_LABEL,
             description:
-              "Calculated by taking the number of bookings with a complaint or negative experience and dividing it by the total number of conducted bookings.",
+              "Calculated by taking the number of bookings tagged with a complaint or negative experience and dividing it by the total number of bookings conducted in this assessment period.",
             status: status(a.crit_defect_rate),
             metric: {
               value: pct(a.quality_defect_rate),
@@ -163,19 +202,37 @@
             },
             details: detailsFor(a, "quality-rate"),
           },
-          {
-            id: "pickup-rate",
-            label: "Pickup Problem Rate",
-            description:
-              "Calculated by taking the number of bookings with a pickup problem and dividing it by the total number of conducted bookings.",
-            status: status(a.crit_pickup_rate),
-            metric: {
-              value: pct(a.pickup_defect_rate),
-              barText: `Criteria: ≤ ${pct(pickupBar(a))}`,
-              chart: { kind: "rate", max: RATE_AXIS_MAX, bar: pickupBar(a) },
-            },
-            details: detailsFor(a, "pickup-rate"),
-          },
+          // The pickup bar only applies "if the activity has pickup" (criteria
+          // deck, Gate 4). Without pickup there is nothing to measure, so the
+          // row is omitted rather than shown passing at 0% — a green tick for a
+          // criterion that was never assessed reads as an achievement.
+          //
+          // WARNING: this is NOT merely cosmetic, because the export disagrees
+          // with the deck. 15,671 rows have has_pickup = false AND
+          // crit_pickup_rate = false — they fail a bar they should never have
+          // been judged against. For 112 of them pickup is the ONLY failure, so
+          // hiding the row leaves every visible criterion green under a "you
+          // don't meet the requirements" banner. The badge decision for those
+          // 112 looks wrong at source; see "Known problems" in CLAUDE.md.
+          // Fixture `porto-fail` is one of the 15,671 (it fails min-reviews too,
+          // so its page still explains itself).
+          ...(a.has_pickup
+            ? [
+                {
+                  id: "pickup-rate",
+                  label: "Pickup Problem Rate",
+                  description:
+                    "Calculated by taking the number of bookings with a negative pickup experience and dividing it by the total number of conducted bookings.",
+                  status: status(a.crit_pickup_rate),
+                  metric: {
+                    value: pct(a.pickup_defect_rate),
+                    barText: `Criteria: ≤ ${pct(pickupBar(a))}`,
+                    chart: { kind: "rate", max: RATE_AXIS_MAX, bar: pickupBar(a) },
+                  },
+                  details: detailsFor(a, "pickup-rate"),
+                },
+              ]
+            : []),
         ],
       },
     ];
@@ -186,10 +243,10 @@
       // presumably never sees the tab at all. Surfaced so the page can decide.
       inScope: a.crit_in_scope,
       badge: {
-        earned: a.has_badge,
+        earned: earnedBadge(a),
         // True when the activity clears the global minimum but not its own
         // (stricter) city bar — i.e. it would qualify in a less crowded city.
-        blockedByCityBar: !a.has_badge && a.has_badge_min,
+        blockedByCityBar: !earnedBadge(a) && earnedBadge(a, true),
         city: a.home_city,
         cityStep: a.destination_step,
         // TODO(data): the design names the date the badge would appear
