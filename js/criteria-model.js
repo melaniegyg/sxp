@@ -179,7 +179,7 @@
             id: "rating",
             label: "Rating",
             description:
-              "The average star rating from customer reviews received in this assessment period. ",
+              "The average star rating from customer reviews received in this assessment period.",
             status: status(a.crit_rating),
             metric: {
               value: rating(a.rating_in_window),
