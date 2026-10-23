@@ -322,7 +322,37 @@
 .tc-details.open svg { transform: rotate(180deg); }
 
 .tc-details__panel { margin-top: 12px; }
-.tc-trend { width: 100%; overflow: hidden; }
+/* position:relative anchors the hover card, which is a DOM node rather than
+   part of the SVG so it can carry the design's shadow and wrap text. */
+/* overflow is visible, not hidden: the hover card is anchored to the data
+   point and would be clipped at the top of the chart otherwise. The SVG is
+   width:100% so it has nothing to overflow with. */
+.tc-trend { width: 100%; overflow: visible; position: relative; }
+.trend-dot { fill: #1a2b49; pointer-events: none; }
+.trend-tip {
+  position: absolute;
+  transform: translateY(-50%);
+  min-width: 80px;
+  padding: 8px 12px;
+  background: var(--gyg-background-primary);
+  border-radius: 8px;
+  /* overlay/popover/shadow */
+  box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  z-index: 2;
+  white-space: nowrap;
+}
+.trend-tip__label {
+  font: var(--font-label);
+  color: var(--gyg-label-secondary);
+  margin: 0;
+}
+.trend-tip__value {
+  font: var(--font-body);
+  color: #000;
+  margin: 0 0 8px;
+}
+.trend-tip__value:last-child { margin-bottom: 0; }
 /* Months that missed the bar. The design fills these amber; weak red ties the
    shading to the same critical surface the rails and banner already use. */
 .trend-band { fill: var(--tc-not-met-weak); }

@@ -69,5 +69,77 @@
   "meets_ts": true,
   "meets_excellence": true,
   "has_badge": true,
-  "has_badge_min": true
+  "has_badge_min": true,
+  "_note_details_rating": "INVENTED, not from the export. sxp_activity_criteria holds one rating for the whole window — there is no monthly series anywhere — so these six points are generated around the row's real rating_in_window (4.9173) with a fixed zero-sum shape, scaled so the series stays under 5.0 and clears the 4.80 bar, matching crit_rating. Only the mean is anchored to anything real; the month-to-month shape is illustrative.",
+  "details": {
+    "rating": {
+      "trend": [
+        {
+          "label": "Jul",
+          "date": "Jul 15, 2026",
+          "value": 4.83
+        },
+        {
+          "label": "Aug",
+          "date": "Aug 15, 2026",
+          "value": 4.95
+        },
+        {
+          "label": "Sep",
+          "date": "Sep 15, 2026",
+          "value": 5.0
+        },
+        {
+          "label": "Oct",
+          "date": "Oct 15, 2026",
+          "value": 4.87
+        },
+        {
+          "label": "Nov",
+          "date": "Nov 15, 2026",
+          "value": 4.98
+        },
+        {
+          "label": "Dec",
+          "date": "Dec 15, 2026",
+          "value": 4.88
+        }
+      ]
+    },
+    "quality-rate": {
+      "trend": [
+        {
+          "label": "Jul",
+          "date": "Jul 15, 2026",
+          "value": 0.0
+        },
+        {
+          "label": "Aug",
+          "date": "Aug 15, 2026",
+          "value": 0.005142
+        },
+        {
+          "label": "Sep",
+          "date": "Sep 15, 2026",
+          "value": 0.007346
+        },
+        {
+          "label": "Oct",
+          "date": "Oct 15, 2026",
+          "value": 0.001469
+        },
+        {
+          "label": "Nov",
+          "date": "Nov 15, 2026",
+          "value": 0.006244
+        },
+        {
+          "label": "Dec",
+          "date": "Dec 15, 2026",
+          "value": 0.001837
+        }
+      ]
+    }
+  },
+  "_note_details_quality_rate": "INVENTED, not from the export. sxp_activity_criteria holds one quality defect rate for the whole window, so these six points are generated around the row's real value (0.3673%) with a fixed zero-sum shape, scaled to stay at or above zero and stays under the 1.00% bar, matching crit_defect_rate. Only the mean is anchored to anything real."
 }

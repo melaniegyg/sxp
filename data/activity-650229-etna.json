@@ -12,6 +12,38 @@
     "_caveat_no_trend": "No `trend` series on any metric. A monthly rate needs a monthly denominator (bookings per month); sxp_activity_criteria carries only the window aggregate and sxp_booking_defect carries only the numerator. A monthly rating series has no source at all. The detail panel renders an empty chart area as a result.",
     "_caveat_counts_do_not_reconcile": "The pickup counts below are REAL but DO NOT RECONCILE with pickup_defect_bookings above them. sxp_booking_defect is systematically thinner than sxp_activity_criteria: its latest travel_date is 2026-09-14 while these windows run to 2026-10-14, so the final month of every window has no booking-level detail, and even inside the covered range the distinct-booking counts fall short of the aggregates. Expect the disruption list to sum to less than the headline rate implies.",
     "pickup-rate": {
+      "trend": [
+        {
+          "label": "Jul",
+          "date": "Jul 15, 2026",
+          "value": 0.0
+        },
+        {
+          "label": "Aug",
+          "date": "Aug 15, 2026",
+          "value": 0.003581
+        },
+        {
+          "label": "Sep",
+          "date": "Sep 15, 2026",
+          "value": 0.005115
+        },
+        {
+          "label": "Oct",
+          "date": "Oct 15, 2026",
+          "value": 0.001023
+        },
+        {
+          "label": "Nov",
+          "date": "Nov 15, 2026",
+          "value": 0.004348
+        },
+        {
+          "label": "Dec",
+          "date": "Dec 15, 2026",
+          "value": 0.001279
+        }
+      ],
       "disruptions": [
         {
           "category": "Top disruptions",
@@ -33,6 +65,74 @@
               "count": 1
             }
           ]
+        }
+      ]
+    },
+    "rating": {
+      "trend": [
+        {
+          "label": "Jul",
+          "date": "Jul 15, 2026",
+          "value": 4.95
+        },
+        {
+          "label": "Aug",
+          "date": "Aug 15, 2026",
+          "value": 4.99
+        },
+        {
+          "label": "Sep",
+          "date": "Sep 15, 2026",
+          "value": 5.0
+        },
+        {
+          "label": "Oct",
+          "date": "Oct 15, 2026",
+          "value": 4.96
+        },
+        {
+          "label": "Nov",
+          "date": "Nov 15, 2026",
+          "value": 4.99
+        },
+        {
+          "label": "Dec",
+          "date": "Dec 15, 2026",
+          "value": 4.96
+        }
+      ]
+    },
+    "quality-rate": {
+      "trend": [
+        {
+          "label": "Jul",
+          "date": "Jul 15, 2026",
+          "value": 0.0
+        },
+        {
+          "label": "Aug",
+          "date": "Aug 15, 2026",
+          "value": 0.0
+        },
+        {
+          "label": "Sep",
+          "date": "Sep 15, 2026",
+          "value": 0.0
+        },
+        {
+          "label": "Oct",
+          "date": "Oct 15, 2026",
+          "value": 0.0
+        },
+        {
+          "label": "Nov",
+          "date": "Nov 15, 2026",
+          "value": 0.0
+        },
+        {
+          "label": "Dec",
+          "date": "Dec 15, 2026",
+          "value": 0.0
         }
       ]
     }
@@ -98,5 +198,8 @@
   "meets_ts": true,
   "meets_excellence": true,
   "has_badge": true,
-  "has_badge_min": true
+  "has_badge_min": true,
+  "_note_details_rating": "INVENTED, not from the export. sxp_activity_criteria holds one rating for the whole window — there is no monthly series anywhere — so these six points are generated around the row's real rating_in_window (4.9766) with a fixed zero-sum shape, scaled so the series stays under 5.0 and clears the 4.70 bar, matching crit_rating. Only the mean is anchored to anything real; the month-to-month shape is illustrative.",
+  "_note_details_quality_rate": "INVENTED, not from the export. sxp_activity_criteria holds one quality defect rate for the whole window, so these six points are generated around the row's real value (0.0000%) with a fixed zero-sum shape, scaled to stay at or above zero and stays under the 1.50% bar, matching crit_defect_rate. Only the mean is anchored to anything real.",
+  "_note_details_pickup_rate": "INVENTED, not from the export. sxp_activity_criteria holds one pickup defect rate for the whole window, so these six points are generated around the row's real value (0.2558%) with a fixed zero-sum shape, scaled to stay at or above zero and stays under the 1.50% bar, matching crit_pickup_rate. Only the mean is anchored to anything real."
 }

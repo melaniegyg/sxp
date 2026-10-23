@@ -82,8 +82,80 @@
       band +
       `<path d="${line}" fill="none" stroke="#1a2b49" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>` +
       months +
-      "</svg>";
+      `<circle class="trend-dot" r="4" cx="0" cy="0" hidden/>` +
+      "</svg>" +
+      `<div class="trend-tip" hidden></div>`;
+
+    attachHover(el, { pts, x, y, isRate, bar: opts.bar });
   }
+
+  // Hover readout (757:29057): a dot on the nearest point and a card giving
+  // that month's value against the criteria. The SVG scales with its container,
+  // so positions are converted from viewBox units to pixels on each move
+  // rather than cached — the panel can be resized while open.
+  function attachHover(el, ctx) {
+    const svg = el.querySelector(".line-chart");
+    const dot = el.querySelector(".trend-dot");
+    const tip = el.querySelector(".trend-tip");
+    if (!svg || !dot || !tip) return;
+
+    const fmt = (v) =>
+      ctx.isRate
+        ? (v * 100).toFixed(v * 100 < 1 ? 2 : 1) + "%"
+        : v.toFixed(2).replace(/0$/, "");
+
+    function show(e) {
+      const rect = svg.getBoundingClientRect();
+      if (!rect.width) return;
+      const scale = rect.width / W;
+      // Nearest point by x, in viewBox units.
+      const vx = (e.clientX - rect.left) / scale;
+      let i = 0;
+      ctx.pts.forEach((_, n) => {
+        if (Math.abs(ctx.x(n) - vx) < Math.abs(ctx.x(i) - vx)) i = n;
+      });
+      const p = ctx.pts[i];
+
+      dot.setAttribute("cx", ctx.x(i));
+      dot.setAttribute("cy", ctx.y(p.value));
+      dot.hidden = false;
+
+      tip.innerHTML =
+        `<p class="trend-tip__label">${escapeHtml(p.date || p.label)}</p>` +
+        `<p class="trend-tip__value">${fmt(p.value)}</p>` +
+        (ctx.bar != null
+          ? `<p class="trend-tip__label">Criteria</p><p class="trend-tip__value">${fmt(ctx.bar)}</p>`
+          : "");
+      tip.hidden = false;
+
+      // Flip to the left of the dot when it would overflow the container, and
+      // clamp vertically so the card stays beside the chart rather than
+      // floating off the top — ratings sit near the axis ceiling, so the
+      // anchor point is often only a few pixels down.
+      const left = ctx.x(i) * scale + 12;
+      const half = tip.offsetHeight / 2;
+      const top = Math.min(
+        Math.max(ctx.y(p.value) * scale, half),
+        rect.height - half
+      );
+      tip.style.top = top + "px";
+      tip.style.left =
+        left + tip.offsetWidth > rect.width
+          ? ctx.x(i) * scale - tip.offsetWidth - 12 + "px"
+          : left + "px";
+    }
+
+    function hide() {
+      dot.hidden = true;
+      tip.hidden = true;
+    }
+
+    svg.addEventListener("mousemove", show);
+    svg.addEventListener("mouseleave", hide);
+  }
+
+  const escapeHtml = (s) =>
+    String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   global.TrendChart = { render };
 })(window);

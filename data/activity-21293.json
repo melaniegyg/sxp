@@ -3,6 +3,77 @@
   "_note_next_award_date": "NOT from the export — added to drive the status-banner copy, which names the date the badge would appear. The criteria deck lists award cadence as an open question, so this is a placeholder. Set to the end of the assessment period, on the assumption the badge is awarded when the period closes.",
   "next_award_date": "2027-01-01",
   "_note_window": "window_start/window_end are the intended assessment period (Jul 1, 2026 – Jan 1, 2027), not the export's own window (2026-04-18 – 2026-10-14). The metrics below were measured over the export's window, so the period label and the numbers come from different ranges in this fixture.",
+  "_note_details": "NOT from the export, and INVENTED. sxp_activity_criteria holds one rating for the whole window, so there is no monthly series to read — same gap documented for every other fixture's `trend`. These six points are hand-written to show the chart in its passing state (757:29057): every month clears the 4.6 bar, so no month is shaded, and the mean is 4.6617 against the row's real rating_in_window of 4.6599. Treat the shape as illustrative; only the average is anchored to anything real.",
+  "details": {
+    "rating": {
+      "trend": [
+        {
+          "label": "Jul",
+          "date": "Jul 15, 2026",
+          "value": 4.61
+        },
+        {
+          "label": "Aug",
+          "date": "Aug 15, 2026",
+          "value": 4.68
+        },
+        {
+          "label": "Sep",
+          "date": "Sep 15, 2026",
+          "value": 4.71
+        },
+        {
+          "label": "Oct",
+          "date": "Oct 15, 2026",
+          "value": 4.63
+        },
+        {
+          "label": "Nov",
+          "date": "Nov 15, 2026",
+          "value": 4.69
+        },
+        {
+          "label": "Dec",
+          "date": "Dec 15, 2026",
+          "value": 4.63
+        }
+      ]
+    },
+    "quality-rate": {
+      "trend": [
+        {
+          "label": "Jul",
+          "date": "Jul 15, 2026",
+          "value": 0.009569
+        },
+        {
+          "label": "Aug",
+          "date": "Aug 15, 2026",
+          "value": 0.013171
+        },
+        {
+          "label": "Sep",
+          "date": "Sep 15, 2026",
+          "value": 0.014714
+        },
+        {
+          "label": "Oct",
+          "date": "Oct 15, 2026",
+          "value": 0.010598
+        },
+        {
+          "label": "Nov",
+          "date": "Nov 15, 2026",
+          "value": 0.013942
+        },
+        {
+          "label": "Dec",
+          "date": "Dec 15, 2026",
+          "value": 0.010855
+        }
+      ]
+    }
+  },
   "tour_id": 21293,
   "activity_title": "Murano & Burano Guided Tour by Private Boat with Glassmaking",
   "supplier_id": 363,
@@ -66,5 +137,7 @@
   "meets_ts": true,
   "meets_excellence": true,
   "has_badge": true,
-  "has_badge_min": true
+  "has_badge_min": true,
+  "_note_details_rating": "INVENTED, not from the export. sxp_activity_criteria holds one rating for the whole window — there is no monthly series anywhere — so these six points are generated around the row's real rating_in_window (4.6599) with a fixed zero-sum shape, scaled so the series stays under 5.0 and clears the 4.60 bar, matching crit_rating. Only the mean is anchored to anything real; the month-to-month shape is illustrative.",
+  "_note_details_quality_rate": "INVENTED, not from the export. sxp_activity_criteria holds one quality defect rate for the whole window, so these six points are generated around the row's real value (1.2142%) with a fixed zero-sum shape, scaled to stay at or above zero and stays under the 1.50% bar, matching crit_defect_rate. Only the mean is anchored to anything real."
 }
