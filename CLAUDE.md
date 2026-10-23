@@ -60,8 +60,8 @@ in supplier pairs so the switcher's supplier line reads sensibly:
 | `etna` | ETNA VIBES | Meets everything |
 | `porto-pass` | Diamante Douro | Meets everything |
 | `porto-fail` | Diamante Douro | Too few reviews; misses DBR and pickup |
-| `pedro-pass` | Leçaodouro Turismo Nautico Lda | Meets everything |
-| `pedro-fail` | Leçaodouro Turismo Nautico Lda | Too few reviews only |
+| `turismo-pass` | Leçaodouro Turismo Nautico Lda | Meets everything |
+| `turismo-fail` | Leçaodouro Turismo Nautico Lda | Too few reviews only |
 | `bali-ts` | Potato Bali Tours & Activities | **Real** confirmed severe T&S case |
 | `italy-rating` | Towns of Italy | Misses rating — **blocked by city bar** |
 | `italy-defect` | Towns of Italy | Misses DBR — **blocked by city bar** |
@@ -69,7 +69,7 @@ in supplier pairs so the switcher's supplier line reads sensibly:
 
 `italy-rating` and `italy-defect` are the first fixtures to exercise
 `badge.blockedByCityBar` (clears the global minimum, fails the stricter city bar).
-`pedro-fail` and `porto-fail` are the first to fail `crit_min_reviews`.
+`turismo-fail` and `porto-fail` are the first to fail `crit_min_reviews`.
 
 Their `quality-rate` and `pickup-rate` panels carry **real** disruption lists,
 built from each activity's own rows in `sxp_booking_defect` and filtered to the
