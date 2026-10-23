@@ -101,6 +101,34 @@
   const fmtLong = (iso) => fmtDate(iso, { month: "long", year: "numeric" });
   const fmtMonthDay = (iso) => fmtDate(iso, { month: "long" });
 
+  // --- Assessment period options -----------------------------
+  // The badge is re-checked every 3 months over a 180-day window, so the
+  // periods on offer are 6-month ranges that step back one quarter at a time.
+  // PROTOTYPE ONLY: the earlier ranges are generated, not real. There is one
+  // row per activity in sxp_activity_criteria covering one window, so no
+  // history exists to switch to — which is why the control is inert. See the
+  // note on the renderer.
+  const PERIOD_COUNT = 4;
+  const shiftMonths = (iso, n) => {
+    const d = new Date(iso + "T00:00:00Z");
+    d.setUTCMonth(d.getUTCMonth() + n);
+    return d.toISOString().slice(0, 10);
+  };
+  // window_end is exclusive (Jan 1) but the design labels it inclusively
+  // (Dec 31, 2026), so the end date is shown as the day before.
+  const dayBefore = (iso) => {
+    const d = new Date(iso + "T00:00:00Z");
+    d.setUTCDate(d.getUTCDate() - 1);
+    return d.toISOString().slice(0, 10);
+  };
+  const periodOptions = (a) =>
+    Array.from({ length: PERIOD_COUNT }, (_, i) => ({
+      label: `${fmtShort(shiftMonths(a.window_start, -3 * i))} – ${fmtShort(
+        dayBefore(shiftMonths(a.window_end, -3 * i))
+      )}`,
+      current: i === 0,
+    }));
+
   function build(a) {
     const sections = [
       {
@@ -263,6 +291,7 @@
         start: fmtShort(a.window_start),
         end: fmtShort(a.window_end),
         text: `Assessment period: ${fmtShort(a.window_start)} – ${fmtShort(a.window_end)}`,
+        options: periodOptions(a),
       },
       sections,
     };

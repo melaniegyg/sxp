@@ -160,7 +160,50 @@
 /* --- Section ------------------------------------------------ */
 
 .tc-sections-wrap { display: flex; flex-direction: column; gap: 24px; }
-.tc-heading { display: flex; flex-direction: column; gap: 8px; }
+.tc-heading { display: flex; flex-direction: column; gap: 10px; }
+
+/* --- Assessment period select (757:29008) ------------------
+   Inert by design — see renderPeriodSelect in js/criteria-render.js.
+   PrimeVue's select, rebuilt on a native <select> so the prototype keeps
+   keyboard and screen-reader behaviour for free. The chevron is Compass,
+   drawn inline because `appearance: none` removes the native arrow. */
+.tc-period { display: flex; flex-direction: column; gap: 8px; }
+.tc-period__label {
+  font: var(--font-body);
+  line-height: 21px;
+  color: var(--gyg-label-secondary);
+}
+/* 216px is the design's width. Held as a minimum rather than a fixed size:
+   at the rendered font "Jul 1, 2026 – Dec 31, 2026" overflows it by a couple
+   of pixels and the year clips. Growing to fit keeps longer ranges safe too. */
+.tc-period__control { position: relative; width: max-content; min-width: 216px; }
+.tc-period__select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  min-height: 44px;
+  /* Right padding clears the 40px chevron well. */
+  padding: 8px 40px 8px 12px;
+  background: var(--gyg-background-primary);
+  border: 1px solid #dcdfe4;
+  border-radius: 8px;
+  font: var(--font-body);
+  color: var(--gyg-label-secondary);
+  cursor: pointer;
+}
+.tc-period__select:focus-visible {
+  outline: none;
+  border-color: var(--gyg-interactive-primary);
+  box-shadow: 0 0 0 2px var(--gyg-interactive-primary);
+}
+.tc-period__chevron {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  color: var(--gyg-label-primary);
+  pointer-events: none;
+}
 .tc-sections { display: flex; flex-direction: column; gap: 24px; }
 
 .tc-section {

@@ -216,6 +216,37 @@
       </div>`;
   }
 
+  // Assessment-period select (757:29008), replacing the plain "Assessment
+  // period: …" line.
+  //
+  // DELIBERATELY INERT. Only the current period has data — sxp_activity_criteria
+  // holds one row per activity covering one window — so the earlier ranges are
+  // generated labels with nothing behind them. There is no change handler: the
+  // dropdown opens and a past range can be picked, but the criteria below do
+  // not reload, because there is nothing to reload them from.
+  //
+  // Consequence worth knowing before demoing: pick an earlier range and the
+  // label will disagree with the numbers underneath it. Wire this up only once
+  // the export carries history, or lock the control to the current period.
+  function renderPeriodSelect(period) {
+    const opts = (period.options || [])
+      .map(
+        (o) =>
+          `<option${o.current ? " selected" : ""}>${esc(o.label)}</option>`
+      )
+      .join("");
+    return `
+      <div class="tc-period">
+        <label class="tc-period__label" for="tc-period">Assessment period</label>
+        <div class="tc-period__control">
+          <select class="tc-period__select" id="tc-period">${opts}</select>
+          <svg class="tc-period__chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>`;
+  }
+
   function render(target, model) {
     const el = typeof target === "string" ? document.querySelector(target) : target;
     if (!el) return;
@@ -224,7 +255,7 @@
     el.innerHTML = `
       <div class="tc-heading">
         <h2 class="section-heading">How to earn the badge for this activity</h2>
-        <p class="section-desc">${esc(model.period.text)}</p>
+        ${renderPeriodSelect(model.period)}
       </div>
       ${renderBanner(model.badge)}
       <div class="tc-sections">${model.sections.map(renderSection).join("")}</div>`;
