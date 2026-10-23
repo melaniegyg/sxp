@@ -128,7 +128,7 @@
           <div class="tc-metric${failing ? " tc-metric--not-met" : ""}">
             ${icon(row.status)}
             <p class="tc-metric__value">${esc(row.metric.value)}</p>
-            <p class="tc-metric__bar">${esc(row.metric.barText)}</p>
+            <p class="tc-metric__bar">Criteria:<br>${esc(row.metric.barText)}</p>
           </div>
           <div class="tc-row__body">
             <p class="tc-row__label">${esc(row.label)}</p>

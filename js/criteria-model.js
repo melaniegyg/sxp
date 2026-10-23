@@ -69,21 +69,26 @@
   };
 
   // --- Labels -------------------------------------------------
-  // NOTE(naming): the design calls this row "Disrupted Booking Rate" and
+  // NOTE(naming): the design calls this row "Disrupted booking rate" and
   // reuses the DBR definition. It is NOT DBR — DBR counts all 42 defect
   // tags, this counts 9 quality tags + non-force-majeure cancellation.
   // For this sample activity: platform_dbr = 2.29%, quality_defect_rate =
   // 1.21%. Kept as designed for now; change this one constant when the
   // naming is settled.
-  const QUALITY_RATE_LABEL = "Disrupted Booking Rate";
+  const QUALITY_RATE_LABEL = "Disrupted booking rate";
 
-  // Design writes one decimal ("2.0%", "1.5%", "1.2%"), two below 1% ("0.58%")
-  // and a bare "0%" for zero. Don't strip the trailing zero — "≤ 2%" is wrong.
+  // Metric VALUES: one decimal ("2.0%", "1.5%", "1.2%"), two below 1%
+  // ("0.58%") and a bare "0%" for zero. Don't strip the trailing zero here.
+  // The criteria line below the value formats differently — see barPct.
   const pct = (n) => {
     if (!n) return "0%";
     const v = n * 100;
     return v.toFixed(v < 1 ? 2 : 1) + "%";
   };
+  // The criteria line drops a trailing ".0": 516:50363 writes "2% or lower",
+  // while the metric VALUE above it keeps pct()'s one decimal. Two different
+  // formats on the same tile, deliberately.
+  const barPct = (n) => pct(n).replace(/\.0%$/, "%");
   const rating = (n) => n.toFixed(2).replace(/0$/, "");
   const status = (ok) => (ok ? "met" : "not-met");
 
@@ -212,7 +217,7 @@
             status: status(a.crit_rating),
             metric: {
               value: rating(a.rating_in_window),
-              barText: `Criteria: ${a.rating_bar}`,
+              barText: `${a.rating_bar} or higher`,
               // Rating uses a 0–5 axis and has no disruption breakdown.
               chart: { kind: "rating", max: 5, bar: a.rating_bar },
             },
@@ -226,7 +231,7 @@
             status: status(a.crit_defect_rate),
             metric: {
               value: pct(a.quality_defect_rate),
-              barText: `Criteria: ≤ ${pct(a.defect_rate_bar)}`,
+              barText: `${barPct(a.defect_rate_bar)} or lower`,
               chart: { kind: "rate", max: RATE_AXIS_MAX, bar: a.defect_rate_bar },
             },
             details: detailsFor(a, "quality-rate"),
@@ -249,13 +254,13 @@
             ? [
                 {
                   id: "pickup-rate",
-                  label: "Pickup Problem Rate",
+                  label: "Pickup problem rate",
                   description:
-                    "Calculated by taking the number of bookings with a negative pickup experience and dividing it by the total number of conducted bookings.",
+                    "Calculated by taking the number of bookings tagged with a negative pickup experience and dividing it by the total number of bookings conducted in this assessment period.",
                   status: status(a.crit_pickup_rate),
                   metric: {
                     value: pct(a.pickup_defect_rate),
-                    barText: `Criteria: ≤ ${pct(pickupBar(a))}`,
+                    barText: `${barPct(pickupBar(a))} or lower`,
                     chart: { kind: "rate", max: RATE_AXIS_MAX, bar: pickupBar(a) },
                   },
                   details: detailsFor(a, "pickup-rate"),

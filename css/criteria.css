@@ -302,7 +302,9 @@
 .tc-metric__value { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
 /* Figma marks this node whitespace-nowrap; at 14px "Criteria: ≤ 1.5%" is a
    few px wider than the 122px tile's inner width, so let it run rather than wrap. */
-.tc-metric__bar { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 0; white-space: nowrap; }
+/* Two lines — "Criteria:" then the threshold (516:50363), so nowrap would
+   fight the explicit <br>. */
+.tc-metric__bar { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 0; }
 
 .tc-details {
   align-self: flex-start;
