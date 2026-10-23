@@ -77,6 +77,25 @@ tag sets the deck defines (see "The 9 quality tags" below). No metric carries a
 trend — that still has no derivable source. Each fixture's `details._caveat_*`
 fields explain the remaining gaps.
 
+### How the three Trust & Safety rules are scoped
+
+Easy to get backwards, and the table makes it easier: `activity_weighted_cases`
+and `activity_weighted_case_rate` exist right next to the supplier columns, but
+**the criteria do not use them**. Verified against all 207,496 rows:
+
+| Rule | Flag | Scope | Formula (exact match, 207,496/207,496) |
+|---|---|---|---|
+| A · severe case | `crit_ts_no_severe_case` | activity **and** supplier | 1 valid sev 1–2 on the activity, **or 2 on the supplier** |
+| B · investigated case rate | `crit_ts_case_rate` | **supplier only** | `supplier_weighted_case_rate > 0.0003 AND supplier_weighted_cases >= 2` |
+| C · T&S tag rate | `crit_ts_tag_rate` | **supplier only** | `supplier_ts_tag_rate > 0.005 AND supplier_ts_tag_bookings >= 2` |
+
+Only rule A can fail a single activity on its own. B and C are all-or-nothing
+per supplier — a supplier over either bar loses every activity, including ones
+with no cases or tags of their own. The activity-level equivalents fit B on only
+197,693 rows, so they are definitively not what the flag reads; for C there is
+no activity-level column at all. Deck slide 11 says the same: "Rule A per
+activity and supplier, rules B–C per supplier."
+
 ### Why `bali-ts` lists several cases under one supplier
 
 The ban is at **supplier** level, so the table itemises the supplier's confirmed
