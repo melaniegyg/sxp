@@ -181,31 +181,38 @@
       </section>`;
   }
 
-  // Copy is verbatim from the design — success 630:63606, error 630:63601 —
-  // including the curly quotes and the badge's ‘Excellent experience’ casing.
-  // Dates are templated from the data and the clause drops when absent. The
-  // design's success headline omits the year; carrying it here is deliberate,
-  // so every date on the page reads the same way.
+  // Copy is verbatim from the design. The badge name is unquoted and title-case
+  // ("Excellent Experience"), matching the revised promo header (566:53353).
+  //
+  // The two dates are formatted differently ON PURPOSE, as the design has them:
+  // the success HEADLINE drops the year ("from January 1") while its own
+  // description keeps it ("on January 1, 2027"), as does the failure headline.
+  // An earlier note here said carrying the year into the headline was a
+  // deliberate divergence — the design now settles it the other way.
+  //
+  // Note the prepositions differ too: "from" in the success headline, "on"
+  // everywhere else. Dates are templated and each clause drops when absent.
   function renderBanner(badge) {
     const date = badge.awardDate ? esc(badge.awardDate) : null;
+    const monthDay = badge.awardDateMonthDay ? esc(badge.awardDateMonthDay) : null;
 
     if (badge.earned) {
       return `
         <div class="tc-banner tc-banner--met">
           <div class="tc-banner__head">
             ${icon("met")}
-            <p class="tc-banner__title">Nice work! This activity will receive an &lsquo;Excellent experience&rsquo; badge${date ? ` from ${date}` : ""}.</p>
+            <p class="tc-banner__title">Nice work! This activity will receive an Excellent Experience badge${monthDay ? ` from ${monthDay}` : ""}</p>
           </div>
-          <p class="tc-banner__desc">As long as you continue to meet all the requirements below, the badge will appear on your listing${date ? ` from ${date}` : ""}.</p>
+          <p class="tc-banner__desc">As long as you continue to meet all the criteria below, the badge will appear on your listing${date ? ` on ${date}` : ""}.</p>
         </div>`;
     }
     return `
       <div class="tc-banner tc-banner--not-met">
         <div class="tc-banner__head">
           ${icon("not-met")}
-          <p class="tc-banner__title">You currently don&rsquo;t meet the requirements to be awarded the &lsquo;Excellent experience&rsquo; badge${date ? ` on ${date}` : ""}</p>
+          <p class="tc-banner__title">You currently don&rsquo;t meet the requirements to be awarded the Excellent Experience badge${date ? ` on ${date}` : ""}</p>
         </div>
-        <p class="tc-banner__desc">This activity doesn&rsquo;t meet the minimum quality standards to receive the badge. Keep working on it so you can get awarded with it next time.</p>
+        <p class="tc-banner__desc">This activity doesn&rsquo;t meet the criteria to receive the badge. Keep working on it so you can get awarded with it next time.</p>
       </div>`;
   }
 

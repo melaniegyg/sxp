@@ -87,18 +87,19 @@
   const rating = (n) => n.toFixed(2).replace(/0$/, "");
   const status = (ok) => (ok ? "met" : "not-met");
 
-  // The design uses US date style in two forms: abbreviated month for the
-  // assessment period ("Jul 1, 2027") and full month for the award date in
-  // the status banner ("January 1, 2026").
-  const fmtDate = (iso, month) =>
+  // The design uses US date style in three forms: abbreviated month for the
+  // assessment period ("Jul 1, 2027"), full month for the award date in most
+  // places ("January 1, 2027"), and full month with NO year in the success
+  // banner's headline ("from January 1") — see the comment on renderBanner.
+  const fmtDate = (iso, opts) =>
     new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", {
-      year: "numeric",
-      month,
       day: "numeric",
       timeZone: "UTC",
+      ...opts,
     });
-  const fmtShort = (iso) => fmtDate(iso, "short");
-  const fmtLong = (iso) => fmtDate(iso, "long");
+  const fmtShort = (iso) => fmtDate(iso, { month: "short", year: "numeric" });
+  const fmtLong = (iso) => fmtDate(iso, { month: "long", year: "numeric" });
+  const fmtMonthDay = (iso) => fmtDate(iso, { month: "long" });
 
   function build(a) {
     const sections = [
@@ -255,6 +256,8 @@
         // from the fixture so it can vary; the copy drops the clause when
         // absent rather than inventing a date.
         awardDate: a.next_award_date ? fmtLong(a.next_award_date) : null,
+        // Same date without the year, for the success headline only.
+        awardDateMonthDay: a.next_award_date ? fmtMonthDay(a.next_award_date) : null,
       },
       period: {
         start: fmtShort(a.window_start),

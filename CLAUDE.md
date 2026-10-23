@@ -1,11 +1,13 @@
-# SXP — ‘Excellent experience’ badge prototype
+# SXP — Excellent Experience badge prototype
 
 Static front-end prototype of the Supplier Portal page where a supplier tracks
-progress toward the **‘Excellent experience’** badge (internally the Supplier
+progress toward the **Excellent Experience** badge (internally the Supplier
 Excellence Program, SXP). No build step — plain HTML/CSS/JS.
 
-The badge has been called "Top Choice" and "GetYourGuide's choice" at points;
-‘Excellent experience’ is current. Some identifiers still say `TopChoice`.
+The badge has been called "Top Choice" and "GetYourGuide's choice" at points,
+then ‘Excellent experience’ — quoted, lowercase second word. Current is
+**Excellent Experience**: unquoted, title case, per 566:53353 and the revised
+banners. Some identifiers still say `TopChoice`.
 
 ## Running it
 
@@ -181,8 +183,11 @@ Documented at each site; don't "fix" them without checking:
 
 - Trend shading uses **weak red**, not the design's amber, to match the rails
   and tiles beside it.
-- The success banner carries the **year**; the design omits it there while
-  including it everywhere else.
+- ~~The success banner carries the **year**.~~ Resolved — the page now follows
+  the design: the success *headline* drops the year ("from January 1") while its
+  own description and the failure headline keep it ("on January 1, 2027"). The
+  prepositions differ too, "from" in that one headline and "on" elsewhere. Both
+  are intentional; `awardDate` and `awardDateMonthDay` exist for exactly this.
 - Thresholds bind to the activity's own bars, so a Venice activity shows
   ≤ 1.5% where the design hardcodes ≤ 2.0%.
 
