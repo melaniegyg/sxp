@@ -4,10 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Top Choice — Supplier Portal concept</title>
+  <!-- defect-cards.css carries its own :root token fallbacks so it can run
+       standalone, so it MUST load before tokens.css — otherwise those
+       fallbacks override the page's real tokens. Order matters here. -->
+  <link rel="stylesheet" href="css/defect-cards.css">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/criteria.css">
-  <link rel="stylesheet" href="css/defect-cards.css">
   <!-- Skip the password gate if already unlocked this session (avoids flash) -->
   <script>try{if(sessionStorage.getItem('sxp-auth')==='1')document.documentElement.className+=' authed';}catch(e){}</script>
 </head>
@@ -90,49 +93,62 @@
 
       <nav class="perf-tabs" role="tablist">
         <button class="perf-tab" role="tab" aria-selected="false">Performance overview</button>
-        <button class="perf-tab perf-tab--active" role="tab" aria-selected="true">Top Choice</button>
+        <button class="perf-tab perf-tab--active" role="tab" aria-selected="true">Excellence program</button>
         <button class="perf-tab" role="tab" aria-selected="false">Competitor report</button>
       </nav>
 
       <!-- ===================== PROMO HEADER ===================== -->
       <section class="tc-promo">
-        <h2 class="tc-promo__title">Get recognized as an &lsquo;Excellent experience&rsquo; on GetYourGuide</h2>
-        <!-- TODO(copy): "top 5% of activities" is the design's figure
-             (630:63576). The criteria deck puts it at 1.4% of online
-             activities, or 26% of those with enough reviews — neither is 5%.
-             "Every 3 months" is also still listed in the deck as an
-             explicitly undecided question. -->
-        <p class="tc-promo__desc">The Excellent Experience badge celebrates the top 5% of activities on our marketplace for consistently delivering a quality experience for customers. Every 3 months we check if your activity has met the requirements to be awarded the badge.</p>
+        <div class="tc-promo__head">
+          <div class="tc-promo__intro">
+            <h2 class="tc-promo__title">Get recognized as an &lsquo;Excellent experience&rsquo; on GetYourGuide</h2>
+            <!-- TODO(copy): "top 5% of activities" is the design's figure
+                 (566:53443). The criteria deck puts it at 1.4% of online
+                 activities, or 26% of those with enough reviews — neither is 5%.
+                 "Every 3 months" is also still listed in the deck as an
+                 explicitly undecided question. -->
+            <p class="tc-promo__desc">The &lsquo;Excellent experience&rsquo; badge celebrates the top 5% of activities on our marketplace for consistently delivering a quality experience for customers. Every 3 months we check if your activity has met the requirements to be awarded the badge. This badge replaces both the &lsquo;Originals&rsquo; and &lsquo;Certified&rsquo; badges.</p>
+          </div>
+          <!-- The badge as a traveller would see it. Figma sets this in GYG Sans
+               VF, which the prototype doesn't ship — GT Eesti Bold stands in. -->
+          <span class="tc-promo__badge">
+            <img src="assets/icons/logo-gyg-mark.svg" alt="" width="24" height="24">
+            Excellent experience
+          </span>
+        </div>
 
+        <!-- Compass icons, exported from the design. supply-frontend's
+             README-UI.md requires Compass icons and type even though the
+             portal's components are PrimeVue, so PrimeIcons are not an option
+             here. Fill changed from the design's #FA4F2D to #0071EB; that
+             colour is baked into the files, so a re-export restores the orange. -->
         <div class="tc-promo__cards">
           <div class="tc-promo__card">
-            <span class="tc-promo__icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m16.5 9.5-5.8 6.2L7.5 12.6l1.45-1.37 1.7 1.6L15 8.1z"/><path fill-rule="evenodd" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2m0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16" clip-rule="evenodd"/></svg>
-            </span>
-            <p class="tc-promo__card-title">Get booked with confidence</p>
-            <p class="tc-promo__card-desc">The badge puts your commitment to quality front and center for travelers</p>
+            <img class="tc-promo__icon" src="assets/icons/compass-badge.svg" alt="" width="24" height="24">
+            <div class="tc-promo__card-text">
+              <p class="tc-promo__card-title">Get booked with confidence</p>
+              <p class="tc-promo__card-desc">The badge puts your commitment to quality front and center for travelers</p>
+            </div>
           </div>
           <div class="tc-promo__card">
-            <span class="tc-promo__icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 2a8.5 8.5 0 0 1 6.78 13.63l4.55 4.54-1.42 1.42-4.54-4.55A8.5 8.5 0 1 1 10.5 2m0 2a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13" clip-rule="evenodd"/></svg>
-            </span>
-            <p class="tc-promo__card-title">Be seen by more customers</p>
-            <p class="tc-promo__card-desc">Show up higher in search results and get featured in our emails to travelers</p>
+            <img class="tc-promo__icon" src="assets/icons/compass-magnifier.svg" alt="" width="24" height="24">
+            <div class="tc-promo__card-text">
+              <p class="tc-promo__card-title">Be seen by more customers</p>
+              <p class="tc-promo__card-desc">Show up higher in search results and get featured in our emails to travelers</p>
+            </div>
           </div>
           <div class="tc-promo__card">
-            <span class="tc-promo__icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M18 3v18l-9-4.5V21H5v-4.5H3V6h6zm-2 2.8L9.5 8.3v7.4L16 18.2zM7.5 8H5v6.5h2.5z" clip-rule="evenodd"/></svg>
-            </span>
-            <p class="tc-promo__card-title">Become the easy choice</p>
-            <p class="tc-promo__card-desc">When listings look alike, this badge is what sets you apart from competitors</p>
+            <img class="tc-promo__icon" src="assets/icons/compass-eye.svg" alt="" width="24" height="24">
+            <div class="tc-promo__card-text">
+              <p class="tc-promo__card-title">Become the easy choice</p>
+              <p class="tc-promo__card-desc">When listings look alike, this badge is what sets you apart from competitors</p>
+            </div>
           </div>
         </div>
 
         <button class="tc-promo__cta" type="button">
           Learn more
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <img src="assets/icons/arrow-right-24.svg" alt="" width="24" height="24">
         </button>
       </section>
 

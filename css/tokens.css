@@ -22,6 +22,17 @@
   font-display: swap;
 }
 
+/* GYG Sans Headline — the brand face, used for the traveller-facing badge.
+   Figma asks for weight 575 of the variable font; these are static cuts, so
+   Semibold (600) is the nearest available. */
+@font-face {
+  font-family: "GYG Sans Headline";
+  src: url("../assets/fonts/GYGSansHeadline-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --gyg-label-primary: #1a2b49;
   --gyg-label-secondary: #63687a;
@@ -51,7 +62,10 @@
   --font-body: 400 16px/22px var(--font-family);
   --font-body-strong: 500 16px/22px var(--font-family);
   --font-caption-compact: 400 14px/18px var(--font-family);
-  --font-title-4: 500 18px/24px var(--font-family);
+  /* Weights below match Compass as implemented in supply-frontend
+     (apps/supplier-portal-nuxt/utils/compass.ts). Title 4 is Bold there, not
+     Medium — this token previously said 500. */
+  --font-title-4: 700 18px/24px var(--font-family);
   --font-title-3: 700 20px/24px var(--font-family);
   --font-title-2: 700 24px/30px var(--font-family);
 

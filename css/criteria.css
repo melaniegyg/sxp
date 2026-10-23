@@ -12,7 +12,7 @@
   --tc-not-met-weak: #ffe8ed;
   /* gyg/label/critical — outlines a metric tile whose bar was missed. */
   --tc-critical-border: #c72a3d;
-  --tc-promo-bg: #f2f5f8;
+  --tc-promo-bg: #f1f5fa;
 }
 
 /* --- Promo header ------------------------------------------ */
@@ -23,29 +23,66 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
+}
+.tc-promo__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.tc-promo__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 744px;
 }
 .tc-promo__title { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
-.tc-promo__desc { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 0; max-width: 900px; }
+.tc-promo__desc { font: var(--font-body); color: var(--gyg-label-primary); margin: 0; }
+
+/* The traveller-facing badge, shown as a chip (672:64648). Figma rotates it a
+   fraction of a degree so it reads as an artefact rather than a UI element.
+   Metrics below are the design's exact values. Set in GYG Sans Headline — the
+   brand face, not the Compass GT Eesti the rest of the page uses. Figma asks
+   for weight 575 of the variable font; we have static cuts, so Semibold (600)
+   is the nearest. */
+.tc-promo__badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5.367px;
+  background: var(--gyg-label-primary);
+  color: #fff;
+  border-radius: 5.367px;
+  padding: 0 10.734px;
+  height: 32.202px;
+  font-family: "GYG Sans Headline", var(--font-family);
+  font-size: 18.78px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  transform: rotate(-0.28deg);
+}
+.tc-promo__badge img { width: 24.117px; height: 24.117px; }
 
 .tc-promo__cards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 8px;
+  gap: 42px;
 }
 .tc-promo__card {
   background: var(--gyg-background-primary);
   border: 1px solid var(--gyg-border-non-interactive);
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
 }
-.tc-promo__icon { color: var(--gyg-brand); display: inline-flex; }
-.tc-promo__card-title { font: var(--font-body-strong); color: var(--gyg-label-primary); margin: 0; }
-.tc-promo__card-desc { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 0; }
+.tc-promo__card-text { display: flex; flex-direction: column; gap: 12px; }
+.tc-promo__icon { display: block; }
+.tc-promo__card-title { font: var(--font-title-3); color: var(--gyg-label-primary); margin: 0; }
+.tc-promo__card-desc { font: var(--font-body); color: var(--gyg-label-secondary); margin: 0; }
 
 .tc-promo__cta {
   align-self: flex-start;
