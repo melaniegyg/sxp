@@ -4,6 +4,7 @@
     { "id": "pass", "file": "activity-21293.json", "label": "Meets all criteria" },
     { "id": "rating-miss", "file": "activity-48871-rating-miss.json", "label": "Misses rating" },
     { "id": "ts-miss", "file": "activity-60233-ts-miss.json", "label": "Misses T&S — case rate" },
-    { "id": "severe-case", "file": "activity-73410-severe-case.json", "label": "Misses T&S — confirmed case" }
+    { "id": "severe-case", "file": "activity-73410-severe-case.json", "label": "Misses T&S — confirmed case" },
+    { "id": "excellence-miss", "file": "activity-55902-excellence-miss.json", "label": "Misses rating, DBR and pickup" }
   ]
 }

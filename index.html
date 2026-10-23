@@ -45,50 +45,33 @@
     </div>
   </header>
 
-  <!-- ===================== SIDEBAR ===================== -->
+  <!-- ===================== SIDEBAR =====================
+       Icons are the Compass SVGs exported from the design (366:10589), not
+       redrawn. Their colours are baked in: #1A2B49 when idle, #0071EB on the
+       active item — so there is no currentColor theming here. -->
   <aside class="sidebar">
-    <button class="sidebar__item" aria-label="Products">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
-      </svg>
+    <button class="sidebar__item" aria-label="Activities">
+      <img src="assets/icons/monument.svg" alt="" width="16" height="16">
     </button>
     <button class="sidebar__item" aria-label="Create">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-        <path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/icons/file-plus.svg" alt="" width="16" height="16">
     </button>
     <button class="sidebar__item" aria-label="Manage">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/icons/grid.svg" alt="" width="16" height="16">
     </button>
     <button class="sidebar__item" aria-label="Bookings">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-        <path d="M5 2v2M11 2v2M2 7h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/icons/calendar.svg" alt="" width="16" height="16">
     </button>
     <button class="sidebar__item sidebar__item--active" aria-label="Performance">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="2" y="9" width="3" height="5" rx="1" fill="currentColor"/>
-        <rect x="6.5" y="6" width="3" height="8" rx="1" fill="currentColor"/>
-        <rect x="11" y="3" width="3" height="11" rx="1" fill="currentColor"/>
-        <circle cx="13" cy="2.5" r="1.5" stroke="currentColor" stroke-width="1.1"/>
-        <path d="M3.5 8.5l3.5-3 3 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <img src="assets/icons/magnifier-bar-chart.svg" alt="" width="16" height="16">
     </button>
     <button class="sidebar__item" aria-label="Finance">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M8 2v12M5 5.5C5 4.12 6.34 3 8 3s3 1.12 3 2.5c0 1.37-1.34 2.5-3 2.5s-3 1.13-3 2.5C5 11.88 6.34 13 8 13s3-1.12 3-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/icons/currency.svg" alt="" width="16" height="16">
     </button>
     <div class="sidebar__spacer"></div>
-    <button class="sidebar__item" aria-label="Settings">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M8 10a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.3"/>
-        <path d="M13.2 6.4l-.8-1.3-1.5.5a4.6 4.6 0 00-1-.6L9.6 3.5h-1.6L7.7 5a4.6 4.6 0 00-1 .6l-1.5-.5-.8 1.3 1.1 1a5 5 0 000 1.2l-1.1 1 .8 1.3 1.5-.5c.3.23.64.43 1 .6l.3 1.5h1.6l.3-1.5c.36-.17.7-.37 1-.6l1.5.5.8-1.3-1.1-1a5 5 0 000-1.2l1.1-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
-      </svg>
+    <!-- Bottom item is an expand affordance in the design, not Settings. -->
+    <button class="sidebar__item" aria-label="Expand menu">
+      <img src="assets/icons/arrow-right.svg" alt="" width="16" height="16">
     </button>
   </aside>
 
@@ -171,6 +154,8 @@
   </button>
 
   <script src="js/interactions.js"></script>
+  <script src="js/defect-cards.js"></script>
+  <script src="js/trend-chart.js"></script>
   <script src="js/criteria-model.js"></script>
   <script src="js/criteria-render.js"></script>
   <script src="js/activity-switcher.js"></script>

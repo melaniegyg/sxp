@@ -238,12 +238,17 @@
 .tc-details svg { transition: transform 0.15s; }
 .tc-details.open svg { transform: rotate(180deg); }
 
-.tc-details__panel {
-  margin-top: 12px;
-  border: 1px dashed var(--gyg-border-non-interactive);
-  border-radius: 8px;
-  padding: 24px;
-}
+.tc-details__panel { margin-top: 12px; }
+.tc-trend { width: 100%; overflow: hidden; }
+/* Months that missed the bar. The design fills these amber; weak red ties the
+   shading to the same critical surface the rails and banner already use. */
+.trend-band { fill: var(--tc-not-met-weak); }
+.tc-disruptions { margin-top: 24px; }
+/* The defect-cards card is a standalone panel in the DBR portal; here it sits
+   inside an already-bordered row, so drop its own frame. Its category heading
+   becomes the design's "Top disruptions" label, with no category icon. */
+.tc-disruptions .category-card { border: none; border-radius: 0; }
+.tc-disruptions .cc-icon { display: none; }
 .tc-details__placeholder {
   font: var(--font-caption);
   color: var(--gyg-label-tertiary);

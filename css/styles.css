@@ -59,15 +59,12 @@ html { min-width: 1440px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--gyg-label-tertiary);
   cursor: pointer;
   transition: background 0.15s;
 }
 .sidebar__item:hover { background: var(--gyg-background-secondary); }
-.sidebar__item--active {
-  background: var(--gyg-background-secondary);
-  color: var(--gyg-label-primary);
-}
+/* Active state is the surface only — the icon carries its own blue. */
+.sidebar__item--active { background: var(--gyg-background-secondary); }
 .sidebar__spacer { flex: 1; }
 
 /* ============================================================

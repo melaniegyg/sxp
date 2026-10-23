@@ -33,6 +33,15 @@
   // than hardcode 2.0% — which would be wrong in every stricter city.
   const pickupBar = (a) => a.defect_rate_bar;
 
+  // Both rate charts run 0–10%, per the design's axis labels.
+  const RATE_AXIS_MAX = 0.1;
+
+  // TODO(data): `details` carries the monthly trend and the top-disruption
+  // breakdown. Neither exists in sxp_activity_criteria — the export holds one
+  // aggregate per window — so fixtures supply it by hand. Rows without it fall
+  // back to a placeholder in the renderer.
+  const detailsFor = (a, id) => (a.details && a.details[id]) || null;
+
   // --- Labels -------------------------------------------------
   // NOTE(naming): the design calls this row "Disrupted Booking Rate" and
   // reuses the DBR definition. It is NOT DBR — DBR counts all 42 defect
@@ -136,7 +145,10 @@
             metric: {
               value: rating(a.rating_in_window),
               barText: `Criteria: ${a.rating_bar}`,
+              // Rating uses a 0–5 axis and has no disruption breakdown.
+              chart: { kind: "rating", max: 5, bar: a.rating_bar },
             },
+            details: detailsFor(a, "rating"),
           },
           {
             id: "quality-rate",
@@ -147,7 +159,9 @@
             metric: {
               value: pct(a.quality_defect_rate),
               barText: `Criteria: ≤ ${pct(a.defect_rate_bar)}`,
+              chart: { kind: "rate", max: RATE_AXIS_MAX, bar: a.defect_rate_bar },
             },
+            details: detailsFor(a, "quality-rate"),
           },
           {
             id: "pickup-rate",
@@ -158,7 +172,9 @@
             metric: {
               value: pct(a.pickup_defect_rate),
               barText: `Criteria: ≤ ${pct(pickupBar(a))}`,
+              chart: { kind: "rate", max: RATE_AXIS_MAX, bar: pickupBar(a) },
             },
+            details: detailsFor(a, "pickup-rate"),
           },
         ],
       },

@@ -56,6 +56,51 @@
       </table>`;
   }
 
+  // The expanded "See details" panel: a trend chart, and for the two rate
+  // metrics a Top-disruptions breakdown. That breakdown is the defect-cards
+  // module lifted from the DBR portal — same rail, advice, FAQ links and CTAs
+  // the design shows (672:64888) — so it is reused rather than rebuilt.
+  function buildDetail(panel, row) {
+    if (!row || !row.details) {
+      panel.innerHTML =
+        '<p class="tc-details__placeholder">No trend data for this activity yet.</p>';
+      return;
+    }
+
+    panel.innerHTML = '<div class="tc-trend"></div>';
+    if (row.details.trend && row.metric && row.metric.chart) {
+      TrendChart.render(panel.querySelector(".tc-trend"), {
+        points: row.details.trend,
+        max: row.metric.chart.max,
+        bar: row.metric.chart.bar,
+        kind: row.metric.chart.kind,
+        ariaLabel: row.label + " over the assessment period",
+      });
+    }
+
+    if (row.details.disruptions && row.details.disruptions.length) {
+      const wrap = document.createElement("div");
+      wrap.className = "tc-disruptions";
+      panel.appendChild(wrap);
+      // accordion:false keeps the single card open — there is nothing to
+      // collapse against when each metric shows one category.
+      DefectCards.render(wrap, row.details.disruptions, { accordion: false });
+
+      // The card is already inside a collapsible row, so its own collapse
+      // affordance is redundant: drop the chevron, and demote the heading from
+      // a toggle button to plain text rather than leaving a button that does
+      // nothing. Done here so the shared module stays untouched for the DBR
+      // portal, which still needs the collapsing behaviour.
+      wrap.querySelectorAll(".cc-collapse").forEach((b) => b.remove());
+      wrap.querySelectorAll(".cc-left__head").forEach((head) => {
+        const plain = document.createElement("div");
+        plain.className = head.className;
+        plain.innerHTML = head.innerHTML;
+        head.replaceWith(plain);
+      });
+    }
+  }
+
   function renderRow(row) {
     const failing = row.status === "not-met";
     // The design hides this helper text on passing rows and reveals it on
@@ -83,11 +128,7 @@
                 <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            <!-- TODO(data): the design expands a trend chart here. The activity
-                 export has no time series — only point-in-time aggregates. -->
-            <div class="tc-details__panel hidden">
-              <p class="tc-details__placeholder">No trend data in the current export.</p>
-            </div>
+            <div class="tc-details__panel hidden" data-detail="${esc(row.id)}"></div>
           </div>
         </div>`;
     }
@@ -162,6 +203,11 @@
       ${renderBanner(model.badge)}
       <div class="tc-sections">${model.sections.map(renderSection).join("")}</div>`;
 
+    // Build each detail panel lazily — charts and the disruption rail are only
+    // worth rendering once a supplier actually opens the row.
+    const rowsById = {};
+    model.sections.forEach((s) => s.rows.forEach((r) => (rowsById[r.id] = r)));
+
     el.querySelectorAll(".tc-details").forEach((btn) => {
       btn.addEventListener("click", () => {
         const panel = btn.nextElementSibling;
@@ -169,6 +215,10 @@
         panel.classList.toggle("hidden", open);
         btn.setAttribute("aria-expanded", String(!open));
         btn.classList.toggle("open", !open);
+        if (!open && !panel.dataset.built) {
+          buildDetail(panel, rowsById[panel.dataset.detail]);
+          panel.dataset.built = "1";
+        }
       });
     });
   }
