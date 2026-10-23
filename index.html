@@ -3,10 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SXP — Supplier Portal concept</title>
+  <title>Top Choice — Supplier Portal concept</title>
+  <!-- defect-cards.css carries its own :root token fallbacks so it can run
+       standalone, so it MUST load before tokens.css — otherwise those
+       fallbacks override the page's real tokens. Order matters here. -->
+  <link rel="stylesheet" href="css/defect-cards.css">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/defect-cards.css">
+  <link rel="stylesheet" href="css/criteria.css">
   <!-- Skip the password gate if already unlocked this session (avoids flash) -->
   <script>try{if(sessionStorage.getItem('sxp-auth')==='1')document.documentElement.className+=' authed';}catch(e){}</script>
 </head>
@@ -29,69 +33,48 @@
     <div style="display:flex;align-items:center;gap:24px;">
       <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="topnav__logo">
     </div>
-    <div class="topnav__user">
+    <!-- Prototype affordance: switches which fixture in data/ the page renders. -->
+    <div class="topnav__user" id="activity-switcher" role="button" tabindex="0"
+         aria-haspopup="listbox" aria-expanded="false" aria-label="Switch activity">
       <div class="topnav__avatar"></div>
       <div class="topnav__user-info">
-        <span class="topnav__name">Marie</span>
-        <span class="topnav__company">BusTravel Iceland</span>
+        <span class="topnav__name" id="switcher-label">&nbsp;</span>
+        <span class="topnav__company" id="switcher-sublabel">&nbsp;</span>
       </div>
       <svg class="topnav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M4 6l4 4 4-4" stroke="#858995" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
+      <ul class="switcher-menu" id="switcher-menu" role="listbox" aria-label="Activities" hidden></ul>
     </div>
   </header>
 
-  <!-- ===================== SIDEBAR ===================== -->
+  <!-- ===================== SIDEBAR =====================
+       Icons are the Compass SVGs exported from the design (366:10589), not
+       redrawn. Their colours are baked in: #1A2B49 when idle, #0071EB on the
+       active item — so there is no currentColor theming here. -->
   <aside class="sidebar">
-    <!-- Products -->
-    <button class="sidebar__item" aria-label="Products">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM9 9h5v5H9z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
-      </svg>
+    <button class="sidebar__item" aria-label="Activities">
+      <img src="assets/icons/monument.svg" alt="" width="16" height="16">
     </button>
-    <!-- Create -->
     <button class="sidebar__item" aria-label="Create">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-        <path d="M8 5v6M5 8h6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/icons/file-plus.svg" alt="" width="16" height="16">
     </button>
-    <!-- Manage -->
     <button class="sidebar__item" aria-label="Manage">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/icons/grid.svg" alt="" width="16" height="16">
     </button>
-    <!-- Bookings -->
     <button class="sidebar__item" aria-label="Bookings">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-        <path d="M5 2v2M11 2v2M2 7h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/icons/calendar.svg" alt="" width="16" height="16">
     </button>
-    <!-- Performance (active) -->
     <button class="sidebar__item sidebar__item--active" aria-label="Performance">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <rect x="2" y="9" width="3" height="5" rx="1" fill="currentColor"/>
-        <rect x="6.5" y="6" width="3" height="8" rx="1" fill="currentColor"/>
-        <rect x="11" y="3" width="3" height="11" rx="1" fill="currentColor"/>
-        <circle cx="13" cy="2.5" r="1.5" stroke="currentColor" stroke-width="1.1"/>
-        <path d="M3.5 8.5l3.5-3 3 1.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <img src="assets/icons/magnifier-bar-chart.svg" alt="" width="16" height="16">
     </button>
-    <!-- Finance -->
     <button class="sidebar__item" aria-label="Finance">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M8 2v12M5 5.5C5 4.12 6.34 3 8 3s3 1.12 3 2.5c0 1.37-1.34 2.5-3 2.5s-3 1.13-3 2.5C5 11.88 6.34 13 8 13s3-1.12 3-2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <img src="assets/icons/currency.svg" alt="" width="16" height="16">
     </button>
     <div class="sidebar__spacer"></div>
-    <!-- Settings -->
-    <button class="sidebar__item" aria-label="Settings">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M8 10a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.3"/>
-        <path d="M13.2 6.4l-.8-1.3-1.5.5a4.6 4.6 0 00-1-.6L9.6 3.5h-1.6L7.7 5a4.6 4.6 0 00-1 .6l-1.5-.5-.8 1.3 1.1 1a5 5 0 000 1.2l-1.1 1 .8 1.3 1.5-.5c.3.23.64.43 1 .6l.3 1.5h1.6l.3-1.5c.36-.17.7-.37 1-.6l1.5.5.8-1.3-1.1-1a5 5 0 000-1.2l1.1-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
-      </svg>
+    <!-- Bottom item is an expand affordance in the design, not Settings. -->
+    <button class="sidebar__item" aria-label="Expand menu">
+      <img src="assets/icons/arrow-right.svg" alt="" width="16" height="16">
     </button>
   </aside>
 
@@ -99,41 +82,84 @@
   <main class="page-main">
     <div class="page-inner">
 
-      <!-- BACK LINK -->
       <a href="#" class="back-link">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Back
+        Back to Performance
       </a>
 
-      <!-- PAGE TITLE -->
-      <h1 class="page-title">SXP concept</h1>
+      <h1 class="page-title" id="activity-title">&nbsp;</h1>
 
-      <!-- ===================== TABS ===================== -->
       <nav class="perf-tabs" role="tablist">
-        <button class="perf-tab perf-tab--active" role="tab" aria-selected="true">Overview</button>
-        <button class="perf-tab" role="tab" aria-selected="false">Second tab</button>
+        <button class="perf-tab" role="tab" aria-selected="false">Performance overview</button>
+        <button class="perf-tab perf-tab--active" role="tab" aria-selected="true">Excellence program</button>
+        <button class="perf-tab" role="tab" aria-selected="false">Competitor report</button>
       </nav>
 
-      <!-- ===================== CONTENT ===================== -->
-      <section class="page-section">
-        <div>
-          <h2 class="section-heading">Key drivers</h2>
-          <p class="section-desc" style="margin-top:8px;">Cards rendered by the portable defect-cards module. Swap <code>js/cards-data.js</code> for this project's real data.</p>
+      <!-- ===================== PROMO HEADER ===================== -->
+      <section class="tc-promo">
+        <div class="tc-promo__head">
+          <div class="tc-promo__intro">
+            <h2 class="tc-promo__title">Get recognized as an &lsquo;Excellent experience&rsquo; on GetYourGuide</h2>
+            <!-- TODO(copy): "top 5% of activities" is the design's figure
+                 (566:53443). The criteria deck puts it at 1.4% of online
+                 activities, or 26% of those with enough reviews — neither is 5%.
+                 "Every 3 months" is also still listed in the deck as an
+                 explicitly undecided question. -->
+            <p class="tc-promo__desc">The &lsquo;Excellent experience&rsquo; badge celebrates the top 5% of activities on our marketplace for consistently delivering a quality experience for customers. Every 3 months we check if your activity has met the requirements to be awarded the badge. This badge replaces both the &lsquo;Originals&rsquo; and &lsquo;Certified&rsquo; badges.</p>
+          </div>
+          <!-- The badge as a traveller would see it. Figma sets this in GYG Sans
+               VF, which the prototype doesn't ship — GT Eesti Bold stands in. -->
+          <span class="tc-promo__badge">
+            <img src="assets/icons/logo-gyg-mark.svg" alt="" width="24" height="24">
+            Excellent experience
+          </span>
         </div>
 
-        <!-- Defect cards mount — rendered by js/defect-cards.js -->
-        <div id="cards"></div>
+        <!-- Compass icons, exported from the design. supply-frontend's
+             README-UI.md requires Compass icons and type even though the
+             portal's components are PrimeVue, so PrimeIcons are not an option
+             here. Fill changed from the design's #FA4F2D to #0071EB; that
+             colour is baked into the files, so a re-export restores the orange. -->
+        <div class="tc-promo__cards">
+          <div class="tc-promo__card">
+            <img class="tc-promo__icon" src="assets/icons/compass-badge.svg" alt="" width="24" height="24">
+            <div class="tc-promo__card-text">
+              <p class="tc-promo__card-title">Get booked with confidence</p>
+              <p class="tc-promo__card-desc">The badge puts your commitment to quality front and center for travelers</p>
+            </div>
+          </div>
+          <div class="tc-promo__card">
+            <img class="tc-promo__icon" src="assets/icons/compass-magnifier.svg" alt="" width="24" height="24">
+            <div class="tc-promo__card-text">
+              <p class="tc-promo__card-title">Be seen by more customers</p>
+              <p class="tc-promo__card-desc">Show up higher in search results and get featured in our emails to travelers</p>
+            </div>
+          </div>
+          <div class="tc-promo__card">
+            <img class="tc-promo__icon" src="assets/icons/compass-eye.svg" alt="" width="24" height="24">
+            <div class="tc-promo__card-text">
+              <p class="tc-promo__card-title">Become the easy choice</p>
+              <p class="tc-promo__card-desc">When listings look alike, this badge is what sets you apart from competitors</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="tc-promo__cta" type="button">
+          Learn more
+          <img src="assets/icons/arrow-right-24.svg" alt="" width="24" height="24">
+        </button>
       </section>
 
-      <!-- Bottom spacer -->
+      <!-- ===================== CRITERIA (rendered by js/criteria-render.js) ===================== -->
+      <div id="criteria" class="tc-sections-wrap"></div>
+
       <div style="height:60px;"></div>
 
     </div><!-- /page-inner -->
   </main>
 
-  <!-- HELP BUTTON (fixed) -->
   <button class="help-btn" aria-label="Help">
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <circle cx="9" cy="9" r="7.5" stroke="white" stroke-width="1.5"/>
@@ -145,8 +171,25 @@
 
   <script src="js/interactions.js"></script>
   <script src="js/defect-cards.js"></script>
-  <script src="js/cards-data.js"></script>
-  <script>DefectCards.render("#cards", window.CARDS_DATA);</script>
+  <script src="js/trend-chart.js"></script>
+  <script src="js/criteria-model.js"></script>
+  <script src="js/criteria-render.js"></script>
+  <script src="js/activity-switcher.js"></script>
+  <script>
+    // The switcher picks the fixture; add new ones in data/activities.json.
+    ActivitySwitcher.init({
+      onSelect(activity) {
+        const model = TopChoice.build(activity);
+        document.getElementById("activity-title").textContent = model.activityTitle;
+        document.title = model.activityTitle + " — Top Choice";
+        TopChoiceRender.render("#criteria", model);
+      },
+      onError(err, entry) {
+        document.getElementById("criteria").innerHTML =
+          '<p class="section-desc">Could not load ' + entry.file + ": " + err.message + "</p>";
+      },
+    });
+  </script>
   <script src="js/auth-gate.js"></script>
 </body>
 </html>

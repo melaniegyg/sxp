@@ -1,0 +1,10 @@
+{
+  "_note": "Fixtures offered in the top-right switcher. Add a fixture to data/ and a line here — nothing else needs changing. `file` is relative to data/. The switcher shows the supplier name read from the fixture's own `supplier_name` field (falling back to `Supplier <id>`); `label` below is the smaller second line.",
+  "activities": [
+    { "id": "pass", "file": "activity-21293.json", "label": "Meets all criteria" },
+    { "id": "rating-miss", "file": "activity-48871-rating-miss.json", "label": "Misses rating" },
+    { "id": "ts-miss", "file": "activity-60233-ts-miss.json", "label": "Misses T&S — case rate" },
+    { "id": "severe-case", "file": "activity-73410-severe-case.json", "label": "Misses T&S — confirmed case" },
+    { "id": "excellence-miss", "file": "activity-55902-excellence-miss.json", "label": "Misses rating, DBR and pickup" }
+  ]
+}

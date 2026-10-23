@@ -1,0 +1,294 @@
+/* ============================================================
+   TOP CHOICE — promo header, status banner, criteria sections
+   ============================================================ */
+
+:root {
+  /* Saturated pair is for the status icons only. */
+  --tc-met: #00763d;
+  --tc-not-met: #b42318;
+  /* Weak pair fills the banner and the section rails — gyg/surface/success-weak
+     and critical-weak, per the design (Figma 516:50324, 516:50342). */
+  --tc-met-weak: #d1f6e2;
+  --tc-not-met-weak: #ffe8ed;
+  /* gyg/label/critical — outlines a metric tile whose bar was missed. */
+  --tc-critical-border: #c72a3d;
+  --tc-promo-bg: #f1f5fa;
+}
+
+/* --- Promo header ------------------------------------------ */
+
+.tc-promo {
+  background: var(--tc-promo-bg);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.tc-promo__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+.tc-promo__intro {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 744px;
+}
+.tc-promo__title { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
+.tc-promo__desc { font: var(--font-body); color: var(--gyg-label-primary); margin: 0; }
+
+/* The traveller-facing badge, shown as a chip (672:64648). Figma rotates it a
+   fraction of a degree so it reads as an artefact rather than a UI element.
+   Metrics below are the design's exact values. Set in GYG Sans Headline — the
+   brand face, not the Compass GT Eesti the rest of the page uses. Figma asks
+   for weight 575 of the variable font; we have static cuts, so Semibold (600)
+   is the nearest. */
+.tc-promo__badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5.367px;
+  background: var(--gyg-label-primary);
+  color: #fff;
+  border-radius: 5.367px;
+  padding: 0 10.734px;
+  height: 32.202px;
+  font-family: "GYG Sans Headline", var(--font-family);
+  font-size: 18.78px;
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  transform: rotate(-0.28deg);
+}
+.tc-promo__badge img { width: 24.117px; height: 24.117px; }
+
+.tc-promo__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 42px;
+}
+.tc-promo__card {
+  background: var(--gyg-background-primary);
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 16px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.tc-promo__card-text { display: flex; flex-direction: column; gap: 12px; }
+.tc-promo__icon { display: block; }
+.tc-promo__card-title { font: var(--font-title-3); color: var(--gyg-label-primary); margin: 0; }
+.tc-promo__card-desc { font: var(--font-body); color: var(--gyg-label-secondary); margin: 0; }
+
+.tc-promo__cta {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--gyg-background-primary);
+  border: 1px solid var(--gyg-interactive-primary);
+  color: var(--gyg-interactive-primary);
+  border-radius: var(--radius-pill);
+  padding: 10px 20px;
+  font: var(--font-body-strong);
+}
+.tc-promo__cta:hover { background: #f0f7ff; }
+
+/* --- Activity switcher (top-right) -------------------------- */
+
+#activity-switcher { position: relative; outline: none; }
+#activity-switcher:hover { background: var(--gyg-background-secondary); }
+#activity-switcher:focus-visible { box-shadow: 0 0 0 2px var(--gyg-interactive-primary); }
+
+.switcher-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 260px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--gyg-background-primary);
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  box-shadow: var(--shadow-popover);
+  z-index: 300;
+}
+.switcher-menu__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+}
+.switcher-menu__item:hover,
+.switcher-menu__item:focus-visible { background: var(--gyg-background-secondary); }
+.switcher-menu__item[aria-selected="true"] { background: #f0f7ff; }
+.switcher-menu__label { font: var(--font-caption-strong); color: var(--gyg-label-primary); }
+.switcher-menu__sub { font: var(--font-label); color: var(--gyg-label-secondary); }
+
+/* --- Status icon -------------------------------------------- */
+
+.tc-status { display: inline-flex; flex-shrink: 0; }
+.tc-status--met { color: var(--tc-met); }
+.tc-status--not-met { color: var(--tc-not-met); }
+
+/* --- Status banner ------------------------------------------ */
+
+.tc-banner {
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.tc-banner--met { background: var(--tc-met-weak); }
+.tc-banner--not-met { background: var(--tc-not-met-weak); }
+.tc-banner__head { display: flex; align-items: center; gap: 12px; }
+.tc-banner__title { font: var(--font-title-3); color: var(--gyg-label-primary); margin: 0; }
+.tc-banner__desc { font: var(--font-body); color: var(--gyg-label-primary); margin: 0; }
+
+/* --- Section ------------------------------------------------ */
+
+.tc-sections-wrap { display: flex; flex-direction: column; gap: 24px; }
+.tc-heading { display: flex; flex-direction: column; gap: 8px; }
+.tc-sections { display: flex; flex-direction: column; gap: 24px; }
+
+.tc-section {
+  position: relative;
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--gyg-background-primary);
+}
+/* Left rail — green while every row passes, red as soon as one fails.
+   Design clips a 24px rect to ~11px inside the card's left edge. */
+.tc-section::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 12px;
+}
+.tc-section--met::before { background: var(--tc-met-weak); }
+.tc-section--not-met::before { background: var(--tc-not-met-weak); }
+
+.tc-section__head { padding: 16px 24px 0 32px; }
+.tc-section__title { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
+.tc-section__rows { padding: 8px 24px 16px 32px; }
+
+/* --- Row ---------------------------------------------------- */
+
+.tc-row {
+  display: flex;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--gyg-separator-primary);
+}
+.tc-section__rows > .tc-row:first-child { border-top: none; }
+.tc-row__body { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tc-row__label { font: var(--font-body-strong); color: var(--gyg-label-primary); margin: 0; }
+.tc-row__desc { font: var(--font-caption-compact); color: var(--gyg-label-secondary); margin: 0; }
+.tc-row__help {
+  font: var(--font-caption-compact);
+  color: var(--tc-not-met);
+  margin: 4px 0 0;
+}
+/* Replaces the description on gates that fail outright. Body size and the
+   primary label colour — not red — so it reads as an explanation, not an
+   error string (Figma 516:51713). */
+.tc-row__fail-desc {
+  font: var(--font-body);
+  color: var(--gyg-label-primary);
+  margin: 0;
+}
+.tc-row__body--replaced { gap: 16px; }
+
+/* --- Confirmed Trust & Safety cases table (516:51482) ------- */
+
+.tc-cases {
+  width: 100%;
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  border-collapse: collapse;
+  overflow: hidden;
+  table-layout: fixed;
+  background: var(--gyg-background-primary);
+}
+.tc-cases__th,
+.tc-cases__td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid #dcdfe4;
+  color: var(--gyg-label-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tc-cases__th { font: var(--font-body-strong); height: 48px; }
+.tc-cases__td { font: var(--font-body); height: 52px; }
+.tc-cases tbody tr:last-child .tc-cases__td { border-bottom: none; }
+.tc-cases__col--activity { width: 38%; }
+.tc-cases__col--date { width: 17%; }
+.tc-cases__col--case_number { width: 16%; }
+.tc-cases__col--notes { width: 29%; }
+
+/* --- Metric row --------------------------------------------- */
+
+.tc-row--metric { align-items: flex-start; }
+.tc-metric {
+  width: 122px;
+  flex-shrink: 0;
+  border: 1px solid var(--gyg-border-non-interactive);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* A missed bar outlines the whole tile in critical (516:51043). */
+.tc-metric--not-met { border-color: var(--tc-critical-border); }
+.tc-metric__value { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
+/* Figma marks this node whitespace-nowrap; at 14px "Criteria: ≤ 1.5%" is a
+   few px wider than the 122px tile's inner width, so let it run rather than wrap. */
+.tc-metric__bar { font: var(--font-caption); color: var(--gyg-label-secondary); margin: 0; white-space: nowrap; }
+
+.tc-details {
+  align-self: flex-start;
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  font: var(--font-body-strong);
+  line-height: 24px;
+  color: var(--gyg-interactive-primary);
+}
+.tc-details:hover { text-decoration: underline; }
+.tc-details svg { transition: transform 0.15s; }
+.tc-details.open svg { transform: rotate(180deg); }
+
+.tc-details__panel { margin-top: 12px; }
+.tc-trend { width: 100%; overflow: hidden; }
+/* Months that missed the bar. The design fills these amber; weak red ties the
+   shading to the same critical surface the rails and banner already use. */
+.trend-band { fill: var(--tc-not-met-weak); }
+.tc-disruptions { margin-top: 24px; }
+/* The defect-cards card is a standalone panel in the DBR portal; here it sits
+   inside an already-bordered row, so drop its own frame. Its category heading
+   becomes the design's "Top disruptions" label, with no category icon. */
+.tc-disruptions .category-card { border: none; border-radius: 0; }
+.tc-disruptions .cc-icon { display: none; }
+.tc-details__placeholder {
+  font: var(--font-caption);
+  color: var(--gyg-label-tertiary);
+  margin: 0;
+  text-align: center;
+}
