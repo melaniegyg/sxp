@@ -5,6 +5,18 @@
     { "id": "rating-miss", "file": "activity-48871-rating-miss.json", "label": "Misses rating" },
     { "id": "ts-miss", "file": "activity-60233-ts-miss.json", "label": "Misses T&S — case rate" },
     { "id": "severe-case", "file": "activity-73410-severe-case.json", "label": "Misses T&S — confirmed case" },
-    { "id": "excellence-miss", "file": "activity-55902-excellence-miss.json", "label": "Misses rating, DBR and pickup" }
-  ]
+    { "id": "excellence-miss", "file": "activity-55902-excellence-miss.json", "label": "Misses rating, DBR and pickup" },
+    { "id": "ts-tag-rate", "file": "activity-81544-ts-tag-rate.json", "label": "Misses T&S — tag rate" },
+
+    { "id": "etna", "file": "activity-650229-etna.json", "label": "Meets" },
+    { "id": "porto-pass", "file": "activity-516233-porto-pass.json", "label": "Meets" },
+    { "id": "porto-fail", "file": "activity-645277-porto-fail.json", "label": "Does not meet" },
+    { "id": "pedro-pass", "file": "activity-477703-pedro-pass.json", "label": "Meets" },
+    { "id": "pedro-fail", "file": "activity-585832-pedro-fail.json", "label": "Does not meet" },
+    { "id": "bali-ts", "file": "activity-472433-bali-ts.json", "label": "Does not meet" },
+    { "id": "italy-rating", "file": "activity-10915-italy-rating.json", "label": "Does not meet" },
+    { "id": "italy-defect", "file": "activity-375436-italy-defect.json", "label": "Does not meet" },
+    { "id": "italy-pass", "file": "activity-437878-italy-pass.json", "label": "Meets" }
+  ],
+  "_note_real_vs_synthetic": "The first five entries are the original scenarios — only `pass` is a real row; the other four are synthetic and say so in their own `_note`. The nine below are all REAL rows from sxp_activity_criteria, with supplier names from dwh.dim_supplier. They come in supplier pairs (a passing and a failing activity for the same supplier) so the switcher's supplier line reads sensibly. Their detail panels are mostly empty by design — see each fixture's `details._caveat_*` fields for why."
 }

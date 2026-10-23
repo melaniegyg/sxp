@@ -5,15 +5,15 @@
   "ts_cases": [
     {
       "activity": "Cairo: Camel Ride through the Desert",
-      "date": "Aug 12, 2026",
+      "confirmed": "Aug 12, 2026",
       "case_number": "20834792",
-      "notes": "Ban effective until Feb 12, 2027"
+      "excluded_until": "Feb 12, 2027"
     },
     {
       "activity": "Cairo: Pyramids of Giza Half-Day Tour",
-      "date": "Oct 3, 2026",
+      "confirmed": "Oct 3, 2026",
       "case_number": "3939383",
-      "notes": "Ban effective until Apr 3, 2027"
+      "excluded_until": "Apr 3, 2027"
     }
   ],
   "tour_id": 73410,
@@ -38,9 +38,9 @@
   "cancellation_policy_type": "standard",
   "custom_cancellation_offset_hours": null,
   "quality_defect_bookings": 37,
-  "quality_defect_rate": 0.011836212412028151,
+  "quality_defect_rate": 0.011836212412028152,
   "pickup_defect_bookings": 9,
-  "pickup_defect_rate": 0.0028790787587971847,
+  "pickup_defect_rate": 0.0028790787587971846,
   "non_fm_cancellations": 3,
   "non_fm_cxl_rate": 0.0009596929195777351,
   "defective_bookings_platform": 78,
@@ -49,15 +49,15 @@
   "defect_rate_bar": 0.02,
   "rating_bar": 4.6,
   "ts_tag_bookings": 5,
-  "ts_tag_rate": 0.0015994881637875879,
+  "ts_tag_rate": 0.001599488163787588,
   "supplier_valid_sev12_cases": 2,
   "supplier_weighted_cases": 4.0,
   "supplier_valid_cases": 3,
   "supplier_plausible_cases": 2,
   "supplier_bookings_ts_months": 41880,
-  "supplier_weighted_case_rate": 9.551098376313277e-05,
+  "supplier_weighted_case_rate": 9.551098376313278e-05,
   "supplier_ts_tag_bookings": 96,
-  "supplier_ts_tag_rate": 0.0022922635148042025,
+  "supplier_ts_tag_rate": 0.0022922635148042024,
   "activity_valid_sev12_cases": 0,
   "activity_weighted_cases": 0.0,
   "activity_weighted_case_rate": 0,

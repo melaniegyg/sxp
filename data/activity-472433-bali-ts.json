@@ -1,0 +1,269 @@
+{
+  "_note": "REAL row from production.supply_analytics.sxp_activity_criteria, exported 2026-04-18 – 2026-10-14. Scalar fields are verbatim from the export. `supplier_name` is NOT in sxp_activity_criteria — looked up from dwh.dim_supplier.company_name on user_id = 272440.",
+  "_note_booking_detail": "The export's raw `dbr_tags` (122 rows), `pickup_problem_rate.applicable_records` and `trust_and_safety_tags` arrays are dropped here, matching activity-21293 — the page has nowhere to show per-booking rows. The pickup records are summarised into details.pickup-rate.disruptions below. Source file: /Users/melanie.loffbird/Desktop/SXP-Data/4_bali_activity_472433--fail-ts.json",
+  "_note_next_award_date": "NOT from the export. Set to the close of the intended assessment period (2027-01-01), matching every other fixture so the banner reads the same across the switcher. Award cadence is still an open question in the criteria deck.",
+  "next_award_date": "2027-01-01",
+  "_note_window": "window_start/window_end are the INTENDED assessment period (Jul 1, 2026 – Jan 1, 2027), not this row's own export window (2026-04-18 – 2026-10-14). The metrics below were measured over the export window, so the period label and the numbers come from different ranges — the same deliberate mismatch activity-21293 documents, kept consistent here so every fixture in the switcher shows one period.",
+  "export_window_start": "2026-04-18",
+  "export_window_end": "2026-10-14",
+  "supplier_name": "Potato Bali Tours & Activities",
+  "details": {
+    "_note": "NOT from the export. Built from this activity's own booking-level rows in production.supply_analytics.sxp_booking_defect, filtered to the tag sets the criteria deck defines: 9 quality tags + non-force-majeure cancellation for `quality-rate`, 2 pickup tags for `pickup-rate`. Tags outside those sets are excluded, so Duration Not As Advertised no longer appears here — it is NOT one of the nine. There is still no `trend` on any metric.",
+    "_caveat_no_trend": "No `trend` series on any metric. A monthly rate needs a monthly denominator (bookings per month); sxp_activity_criteria carries only the window aggregate and sxp_booking_defect carries only the numerator. A monthly rating series has no source at all. The detail panel renders an empty chart area as a result.",
+    "_caveat_counts_do_not_reconcile": "The pickup counts below are REAL but DO NOT RECONCILE with pickup_defect_bookings above them. sxp_booking_defect is systematically thinner than sxp_activity_criteria: its latest travel_date is 2026-09-14 while these windows run to 2026-10-14, so the final month of every window has no booking-level detail, and even inside the covered range the distinct-booking counts fall short of the aggregates. Expect the disruption list to sum to less than the headline rate implies.",
+    "quality-rate": {
+      "disruptions": [
+        {
+          "category": "Top disruptions",
+          "defects": [
+            {
+              "name": "Activity Not As Advertised",
+              "description": "The activity delivered did not match the description.",
+              "recAction": "",
+              "recommendations": [
+                "Review the description of your activity so travelers know what to expect",
+                "Ensure your photos accurately reflect the experience"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Adding Description for Your Product",
+                "Enhancing Your Product Listings"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 10
+            },
+            {
+              "name": "Supplier Not Responsive",
+              "description": "The traveler contacted you and did not get a reply in time.",
+              "recAction": "",
+              "recommendations": [
+                "Check your inbox daily, including the day before travel",
+                "Keep the phone number on your listing one a traveler can actually reach"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Communicating with Travelers"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 6
+            },
+            {
+              "name": "Unclear Meeting Point Location",
+              "description": "The meeting point description was unclear, or wrong.",
+              "recAction": "",
+              "recommendations": [
+                "Verify the address is findable in a map app and add a meeting point photo",
+                "Include landmarks or directions from the nearest transport stop"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Meeting Point Pictures"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 4
+            },
+            {
+              "name": "Extra Charge",
+              "description": "The traveler was asked to pay more than the booked price.",
+              "recAction": "",
+              "recommendations": [
+                "Include every mandatory fee in the price shown on GetYourGuide",
+                "List genuinely optional extras in the Important Information section"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Pricing Your Activity"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 3
+            },
+            {
+              "name": "Unexpected Cancellation",
+              "description": "The activity was cancelled at short notice.",
+              "recAction": "",
+              "recommendations": [
+                "Only keep availability open for slots you are confident you can run",
+                "Tell travelers as early as possible when something has to be cancelled"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Managing Your Availability"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 2
+            },
+            {
+              "name": "Unsuitable For Disabled Customers",
+              "description": "The activity could not accommodate a traveler's accessibility needs.",
+              "recAction": "",
+              "recommendations": [
+                "State accessibility limitations plainly in the Important Information section",
+                "Describe terrain, steps and transport so travelers can judge suitability"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Enhancing Your Product Listings"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 2
+            },
+            {
+              "name": "Guide Language Wrong or Low Proficiency",
+              "description": "The guide did not speak the language originally booked for.",
+              "recAction": "",
+              "recommendations": [
+                "Confirm which languages each guide can deliver and keep the option list in sync",
+                "Remove languages you cannot staff reliably rather than risk a mismatch"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Managing Activity Languages"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    "pickup-rate": {
+      "disruptions": [
+        {
+          "category": "Top disruptions",
+          "defects": [
+            {
+              "name": "Unclear Pickup Information",
+              "description": "The pickup details for the activity were missing, unclear or wrong.",
+              "recAction": "",
+              "recommendations": [
+                "State the exact pickup address, and a time window rather than a single time",
+                "Add a photo of the pickup point so travelers can recognise it"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Managing Pickups",
+                "Meeting Point Pictures"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 24
+            },
+            {
+              "name": "Pickup/Guide Late or No Show",
+              "description": "The guide or driver arrived late or did not show up at the pickup point.",
+              "recAction": "",
+              "recommendations": [
+                "Build buffer time into pickup routes so one delay does not cascade",
+                "Message travelers as soon as you know a pickup will run late"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Managing Pickups"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 6
+            },
+            {
+              "name": "Change Pick Up Time",
+              "description": "The pickup time was changed after the traveler booked.",
+              "recAction": "",
+              "recommendations": [
+                "Only publish pickup times you can staff for the whole season",
+                "Give travelers as much notice as possible when a time has to move"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Managing Pickups"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "_note_ts_cases": "Case rows are NOT from the export — sxp_activity_criteria carries only activity_valid_sev12_cases as a count. Transcribed verbatim from the design (Figma 516:51482), which supersedes the earlier 720:66815: the columns are now Activity / Case confirmed / Case number / Excluded until, and the last holds a bare date instead of 'Ban effective until X'. The design names the activity 'Ubud: ...' while this row's real activity_title is 'Bali: ...'; the design's string is kept because the design is the source for this table.",
+  "ts_cases": [
+    {
+      "activity": "Ubud: Quad ATV Waterfalls & Barong Caves",
+      "confirmed": "July 1, 2026",
+      "case_number": "19092911",
+      "excluded_until": "Jan 1, 2027"
+    },
+    {
+      "activity": "Ubud: Quad ATV Waterfalls & Barong Caves",
+      "confirmed": "August 11, 2026",
+      "case_number": "20456427",
+      "excluded_until": "Feb 1, 2027"
+    },
+    {
+      "activity": "Ubud: Quad ATV Waterfalls & Barong Caves",
+      "confirmed": "October 1, 2026",
+      "case_number": "22305936",
+      "excluded_until": "Apr 1, 2027"
+    }
+  ],
+  "_note_ts_tags_observed": "Trust & Safety tags observed on this activity's bookings: Accident Injury, Aggressive Abusive Behaviour, Assault Robbery, Damage To Belongings, Reckless Behavior, Transport Breakdown, Transport Low Quality, Unsafe Environment",
+  "tour_id": 472433,
+  "activity_title": "Bali: Quad ATV Waterfalls & Barong Caves",
+  "supplier_id": 272440,
+  "on_simulator_pages": false,
+  "l0_category": "Guided",
+  "l1_category": "Adventure Tours",
+  "l2_category": "Land Adventure Tours & Activities",
+  "has_pickup": true,
+  "home_city_id": 32246,
+  "home_city": "Ubud",
+  "home_country": "Indonesia",
+  "window_start": "2026-07-01",
+  "window_end": "2027-01-01",
+  "total_bookings": 4072,
+  "total_travel_days": 4072,
+  "defect_denominator": 4072,
+  "reviews_in_window": 944,
+  "rating_in_window": 4.733050847457627,
+  "rating_sd": 0.7169577632715152,
+  "cancellation_policy_type": "standard",
+  "custom_cancellation_offset_hours": null,
+  "quality_defect_bookings": 39,
+  "quality_defect_rate": 0.009577603143418467,
+  "pickup_defect_bookings": 42,
+  "pickup_defect_rate": 0.01031434184675835,
+  "non_fm_cancellations": 0,
+  "non_fm_cxl_rate": 0.0,
+  "defective_bookings_platform": 100,
+  "platform_dbr": 0.02455795677799607,
+  "destination_step": 4,
+  "defect_rate_bar": 0.0125,
+  "rating_bar": 4.7,
+  "ts_tag_bookings": 27,
+  "ts_tag_rate": 0.006630648330058939,
+  "supplier_valid_sev12_cases": 2,
+  "supplier_weighted_cases": 3.0,
+  "supplier_valid_cases": 3,
+  "supplier_plausible_cases": 3,
+  "supplier_bookings_ts_months": 6377,
+  "supplier_weighted_case_rate": 0.0004704406460718,
+  "supplier_ts_tag_bookings": 34,
+  "supplier_ts_tag_rate": 0.005560098119378578,
+  "activity_valid_sev12_cases": 2,
+  "activity_weighted_cases": 2.0,
+  "activity_weighted_case_rate": 0.0004911591355599,
+  "crit_in_scope": true,
+  "crit_min_reviews": true,
+  "crit_flexible_cancellation": true,
+  "crit_ts_no_severe_case": false,
+  "crit_ts_case_rate": false,
+  "crit_ts_tag_rate": false,
+  "crit_defect_rate": true,
+  "crit_pickup_rate": true,
+  "crit_rating": true,
+  "crit_defect_rate_min": true,
+  "crit_pickup_rate_min": true,
+  "crit_rating_min": true,
+  "meets_entry": true,
+  "meets_ts": false,
+  "meets_excellence": true,
+  "has_badge": false,
+  "has_badge_min": false
+}

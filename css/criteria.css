@@ -39,6 +39,9 @@
 }
 .tc-promo__title { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
 .tc-promo__desc { font: var(--font-body); color: var(--gyg-label-primary); margin: 0; }
+/* Compass has no 700 weight at body size — Body Strong is Medium 500. Setting
+   the token explicitly stops <strong> falling back to the browser's bold. */
+.tc-promo__emphasis { font: var(--font-body-strong); }
 
 /* The traveller-facing badge, shown as a chip (672:64648). Figma rotates it a
    fraction of a degree so it reads as an artefact rather than a UI element.
@@ -233,10 +236,10 @@
 .tc-cases__th { font: var(--font-body-strong); height: 48px; }
 .tc-cases__td { font: var(--font-body); height: 52px; }
 .tc-cases tbody tr:last-child .tc-cases__td { border-bottom: none; }
-.tc-cases__col--activity { width: 38%; }
-.tc-cases__col--date { width: 17%; }
-.tc-cases__col--case_number { width: 16%; }
-.tc-cases__col--notes { width: 29%; }
+.tc-cases__col--activity { width: 44%; }
+.tc-cases__col--confirmed { width: 17%; }
+.tc-cases__col--case_number { width: 19%; }
+.tc-cases__col--excluded_until { width: 20%; }
 
 /* --- Metric row --------------------------------------------- */
 
@@ -286,6 +289,43 @@
    becomes the design's "Top disruptions" label, with no category icon. */
 .tc-disruptions .category-card { border: none; border-radius: 0; }
 .tc-disruptions .cc-icon { display: none; }
+
+/* The Trust & Safety tag-rate rail sits inline under the copy rather than in a
+   "See details" panel, and 516:52273 shows no category heading above it — the
+   row's own "Trust and Safety check" label already titles the block. */
+.tc-disruptions--inline { margin-top: 16px; }
+.tc-disruptions--inline .cc-left__head { display: none; }
+
+/* --- Overrides to match Figma 672:64888 -------------------------------
+   css/defect-cards.css is shared with the DBR portal and must not change,
+   so every deviation the SXP design asks for is scoped to .tc-disruptions.
+
+   The DBR portal's card is a standalone panel: it pads itself and sets the
+   advice and resources side by side. Here it is nested inside an already
+   padded row, and the design stacks the right column instead. */
+
+/* 1. No self-padding. The design's 24px above the card is already supplied
+      by .tc-disruptions' margin-top, so this is a flat reset, not 0 top. */
+.tc-disruptions .category-card__body { padding: 0; }
+
+/* 2. Right column is one stack — "What you can do", then "Resources",
+      then the CTA — not a two-column split with resources in an aside. */
+.tc-disruptions .dp-top { flex-direction: column; gap: 24px; }
+.tc-disruptions .dp-faq { flex: 0 0 auto; }
+
+/* 3. The CTA is the outlined button variant, not the filled one.
+      1px border per the design; the shared filled button uses 2px. */
+.tc-disruptions .btn-primary {
+  background: transparent;
+  color: var(--gyg-interactive-primary);
+  border: 1px solid var(--gyg-interactive-primary);
+}
+/* #e1f0ff, not a token: defect-cards.css hardcodes it for .btn-secondary:hover
+   and .defect-nav-item.is-active, and there is no highlight-weak token here. */
+.tc-disruptions .btn-primary:hover {
+  opacity: 1;
+  background: #e1f0ff;
+}
 .tc-details__placeholder {
   font: var(--font-caption);
   color: var(--gyg-label-tertiary);

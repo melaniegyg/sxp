@@ -1,0 +1,111 @@
+{
+  "_note": "SYNTHETIC — not a real sxp_activity_criteria row. Invented activity, supplier and city. Numbers are internally consistent: the two tag counts below sum to ts_tag_bookings, and the supplier tag rate clears the deck's bar. The activity does not exist.",
+  "_scenario": "Trust & Safety failed on the TAG RATE alone — the third and last unexercised T&S state. No severe case (crit_ts_no_severe_case true) and the investigated-case rate is fine (crit_ts_case_rate true, 1 weighted case, below the '≥ 2 weighted cases' trigger), but 0.82% of the supplier's bookings carry a T&S tag against a > 0.5% bar, so the whole supplier is out. Everything else passes — entry, rating, quality defects — which makes this the cleanest illustration of the tag rule on its own.",
+  "_note_rule": "Deck Gate 3 rule C: '> 0.5% of the supplier's bookings carry a T&S tag, with ≥ 2 tagged → supplier out'. Here 61 / 7,400 = 0.8243%. Unlike rules A and B this one is explainable to suppliers, because T&S tags are AI-classified review text rather than investigated cases — which is why this state shows a breakdown and the case-rate state (516:51696) deliberately shows none.",
+  "_note_details": "NOT from the export. sxp_activity_criteria carries supplier_ts_tag_bookings as a bare count with no per-tag split, so the breakdown is hand-written. Tag names, descriptions and the advice list are transcribed from the design (Figma 516:52273); the two tags map to the real warehouse tags 'Accident Injury' and 'Aggressive Abusive Behaviour', both of which are in the 13 that drive this rule.",
+  "next_award_date": "2027-01-01",
+  "supplier_name": "Kaituna Gorge Adventures",
+  "details": {
+    "trust-safety": {
+      "disruptions": [
+        {
+          "category": "Safety issues",
+          "defects": [
+            {
+              "name": "Customer suffered accident or injury",
+              "description": "Customers suffered accidents or injuries during the activity.",
+              "recAction": "",
+              "recommendations": [
+                "Brief customers on safety at the start of every activity",
+                "Ensure guides and drivers are trained in first aid and know your emergency procedures",
+                "Check all required safety equipment before the activity starts",
+                "Report any serious incident to GetYourGuide as soon as possible"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [],
+              "count": 17,
+              "_warehouse_tag": "Accident Injury"
+            },
+            {
+              "name": "Customer faced aggressive or abusive behavior",
+              "description": "Customers faced aggressive or abusive behavior from staff or other participants.",
+              "recAction": "",
+              "recommendations": [
+                "Set expectations with guides on how to handle tense or crowded situations",
+                "Give customers a clear way to raise a problem during the activity",
+                "Follow up on every complaint about staff conduct and record the outcome",
+                "Report any serious incident to GetYourGuide as soon as possible"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [],
+              "count": 12,
+              "_warehouse_tag": "Aggressive Abusive Behaviour"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "tour_id": 81544,
+  "activity_title": "Rotorua: White Water Rafting and Cliff Jump Adventure",
+  "supplier_id": 2904,
+  "on_simulator_pages": true,
+  "l0_category": "Guided",
+  "l1_category": "Adventure Tours",
+  "l2_category": "Water Adventure Tours & Activities",
+  "has_pickup": false,
+  "home_city_id": 2188,
+  "home_city": "Rotorua",
+  "home_country": "New Zealand",
+  "window_start": "2026-07-01",
+  "window_end": "2027-01-01",
+  "total_bookings": 1840,
+  "total_travel_days": 1840,
+  "defect_denominator": 1840,
+  "reviews_in_window": 412,
+  "rating_in_window": 4.71,
+  "rating_sd": 0.58,
+  "cancellation_policy_type": "standard",
+  "custom_cancellation_offset_hours": null,
+  "quality_defect_bookings": 22,
+  "quality_defect_rate": 0.011956521739130435,
+  "pickup_defect_bookings": 0,
+  "pickup_defect_rate": 0.0,
+  "non_fm_cancellations": 3,
+  "non_fm_cxl_rate": 0.0016304347826086957,
+  "defective_bookings_platform": 48,
+  "platform_dbr": 0.02608695652173913,
+  "destination_step": 0,
+  "defect_rate_bar": 0.02,
+  "rating_bar": 4.6,
+  "ts_tag_bookings": 29,
+  "ts_tag_rate": 0.015760869565217392,
+  "supplier_valid_sev12_cases": 0,
+  "supplier_weighted_cases": 1.0,
+  "supplier_valid_cases": 1,
+  "supplier_plausible_cases": 1,
+  "supplier_bookings_ts_months": 7400,
+  "supplier_weighted_case_rate": 0.00013513513513513514,
+  "supplier_ts_tag_bookings": 61,
+  "supplier_ts_tag_rate": 0.008243243243243243,
+  "activity_valid_sev12_cases": 0,
+  "activity_weighted_cases": 0.0,
+  "activity_weighted_case_rate": 0,
+  "crit_in_scope": true,
+  "crit_min_reviews": true,
+  "crit_flexible_cancellation": true,
+  "crit_ts_no_severe_case": true,
+  "crit_ts_case_rate": true,
+  "crit_ts_tag_rate": false,
+  "crit_defect_rate": true,
+  "crit_pickup_rate": true,
+  "crit_rating": true,
+  "crit_defect_rate_min": true,
+  "crit_pickup_rate_min": true,
+  "crit_rating_min": true,
+  "meets_entry": true,
+  "meets_ts": false,
+  "meets_excellence": true,
+  "has_badge": false,
+  "has_badge_min": false
+}
