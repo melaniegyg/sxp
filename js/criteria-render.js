@@ -83,7 +83,12 @@
     }
 
     if (row.details.disruptions && row.details.disruptions.length) {
-      mountDisruptions(panel, row.details.disruptions);
+      // Name the metric in the advice heading — "…decrease your disrupted
+      // booking rate". The row labels lowercase to exactly the design's
+      // wording, so there is no second copy of these names to drift.
+      mountDisruptions(panel, row.details.disruptions, {
+        rateName: row.metric ? row.label.toLowerCase() : null,
+      });
     }
   }
 
@@ -126,6 +131,21 @@
       plain.innerHTML = head.innerHTML;
       head.replaceWith(plain);
     });
+
+    // The shared module's heading is a bare "What you can do". On a metric
+    // panel the design names the rate it would improve — "What you can do to
+    // decrease your disrupted booking rate" — which matters because up to
+    // three of these rails can be open at once and the generic heading gives
+    // no clue which metric the advice belongs to.
+    //
+    // Only rate rows get a name. The Trust & Safety rail keeps the generic
+    // heading: its row is a check, not a rate, so "decrease your trust and
+    // safety check" would be nonsense and no design covers it.
+    if (opts && opts.rateName) {
+      wrap.querySelectorAll(".dp-advice .dp-heading").forEach((h) => {
+        h.textContent = `What you can do to decrease your ${opts.rateName}`;
+      });
+    }
     return wrap;
   }
 
