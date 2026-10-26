@@ -139,24 +139,36 @@
         : "";
 
     if (row.metric) {
+      // The excellence tiles state the bar they are judged against. The
+      // review-count tile instead dates the number ("As of Oct 26", 720:66225),
+      // since the bar is already in the row label. Only the former has a trend
+      // or breakdown behind it, so only the former gets a "See details" toggle.
+      const caption = row.metric.barText
+        ? `Criteria:<br>${esc(row.metric.barText)}`
+        : esc(row.metric.caption || "");
+      const expandable = Boolean(row.metric.chart || row.details);
       return `
         <div class="tc-row tc-row--metric" data-row="${esc(row.id)}">
           <div class="tc-metric${failing ? " tc-metric--not-met" : ""}">
             ${icon(row.status)}
             <p class="tc-metric__value">${esc(row.metric.value)}</p>
-            <p class="tc-metric__bar">Criteria:<br>${esc(row.metric.barText)}</p>
+            <p class="tc-metric__bar">${caption}</p>
           </div>
           <div class="tc-row__body">
             <p class="tc-row__label">${esc(row.label)}</p>
             <p class="tc-row__desc">${esc(row.description)}</p>
             ${help}
-            <button class="tc-details" type="button" aria-expanded="false">
+            ${
+              expandable
+                ? `<button class="tc-details" type="button" aria-expanded="false">
               See details
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </button>
-            <div class="tc-details__panel hidden" data-detail="${esc(row.id)}"></div>
+            <div class="tc-details__panel hidden" data-detail="${esc(row.id)}"></div>`
+                : ""
+            }
           </div>
         </div>`;
     }
@@ -171,9 +183,15 @@
       failing && row.details && row.details.disruptions && row.details.disruptions.length
         ? `<div data-inline-disruptions="${esc(row.id)}"></div>`
         : "";
+    // A row may carry no description at all — the below-the-gate excellence
+    // line is a single statement with nothing beneath it (720:66225). Guard
+    // rather than rendering the string "undefined".
+    const desc = row.description
+      ? `<p class="tc-row__desc">${esc(row.description)}</p>`
+      : "";
     const body = replaced
       ? `<p class="tc-row__fail-desc">${esc(row.failDescription)}</p>${renderCases(row.cases)}${inlineRail}`
-      : `<p class="tc-row__desc">${esc(row.description)}</p>${help}${inlineRail}`;
+      : `${desc}${help}${inlineRail}`;
 
     return `
       <div class="tc-row" data-row="${esc(row.id)}">

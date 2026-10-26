@@ -182,11 +182,43 @@ are named real suppliers, and the view is supplier-facing; the scenario column
 above is for us, not for the dropdown. Don't make these labels descriptive to
 match the five synthetic ones, whose suppliers are invented.
 
-All fourteen fixtures show the same assessment period (Jul 1, 2026 – Jan 1, 2027)
+All seventeen fixtures show the same assessment period (Jul 1, 2026 – Jan 1, 2027)
 and the same award date, so the banner reads identically across the switcher. For
-the nine real rows that period is **not** the range they were measured over —
+the eleven real rows that period is **not** the range they were measured over —
 each keeps its true range in `export_window_start` / `export_window_end` and
 explains the mismatch in `_note_window`.
+
+## Below the review gate, the page changes shape
+
+Design 720:66225. When `crit_min_reviews` is false the page is not merely the
+normal layout with one row failing — three things change:
+
+1. **The excellence section collapses to one line.** All of its metric rows are
+   replaced by a single statement, "We can only show your performance in
+   customer experience metrics once you have 50 new reviews". The section stays
+   visible rather than being dropped, so the supplier can see the criterion
+   exists and why it is withheld.
+2. **The section order changes** to Review count → Exceptional customer
+   experience → Basic operational standards. The explanation belongs directly
+   under the review count that caused it. Passing activities keep the original
+   order, with operational standards second.
+3. **The review-count row grows a metric tile** showing the count so far, with
+   a date line instead of a criteria line ("As of Oct 14") and no "See details"
+   toggle — there is no trend or breakdown behind it. The tile is 122×128, the
+   same box the excellence tiles use.
+
+`turismo-fail` and `porto-fail` are the only fixtures in this state.
+
+TODO(data): the tile's "as of" date has no field in the export. It uses
+`export_window_end` — a real row's numbers were measured to the end of its own
+export window — falling back to `window_end`. Both fixtures that reach this
+state are real, so the fallback is unused today; a synthetic row would show a
+future date.
+
+**The row's own copy also comes from 720:66225** — "At least 50 new reviews" /
+"This minimum tells us how you have treated customers in general during this
+period." That replaced earlier wording and applies in the passing state too,
+since the design draws no separate passing variant of the row.
 
 ## Design system — the rule that is easy to get wrong
 
@@ -299,6 +331,24 @@ Documented at each site; don't "fix" them without checking:
   the criteria table holds one window aggregate and the defect table holds only
   the numerator. A monthly rating series has no source at all. The real fixtures
   therefore render an empty chart area above their disruption lists.
+- **The operational rows' copy disagrees with 720:66225.** That node draws the
+  two Basic-operational-standards rows differently from what the page shows:
+
+  | | Page | 720:66225 |
+  |---|---|---|
+  | | `24 hour cancellation policy` | `24-hour cancellation policy` |
+  | | `This ensures the best flexibility for travelers.` | `Our standard policy ensures the most flexibility for travelers.` |
+  | | `Trust and Safety check` | `Trust and safety check` |
+  | | `We constantly monitor complaints…on your tours.` | `We track complaints…across all your activities.` |
+
+  Left alone deliberately. The review-count row was updated because 720:66225 is
+  the only node that draws it, but these two rows appear in several nodes and
+  changing them would alter every fixture in every state — and the T&S row's own
+  *failure* copy already uses the 720 phrasing ("across all your activities"),
+  so the page is internally inconsistent either way. Needs one decision about
+  which node is authoritative, not four silent edits. Note the 516:* nodes are
+  NEWER than the 720:* ones (516:51482 supersedes 720:66815), but no 516 node
+  covers these rows.
 
 ## Sources
 

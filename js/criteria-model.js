@@ -105,6 +105,15 @@
   const fmtShort = (iso) => fmtDate(iso, { month: "short", year: "numeric" });
   const fmtLong = (iso) => fmtDate(iso, { month: "long", year: "numeric" });
   const fmtMonthDay = (iso) => fmtDate(iso, { month: "long" });
+  // Short month, no year — the review-count tile's "As of Oct 26" (720:66225).
+  const fmtShortMonthDay = (iso) => fmtDate(iso, { month: "short" });
+
+  // The date the review count was measured to. TODO(data): there is no "as of"
+  // field in the export. A real row's numbers were measured over its own export
+  // window, so its end is the honest answer; synthetic rows have only the
+  // intended period, whose end is in the future. Both fixtures that currently
+  // fail the gate are real, so the fallback is unused today.
+  const asOfDate = (a) => a.export_window_end || a.window_end;
 
   // --- Assessment period options -----------------------------
   // The badge is re-checked every 3 months over a 180-day window, so the
@@ -144,16 +153,38 @@
         ? detailsFor(a, "trust-safety")
         : null;
 
-    const sections = [
+    // Below the review gate the page changes shape, not just copy (720:66225):
+    // the excellence metrics collapse to a single explanatory line and the
+    // section order changes. See the reordering below the section list.
+    const belowReviewGate = !a.crit_min_reviews;
+
+    const baseSections = [
       {
         id: "review-count",
         title: "Review count",
         rows: [
           {
+            // Copy here follows 720:66225, the only node that draws this row.
+            // It differs from what the page said before ("At least 50 reviews" /
+            // "This allows us to build enough signal about your performance"),
+            // and the change applies in the passing state too — the design has
+            // no separate passing variant of the row.
             id: "min-reviews",
-            label: `At least ${MIN_REVIEWS} reviews`,
-            description: "This allows us to build enough signal about your performance.",
+            label: `At least ${MIN_REVIEWS} new reviews`,
+            description:
+              "This minimum tells us how you have treated customers in general during this period.",
             status: status(a.crit_min_reviews),
+            // Failing, the row grows a metric tile showing the count so far.
+            // Unlike the excellence tiles it carries no criteria line and no
+            // "See details" toggle — there is no trend or breakdown behind it.
+            ...(belowReviewGate
+              ? {
+                  metric: {
+                    value: String(a.reviews_in_window),
+                    caption: `As of ${fmtShortMonthDay(asOfDate(a))}`,
+                  },
+                }
+              : {}),
             failHelp:
               "Keep collecting reviews — we check again at the end of each assessment period.",
           },
@@ -277,6 +308,29 @@
         ],
       },
     ];
+
+    // Below the gate there are not enough reviews to compute rating, and the
+    // design does not show the other two metrics either — the whole section
+    // collapses to one line (720:66225). It stays visible rather than being
+    // dropped so the supplier can see the criterion exists and why it is
+    // withheld; a missing section would just read as a shorter list.
+    //
+    // The order changes with it: the explanation belongs directly under the
+    // review count that caused it, which pushes operational standards last.
+    // Passing activities keep the original order.
+    const byId = (id) => baseSections.find((s) => s.id === id);
+    if (belowReviewGate) {
+      byId("excellence").rows = [
+        {
+          id: "excellence-blocked",
+          label: `We can only show your performance in customer experience metrics once you have ${MIN_REVIEWS} new reviews`,
+          status: "not-met",
+        },
+      ];
+    }
+    const sections = belowReviewGate
+      ? [byId("review-count"), byId("excellence"), byId("operational")]
+      : baseSections;
 
     return {
       activityTitle: a.activity_title,
