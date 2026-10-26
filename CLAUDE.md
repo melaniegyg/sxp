@@ -204,8 +204,14 @@ normal layout with one row failing — three things change:
    order, with operational standards second.
 3. **The review-count row grows a metric tile** showing the count so far, with
    a date line instead of a criteria line ("As of Oct 14") and no "See details"
-   toggle — there is no trend or breakdown behind it. The tile is 122×128, the
-   same box the excellence tiles use.
+   toggle — there is no trend or breakdown behind it.
+
+The count tile is a **distinct variant** of the metric tile, per 796:29978 which
+revises 720:66225: its status icon sits in the row body above the label, not
+inside the tile. The excellence tiles keep theirs inside, above the number
+(516:50363). Dropping the icon is what takes the tile from 128px to the design's
+94px — the height is content-driven, so there is nothing to hardcode. The
+renderer tells the two apart by whether the metric states a bar.
 
 `turismo-fail` and `porto-fail` are the only fixtures in this state.
 

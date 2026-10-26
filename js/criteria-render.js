@@ -139,22 +139,33 @@
         : "";
 
     if (row.metric) {
-      // The excellence tiles state the bar they are judged against. The
-      // review-count tile instead dates the number ("As of Oct 26", 720:66225),
-      // since the bar is already in the row label. Only the former has a trend
-      // or breakdown behind it, so only the former gets a "See details" toggle.
-      const caption = row.metric.barText
-        ? `Criteria:<br>${esc(row.metric.barText)}`
-        : esc(row.metric.caption || "");
+      // Two tile variants, told apart by whether the metric states a bar.
+      //
+      // The excellence tiles state the bar they are judged against and carry
+      // the status icon INSIDE the tile, above the number (516:50363).
+      //
+      // The review-count tile instead dates the number ("As of Oct 26") and
+      // puts the icon in the body above the label, not in the tile (796:29978,
+      // which revises 720:66225 — the icon used to sit in the tile there too).
+      // Dropping it is what takes the tile from 128px to the design's 94px;
+      // the height is content-driven, so there is nothing to hardcode.
+      //
+      // Only the excellence tiles have a trend or breakdown behind them, so
+      // only they get a "See details" toggle.
+      const isCount = !row.metric.barText;
+      const caption = isCount
+        ? esc(row.metric.caption || "")
+        : `Criteria:<br>${esc(row.metric.barText)}`;
       const expandable = Boolean(row.metric.chart || row.details);
       return `
         <div class="tc-row tc-row--metric" data-row="${esc(row.id)}">
           <div class="tc-metric${failing ? " tc-metric--not-met" : ""}">
-            ${icon(row.status)}
+            ${isCount ? "" : icon(row.status)}
             <p class="tc-metric__value">${esc(row.metric.value)}</p>
             <p class="tc-metric__bar">${caption}</p>
           </div>
           <div class="tc-row__body">
+            ${isCount ? icon(row.status) : ""}
             <p class="tc-row__label">${esc(row.label)}</p>
             <p class="tc-row__desc">${esc(row.description)}</p>
             ${help}
