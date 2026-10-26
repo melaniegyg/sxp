@@ -188,6 +188,28 @@ the eleven real rows that period is **not** the range they were measured over �
 each keeps its true range in `export_window_start` / `export_window_end` and
 explains the mismatch in `_note_window`.
 
+## Failing sections sort to the top
+
+Whichever section holds a failure is shown first; within the failing group and
+the passing group the original order holds (Review count → Basic operational
+standards → Exceptional customer experience). The reason a badge was refused
+should be the first thing read, not something to scroll past green ticks to
+find. A passing activity is therefore unchanged, and a single failure simply
+rises.
+
+This is one rule, not a per-case layout. It reproduces the order 720:66225
+draws for the review gate, and it is what moves the Exceptional-customer-
+experience section above the rest on `kyoto-defect` and the other DBR/rating
+failures. Of the seventeen fixtures, eleven have a failing section: five fail
+excellence, five fail operational (all Trust & Safety), and two fail the review
+gate plus the collapsed excellence line.
+
+**Known gap:** an activity below the review gate that *also* failed a T&S rule
+would sort operational between review-count and the collapsed excellence line,
+separating that line from the review count it explains. No fixture is in that
+state and no design covers it. If one appears, the collapsed line probably wants
+pinning to review-count rather than being sorted like an ordinary failure.
+
 ## Below the review gate, the page changes shape
 
 Design 720:66225. When `crit_min_reviews` is false the page is not merely the
@@ -199,9 +221,8 @@ normal layout with one row failing — three things change:
    visible rather than being dropped, so the supplier can see the criterion
    exists and why it is withheld.
 2. **The section order changes** to Review count → Exceptional customer
-   experience → Basic operational standards. The explanation belongs directly
-   under the review count that caused it. Passing activities keep the original
-   order, with operational standards second.
+   experience → Basic operational standards. This is not a special case — it
+   falls out of the general ordering rule below.
 3. **The review-count row grows a metric tile** showing the count so far, with
    a date line instead of a criteria line ("As of Oct 14") and no "See details"
    toggle — there is no trend or breakdown behind it.

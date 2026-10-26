@@ -314,10 +314,6 @@
     // collapses to one line (720:66225). It stays visible rather than being
     // dropped so the supplier can see the criterion exists and why it is
     // withheld; a missing section would just read as a shorter list.
-    //
-    // The order changes with it: the explanation belongs directly under the
-    // review count that caused it, which pushes operational standards last.
-    // Passing activities keep the original order.
     const byId = (id) => baseSections.find((s) => s.id === id);
     if (belowReviewGate) {
       byId("excellence").rows = [
@@ -328,9 +324,27 @@
         },
       ];
     }
-    const sections = belowReviewGate
-      ? [byId("review-count"), byId("excellence"), byId("operational")]
-      : baseSections;
+    // Failing sections come first — the reason the badge was refused should be
+    // the first thing read, not something to scroll past green ticks to find.
+    // Within each group the original order holds, so a passing activity is
+    // unchanged (Review count > Basic operational standards > Exceptional
+    // customer experience) and a single failure simply rises to the top.
+    //
+    // This generalises the ordering 720:66225 shows for the review gate: there,
+    // review-count and the collapsed excellence section both fail and
+    // operational passes, which this rule reproduces exactly.
+    //
+    // KNOWN GAP: if an activity were below the review gate AND failed a
+    // Trust & Safety rule, operational would sort between review-count and the
+    // collapsed excellence line, separating that line from the review count it
+    // explains. No fixture is in that state and no design covers it. If one
+    // appears, the collapsed line probably wants pinning to review-count rather
+    // than being sorted like a normal failure.
+    const sectionFailed = (s) => s.rows.some((r) => r.status === "not-met");
+    const sections = [
+      ...baseSections.filter(sectionFailed),
+      ...baseSections.filter((s) => !sectionFailed(s)),
+    ];
 
     return {
       activityTitle: a.activity_title,
