@@ -1,5 +1,5 @@
 {
-  "_note": "Sample activity from sxp_activity_criteria (Databricks, production.supply_analytics). Scalar fields only — the source file's 94-row `defect_records` array is omitted because the current design has nowhere to show it. Full file: ~/Downloads/activity_21293_full.json",
+  "_note": "Sample activity from sxp_activity_criteria (Databricks, production.supply_analytics). Scalar fields are verbatim. The source file's 94-row `defect_records` array is not reproduced per-booking — the page has nowhere to show individual rows — but it is now summarised into details.quality-rate.disruptions below, the same treatment the nine real fixtures give their booking-level data. Full file: ~/Downloads/activity_21293_full.json",
   "_note_next_award_date": "NOT from the export — added to drive the status-banner copy, which names the date the badge would appear. The criteria deck lists award cadence as an open question, so this is a placeholder. Set to the end of the assessment period, on the assumption the badge is awarded when the period closes.",
   "next_award_date": "2027-01-01",
   "_note_window": "window_start/window_end are the intended assessment period (Jul 1, 2026 – Jan 1, 2027), not the export's own window (2026-04-18 – 2026-10-14). The metrics below were measured over the export's window, so the period label and the numbers come from different ranges in this fixture.",
@@ -71,6 +71,134 @@
           "date": "Dec 15, 2026",
           "value": 0.010855
         }
+      ],
+      "disruptions": [
+        {
+          "category": "Top disruptions",
+          "defects": [
+            {
+              "name": "Activity Not As Advertised",
+              "description": "The activity delivered did not match the description.",
+              "recAction": "",
+              "recommendations": [
+                "Review the description of your activity so travelers know what to expect",
+                "Ensure your photos accurately reflect the experience"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Adding Description for Your Product",
+                "Enhancing Your Product Listings"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 15
+            },
+            {
+              "name": "Supplier Not Responsive",
+              "description": "The traveler contacted you and did not get a reply in time.",
+              "recAction": "",
+              "recommendations": [
+                "Check your inbox daily, including the day before travel",
+                "Keep the phone number on your listing one a traveler can actually reach"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Communicating with Travelers"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 4
+            },
+            {
+              "name": "Activity Oversubscribed",
+              "description": "More travelers were booked than the activity could take.",
+              "recAction": "",
+              "recommendations": [
+                "Set group-size caps that match what you can actually staff",
+                "Keep capacity in sync when you sell the same slot on other channels"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Managing Your Availability"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 2
+            },
+            {
+              "name": "Supplier Cancellation (non-FM)",
+              "description": "You cancelled the booking for a reason within your control.",
+              "recAction": "",
+              "recommendations": [
+                "Close availability you cannot staff rather than cancelling after travelers book",
+                "Keep availability in sync when you sell the same slot on other channels"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Managing Your Availability"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 2
+            },
+            {
+              "name": "Extra Charge",
+              "description": "The traveler was asked to pay more than the booked price.",
+              "recAction": "",
+              "recommendations": [
+                "Include every mandatory fee in the price shown on GetYourGuide",
+                "List genuinely optional extras in the Important Information section"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Pricing Your Activity"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 1
+            },
+            {
+              "name": "Unclear Meeting Point Location",
+              "description": "The meeting point description was unclear, or wrong.",
+              "recAction": "",
+              "recommendations": [
+                "Verify the address is findable in a map app and add a meeting point photo",
+                "Include landmarks or directions from the nearest transport stop"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Meeting Point Pictures"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 1
+            },
+            {
+              "name": "Guide Language Wrong or Low Proficiency",
+              "description": "The guide did not speak the language originally booked for.",
+              "recAction": "",
+              "recommendations": [
+                "Confirm which languages each guide can deliver and keep the option list in sync",
+                "Remove languages you cannot staff reliably rather than risk a mismatch"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Managing Activity Languages"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 1
+            },
+            {
+              "name": "Unsuitable For Disabled Customers",
+              "description": "The activity could not accommodate a traveler's accessibility needs.",
+              "recAction": "",
+              "recommendations": [
+                "State accessibility limitations plainly in the Important Information section",
+                "Describe terrain, steps and transport so travelers can judge suitability"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Enhancing Your Product Listings"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 1
+            }
+          ]
+        }
       ]
     }
   },
@@ -139,5 +267,8 @@
   "has_badge": true,
   "has_badge_min": true,
   "_note_details_rating": "INVENTED, not from the export. sxp_activity_criteria holds one rating for the whole window — there is no monthly series anywhere — so these six points are generated around the row's real rating_in_window (4.6599) with a fixed zero-sum shape, scaled so the series stays under 5.0 and clears the 4.60 bar, matching crit_rating. Only the mean is anchored to anything real; the month-to-month shape is illustrative.",
-  "_note_details_quality_rate": "INVENTED, not from the export. sxp_activity_criteria holds one quality defect rate for the whole window, so these six points are generated around the row's real value (1.2142%) with a fixed zero-sum shape, scaled to stay at or above zero and stays under the 1.50% bar, matching crit_defect_rate. Only the mean is anchored to anything real."
+  "_note_details_quality_rate": "INVENTED, not from the export. sxp_activity_criteria holds one quality defect rate for the whole window, so these six points are generated around the row's real value (1.2142%) with a fixed zero-sum shape, scaled to stay at or above zero and stays under the 1.50% bar, matching crit_defect_rate. Only the mean is anchored to anything real.",
+  "_note_details_quality_disruptions": "REAL, unlike the trend above it. Built from this activity's own rows in production.supply_analytics.sxp_booking_defect, counting DISTINCT booking_id per tag and filtered to the tag set the criteria deck defines for this metric: the 9 quality tags + Supplier Cancellation (non-FM). The tour's rows carry 21 distinct tags in all; the 13 outside that set (Too Crowded, Duration Not As Advertised, Transport Low Quality, Audio Guide Broken, Confirmation Not Received and so on) are excluded, exactly as the nine real fixtures do. Tags are ordered by count descending, which is the only thing the order conveys — see _caveat_counts_not_shown. Copy for all tags but one is reused verbatim from the existing fixtures, which took it from the design; `Supplier Cancellation (non-FM)` had no copy anywhere in the repo, so its description and recommendations are written here in the same voice and are NOT from the design.",
+  "_caveat_counts_not_shown": "The `count` on each defect is provenance, not display data. criteria-render.js strips counts before handing the list to the shared defect-cards module, so no number reaches the supplier — the shared module reads `count` only to fill '{count}' in a recommended-action title, and falls back to 'recent' when it is absent. Counts are kept in this file because they determine the display order and record what the query returned.",
+  "_caveat_counts_do_not_reconcile": "These tags cover 27 distinct bookings against a quality_defect_bookings of 61 — they explain under half the rate shown above them. This is the sxp_booking_defect gap documented in CLAUDE.md, not a filtering mistake here: the table's latest travel_date is 2026-09-14 while the criteria window runs to 2026-10-14, and even inside the covered range its distinct-booking counts fall short of the aggregates. The shortfall is wider here than in the other real fixtures (italy-defect is 8 against 9), which is the main argument for never printing the counts."
 }

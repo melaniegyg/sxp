@@ -49,13 +49,20 @@ Selection is held in the URL hash, so `#severe-case` deep-links a scenario.
 | `rating-miss` | Rating below the bar |
 | `ts-miss` | Supplier case *rate* over the bar — no detail shown, by design |
 | `severe-case` | Confirmed severe case — itemises the offending activities in a table |
+| `ts-tag-rate` | T&S **tag** rate over the bar — the one fixture that exercises the inline tag rail |
 | `excellence-miss` | Rating, quality and pickup all missed; has trend + disruption data |
 
-Of these five, only `pass` is real; the other four are synthetic and marked so in a
+Of these six, only `pass` is real; the other five are synthetic and marked so in a
 `_note` field.
 
-Nine further fixtures are **all real rows**, exported over Apr–Oct 2026. They come
-in supplier pairs so the switcher's supplier line reads sensibly:
+`pass` also carries a **real** quality-rate disruption breakdown, queried from its
+own rows in `sxp_booking_defect` (8 tags over 27 distinct bookings). Its `trend` is
+still invented — the two live side by side in the same `details` object, so read the
+`_note_details_*` fields before trusting any of it.
+
+Eleven further fixtures are **all real rows**, exported over Apr–Oct 2026. Most
+come in supplier pairs so the switcher's supplier line reads sensibly; `etna`,
+`bft-ts` and `kyoto-defect` are singletons:
 
 | id | Supplier | Scenario |
 |---|---|---|
@@ -69,6 +76,7 @@ in supplier pairs so the switcher's supplier line reads sensibly:
 | `italy-defect` | Towns of Italy | Misses DBR — **blocked by city bar** |
 | `italy-pass` | Towns of Italy | Meets everything |
 | `bft-ts` | BFT GROUP | Fails **both** T&S rate rules (B and C) |
+| `kyoto-defect` | Matcha experience　Kyoto | Misses DBR — **blocked by city bar**; the one fixture whose tags reconcile |
 
 `bft-ts` is the only row that fails **both** supplier-level T&S rate rules, and
 the only real one to fail rule B. It has no booking-level rows at all, so there
@@ -79,7 +87,18 @@ the fixture and must stay dropped, since these files are served publicly.
 
 `italy-rating` and `italy-defect` are the first fixtures to exercise
 `badge.blockedByCityBar` (clears the global minimum, fails the stricter city bar).
-`turismo-fail` and `porto-fail` are the first to fail `crit_min_reviews`.
+`kyoto-defect` is the third and the only one outside Italy: Kyoto is
+destination_step 8, so its quality bar is 0.50% against the 2.00% global minimum,
+and its 0.845% sits between the two. `turismo-fail` and `porto-fail` are the
+first to fail `crit_min_reviews`.
+
+`kyoto-defect` is also the **only fixture whose disruption counts reconcile
+exactly** — 3 distinct tagged bookings against a `quality_defect_bookings` of 3,
+and 1 against 1 for pickup. That is because its detail comes from the export's
+own embedded `dbr_tags` array rather than a separate query against
+`sxp_booking_defect`, and its window closes before that table's coverage gap
+bites. It is the exception, not a sign the gap is fixed — see "Known problems".
+Its export carried a `supplier_email` too; dropped, and must stay dropped.
 
 Their `quality-rate` and `pickup-rate` panels carry **real** disruption lists,
 built from each activity's own rows in `sxp_booking_defect` and filtered to the
@@ -140,6 +159,23 @@ Source: criteria deck appendix "severity & supplier actionability" 1–3, which
 **does** carry the tick columns in the plain-text export — the older note that
 it drops them and needs a PPTX/XML parse is wrong; `read_file_content` is
 enough. One tick is missing from the deck, see "Known problems".
+
+**Tag counts are never shown to the supplier.** A fixture's `defect.count` is
+provenance and sort order only; `mountDisruptions()` in `criteria-render.js`
+strips it before handing the list to the shared defect-cards module. Two
+reasons: a bare "15" invites arguing with the number instead of acting on the
+tag, and these counts come from `sxp_booking_defect`, which undercounts the
+aggregate printed above them (see "Known problems") — so any figure shown would
+visibly fail to add up. `pass` is the clearest case at 27 against a
+`quality_defect_bookings` of 61.
+
+The shared module reads `count` in exactly one place, to fill `{count}` in a
+recommended-action title, and its `fillCount()` already renders "recent" when
+the field is absent — "Address recent reviews that mention capacity". So
+stripping is safe and never yields `undefined`. Note no fixture currently sets
+`recAction`, so that title is unreachable here today; the strip is what keeps it
+safe if one ever does. Don't "restore" the count to make a card look complete,
+and don't fix this in `defect-cards.js` — the DBR portal does show counts.
 
 **Their switcher labels say only "Meets" / "Does not meet" — on purpose.** These
 are named real suppliers, and the view is supplier-facing; the scenario column
@@ -240,6 +276,17 @@ Documented at each site; don't "fix" them without checking:
   tour 516233: 1 row vs `defective_bookings_platform` = 4; tours 437878 and
   645277 have no rows at all despite nonzero aggregates). Any "Top disruptions"
   list built from this table will sum to less than the rate printed above it.
+
+  **Quantified.** Of the **79,134** activities with a non-zero quality defect
+  rate, **74,634 (94.3%) have no quality-tagged booking rows at all** — a
+  breakdown built for them renders empty. Another 3,564 (4.5%) have tags that
+  undercount the rate. Only **936 (1.2%)** have tags that actually account for
+  it, and that is an upper bound: the check counted each tour's rows across all
+  time against a single window's aggregate. So a rule like "show the tags
+  whenever the rate is above 0%" is satisfiable on roughly 1 activity in 85.
+  Any copy pointing the supplier at a breakdown ("review the key trends below")
+  must be gated on the breakdown existing, not on the rate being non-zero —
+  the same gate `crit_ts_tag_rate` already uses.
 - **The deck's appendix ticks 23 tags but its summary says 24.** Slide 18 states
   the split as 9 quality + 2 pickup + 13 T&S. The appendix tick columns give
   13 T&S and 2 pickup (both correct) but only **8** quality. The missing one is

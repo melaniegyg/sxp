@@ -94,9 +94,25 @@
     const wrap = document.createElement("div");
     wrap.className = "tc-disruptions" + (opts && opts.inline ? " tc-disruptions--inline" : "");
     host.appendChild(wrap);
+    // Tag counts are NEVER shown to the supplier. Two reasons: a bare "15"
+    // invites arguing with the number instead of acting on the tag, and the
+    // booking-level rows these counts come from do not reconcile with the rate
+    // printed above them (sxp_booking_defect undercounts — see CLAUDE.md), so
+    // any figure here would visibly fail to add up. Order still carries the
+    // ranking, so the worst tag stays first.
+    //
+    // `count` is read by the shared module in exactly one place, to fill
+    // "{count}" in a recommended-action title, and its fillCount() already
+    // renders "recent" when the field is absent — "Address recent reviews that
+    // mention capacity". So dropping it here is enough; defect-cards.js stays
+    // untouched for the DBR portal, which does show counts.
+    const countless = disruptions.map((cat) => ({
+      ...cat,
+      defects: (cat.defects || []).map(({ count, ...defect }) => defect),
+    }));
     // accordion:false keeps the single card open — there is nothing to
     // collapse against when each metric shows one category.
-    DefectCards.render(wrap, disruptions, { accordion: false });
+    DefectCards.render(wrap, countless, { accordion: false });
 
     // The card is already inside a collapsible row, so its own collapse
     // affordance is redundant: drop the chevron, and demote the heading from

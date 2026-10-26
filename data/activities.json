@@ -17,7 +17,8 @@
     { "id": "italy-rating", "file": "activity-10915-italy-rating.json", "label": "Does not meet" },
     { "id": "italy-defect", "file": "activity-375436-italy-defect.json", "label": "Does not meet" },
     { "id": "italy-pass", "file": "activity-437878-italy-pass.json", "label": "Meets" },
-    { "id": "bft-ts", "file": "activity-465573-bft-ts.json", "label": "Does not meet" }
+    { "id": "bft-ts", "file": "activity-465573-bft-ts.json", "label": "Does not meet" },
+    { "id": "kyoto-defect", "file": "activity-1333068-kyoto-defect.json", "label": "Does not meet" }
   ],
-  "_note_real_vs_synthetic": "The first five entries are the original scenarios — only `pass` is a real row; the other four are synthetic and say so in their own `_note`. The nine below are all REAL rows from sxp_activity_criteria, with supplier names from dwh.dim_supplier. They come in supplier pairs (a passing and a failing activity for the same supplier) so the switcher's supplier line reads sensibly. Their detail panels are mostly empty by design — see each fixture's `details._caveat_*` fields for why."
+  "_note_real_vs_synthetic": "The first six entries are the original scenarios — only `pass` is a real row; the other five are synthetic and say so in their own `_note`. The eleven below are all REAL rows from sxp_activity_criteria. Most come in supplier pairs (a passing and a failing activity for the same supplier) so the switcher's supplier line reads sensibly; `etna`, `bft-ts` and `kyoto-defect` are singletons. Supplier names are looked up from dwh.dim_supplier.company_name except for `bft-ts` and `kyoto-defect`, whose exports carried the name directly. Their detail panels are mostly empty by design — see each fixture's `details._caveat_*` fields for why."
 }
