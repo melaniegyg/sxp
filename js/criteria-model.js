@@ -185,8 +185,12 @@
                   },
                 }
               : {}),
-            failHelp:
-              "Keep collecting reviews — we check again at the end of each assessment period.",
+            // No failHelp. 796:29978 draws this row failing as icon, label and
+            // description only — the tile already says where the count stands,
+            // and "we check again at the end of each assessment period" repeats
+            // what the period select above states. The cancellation row keeps
+            // its help text; that one IS in the design, as a hidden node the
+            // failing state reveals.
           },
         ],
       },
