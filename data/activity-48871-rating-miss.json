@@ -15,6 +15,29 @@
   "window_start": "2026-07-01",
   "window_end": "2027-01-01",
   "next_award_date": "2027-01-01",
+  "_note_details": "INVENTED, like the rest of this synthetic fixture — there is no monthly series anywhere in the warehouse. Both trends use the same fixed zero-sum shape the other fixtures use, so each series' mean is its row's real headline number: rating averages 4.41 and the quality rate averages 1.3043%. The shapes are scaled to agree with the crit_* flags — every rating month sits BELOW the 4.60 bar (crit_rating false, so the chart shades all six) and every quality month sits below the 2.00% bar (crit_defect_rate true, so none are shaded). No `disruptions` on either metric: this activity is invented, so there are no real tags to list and none are fabricated — the same rule the other synthetic fixtures follow. No pickup trend either, since has_pickup is false and the row is hidden.",
+  "details": {
+    "rating": {
+      "trend": [
+        { "label": "Jul", "date": "Jul 15, 2026", "value": 4.26 },
+        { "label": "Aug", "date": "Aug 15, 2026", "value": 4.47 },
+        { "label": "Sep", "date": "Sep 15, 2026", "value": 4.56 },
+        { "label": "Oct", "date": "Oct 15, 2026", "value": 4.32 },
+        { "label": "Nov", "date": "Nov 15, 2026", "value": 4.51 },
+        { "label": "Dec", "date": "Dec 15, 2026", "value": 4.34 }
+      ]
+    },
+    "quality-rate": {
+      "trend": [
+        { "label": "Jul", "date": "Jul 15, 2026", "value": 0.008043 },
+        { "label": "Aug", "date": "Aug 15, 2026", "value": 0.015043 },
+        { "label": "Sep", "date": "Sep 15, 2026", "value": 0.018043 },
+        { "label": "Oct", "date": "Oct 15, 2026", "value": 0.010043 },
+        { "label": "Nov", "date": "Nov 15, 2026", "value": 0.016543 },
+        { "label": "Dec", "date": "Dec 15, 2026", "value": 0.010543 }
+      ]
+    }
+  },
   "total_bookings": 1840,
   "defect_denominator": 1840,
   "reviews_in_window": 412,
