@@ -188,7 +188,7 @@ the eleven real rows that period is **not** the range they were measured over �
 each keeps its true range in `export_window_start` / `export_window_end` and
 explains the mismatch in `_note_window`.
 
-## Failing sections sort to the top
+## Failures sort to the top, and the rail is segmented
 
 Whichever section holds a failure is shown first; within the failing group and
 the passing group the original order holds (Review count → Basic operational
@@ -196,6 +196,21 @@ standards → Exceptional customer experience). The reason a badge was refused
 should be the first thing read, not something to scroll past green ticks to
 find. A passing activity is therefore unchanged, and a single failure simply
 rises.
+
+**The same rule applies inside a section**: a failed check sits above the
+passing ones. 516:50960 is the reference — it puts the Trust & Safety failure
+above the cancellation policy, reversing their declared order. On
+`kyoto-defect` it lifts Disrupted booking rate above Rating.
+
+**The left rail is coloured per row, not per section** (516:50960 draws it as
+two rectangles — red to the end of the failing row, green from there). Each
+`.tc-row` paints its own 12px slice, reaching back out of the rows container's
+32px left padding to the card edge; the first and last slices stretch over that
+container's padding and each slice overlaps the 1px separator above it, so the
+rail stays unbroken. `.tc-section::before` remains as a base layer for the
+header, which sits above the first row — and because rows are ordered
+failing-first, "any row failed" and "the first row failed" are the same
+condition, so the header always matches the slice beneath it.
 
 This is one rule, not a per-case layout. It reproduces the order 720:66225
 draws for the review gate, and it is what moves the Exceptional-customer-

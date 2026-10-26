@@ -158,7 +158,7 @@
         : `Criteria:<br>${esc(row.metric.barText)}`;
       const expandable = Boolean(row.metric.chart || row.details);
       return `
-        <div class="tc-row tc-row--metric" data-row="${esc(row.id)}">
+        <div class="tc-row tc-row--metric tc-row--${esc(row.status)}" data-row="${esc(row.id)}">
           <div class="tc-metric${failing ? " tc-metric--not-met" : ""}">
             ${isCount ? "" : icon(row.status)}
             <p class="tc-metric__value">${esc(row.metric.value)}</p>
@@ -205,7 +205,7 @@
       : `${desc}${help}${inlineRail}`;
 
     return `
-      <div class="tc-row" data-row="${esc(row.id)}">
+      <div class="tc-row tc-row--${esc(row.status)}" data-row="${esc(row.id)}">
         ${icon(row.status, row.failIcon)}
         <div class="tc-row__body${replaced ? " tc-row__body--replaced" : ""}">
           <p class="tc-row__label">${esc(row.label)}</p>

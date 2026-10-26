@@ -213,8 +213,14 @@
   overflow: hidden;
   background: var(--gyg-background-primary);
 }
-/* Left rail — green while every row passes, red as soon as one fails.
-   Design clips a 24px rect to ~11px inside the card's left edge. */
+/* Left rail — segmented, one slice per row (516:50960 draws it as two
+   rectangles, red down to the end of the failing row and green from there).
+   Design clips a 24px rect to ~11px inside the card's left edge.
+
+   This base layer covers the section header, which sits above the first row.
+   Rows are ordered failing-first, so "any row failed" and "the first row
+   failed" are the same condition — the header always matches the slice
+   directly beneath it. */
 .tc-section::before {
   content: "";
   position: absolute;
@@ -224,6 +230,21 @@
 .tc-section--met::before { background: var(--tc-met-weak); }
 .tc-section--not-met::before { background: var(--tc-not-met-weak); }
 
+/* Each row paints its own slice over the base, reaching back out of the rows
+   container's 32px left padding to the card edge. The first and last slices
+   stretch over that container's padding so the rail stays unbroken, and every
+   slice overlaps the 1px row separator above it for the same reason. */
+.tc-row::before {
+  content: "";
+  position: absolute;
+  top: -1px; bottom: 0; left: -32px;
+  width: 12px;
+}
+.tc-row--met::before { background: var(--tc-met-weak); }
+.tc-row--not-met::before { background: var(--tc-not-met-weak); }
+.tc-section__rows > .tc-row:first-child::before { top: -8px; }
+.tc-section__rows > .tc-row:last-child::before { bottom: -16px; }
+
 .tc-section__head { padding: 16px 24px 0 32px; }
 .tc-section__title { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
 .tc-section__rows { padding: 8px 24px 16px 32px; }
@@ -231,6 +252,7 @@
 /* --- Row ---------------------------------------------------- */
 
 .tc-row {
+  position: relative;
   display: flex;
   gap: 16px;
   padding: 16px 0;

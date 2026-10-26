@@ -340,10 +340,21 @@
     // explains. No fixture is in that state and no design covers it. If one
     // appears, the collapsed line probably wants pinning to review-count rather
     // than being sorted like a normal failure.
-    const sectionFailed = (s) => s.rows.some((r) => r.status === "not-met");
+    // The same rule applies inside a section: the failed check sits above the
+    // passing ones (516:50960 puts the Trust & Safety failure above the
+    // cancellation policy, reversing their usual order). Filter twice rather
+    // than sort, so the original order holds within each group.
+    const rowFailed = (r) => r.status === "not-met";
+    const orderRows = (s) => ({
+      ...s,
+      rows: [...s.rows.filter(rowFailed), ...s.rows.filter((r) => !rowFailed(r))],
+    });
+    const ordered = baseSections.map(orderRows);
+
+    const sectionFailed = (s) => s.rows.some(rowFailed);
     const sections = [
-      ...baseSections.filter(sectionFailed),
-      ...baseSections.filter((s) => !sectionFailed(s)),
+      ...ordered.filter(sectionFailed),
+      ...ordered.filter((s) => !sectionFailed(s)),
     ];
 
     return {
