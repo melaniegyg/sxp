@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Top Choice — Supplier Portal concept</title>
+  <title>Excellent Experience — Supplier Portal concept</title>
   <!-- defect-cards.css carries its own :root token fallbacks so it can run
        standalone, so it MUST load before tokens.css — otherwise those
        fallbacks override the page's real tokens. Order matters here. -->
@@ -184,7 +184,7 @@
       onSelect(activity) {
         const model = TopChoice.build(activity);
         document.getElementById("activity-title").textContent = model.activityTitle;
-        document.title = model.activityTitle + " — Top Choice";
+        document.title = model.activityTitle + " — Excellent Experience";
         TopChoiceRender.render("#criteria", model);
       },
       onError(err, entry) {
