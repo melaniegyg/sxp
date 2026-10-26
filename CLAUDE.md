@@ -136,6 +136,20 @@ on the supplier**, in 6 months.
 activity, confirmation date, case number and exclusion date, and stops there —
 don't add a severity column "for completeness".
 
+**The severe-case ban is not bounded by the assessment period.** It runs six
+months from the last confirmed case — the same six-month lookback Rule A uses,
+so the ban lifts once that window no longer holds a case. The row says so
+(516:50960: "until at least 6 full months have passed since the last confirmed
+case"), and every `excluded_until` in a fixture's `ts_cases` is exactly six
+months after its `confirmed` date. **Keep that invariant** if those dates are
+ever edited, or the table will contradict the sentence above it. `bali-ts` had
+one row off by ten days and it is now fixed.
+
+This wording is scoped to the severe-case branch only. The two supplier-level
+*rate* rules (B and C) still read "for the current assessment period", which is
+right for them — they are rates measured over a window, not a ban dated from a
+case, and C has no case to date from at all.
+
 For supplier 272440 the data reads: both valid sev 1–2 cases sit on tour 472433
 itself (`activity_valid_sev12_cases = 2`), which satisfies the "two on the
 supplier" clause. Their other four activities carry **zero** cases of their own

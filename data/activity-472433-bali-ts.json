@@ -280,7 +280,7 @@
       ]
     }
   },
-  "_note_ts_cases": "Case rows are NOT from the export — sxp_activity_criteria carries only activity_valid_sev12_cases as a count. Transcribed verbatim from the design (Figma 516:51482), which supersedes the earlier 720:66815: the columns are now Activity / Case confirmed / Case number / Excluded until, and the last holds a bare date instead of 'Ban effective until X'. The design names the activity 'Ubud: ...' while this row's real activity_title is 'Bali: ...'; the design's string is kept because the design is the source for this table.",
+  "_note_ts_cases": "Case rows are NOT from the export — sxp_activity_criteria carries only activity_valid_sev12_cases as a count. Transcribed verbatim from the design (Figma 516:51482), which supersedes the earlier 720:66815: the columns are now Activity / Case confirmed / Case number / Excluded until, and the last holds a bare date instead of 'Ban effective until X'. The design names the activity 'Ubud: ...' while this row's real activity_title is 'Bali: ...'; the design's string is kept because the design is the source for this table. CORRECTION: the second row's 'Excluded until' read 'Feb 1, 2027', a transcription slip — the design says 'Feb 11, 2027' and that is also what the rule gives. Every 'Excluded until' here is now exactly six months after its 'Case confirmed' date, which is what the row's copy claims above the table ('until at least 6 full months have passed since the last confirmed case'). Keep that invariant if these dates are ever edited.",
   "ts_cases": [
     {
       "activity": "Ubud: Quad ATV Waterfalls & Barong Caves",
@@ -292,7 +292,7 @@
       "activity": "Ubud: Quad ATV Waterfalls & Barong Caves",
       "confirmed": "August 11, 2026",
       "case_number": "20456427",
-      "excluded_until": "Feb 1, 2027"
+      "excluded_until": "Feb 11, 2027"
     },
     {
       "activity": "Ubud: Quad ATV Waterfalls & Barong Caves",

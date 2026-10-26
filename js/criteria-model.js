@@ -230,8 +230,14 @@
             // tag rule but has zero rows in sxp_booking_defect, so there are no
             // tags to list; it falls through to the no-detail copy, which is
             // also accurate there since it fails the case rule too.
+            // The severe-case ban is NOT bounded by the assessment period. It
+            // runs six months from the last confirmed case, which is the same
+            // six-month lookback Rule A uses — so the ban lifts when that
+            // window no longer contains a case. Copy per 516:50960; the
+            // "Excluded until" dates in the table below are exactly six months
+            // after each "Case confirmed" date, so the two now agree.
             failDescription: !a.crit_ts_no_severe_case
-              ? "We track complaints and reviews related to serious issues across all your activities. As you have multiple confirmed cases (below), all your activities are excluded from the program for the current assessment period."
+              ? "We track complaints and reviews related to serious issues across all your activities. As you have multiple confirmed cases (below), all your activities are excluded from the program until at least 6 full months have passed since the last confirmed case."
               : tsTagDetail
                 ? "We track complaints and reviews related to serious issues across all your activities. This activity has been tagged with a high number of safety issues and it is therefore excluded from the program for the current assessment period. Review the key trends below and take action to improve."
                 : "We track complaints and reviews related to serious issues across all your activities. We have identified a high number of cases or investigations related to this activity and it is therefore excluded from the program for the current assessment period. To protect traveler safety, we can’t provide further details at this time.",
