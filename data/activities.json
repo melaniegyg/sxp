@@ -16,7 +16,8 @@
     { "id": "bali-ts", "file": "activity-472433-bali-ts.json", "label": "Does not meet" },
     { "id": "italy-rating", "file": "activity-10915-italy-rating.json", "label": "Does not meet" },
     { "id": "italy-defect", "file": "activity-375436-italy-defect.json", "label": "Does not meet" },
-    { "id": "italy-pass", "file": "activity-437878-italy-pass.json", "label": "Meets" }
+    { "id": "italy-pass", "file": "activity-437878-italy-pass.json", "label": "Meets" },
+    { "id": "bft-ts", "file": "activity-465573-bft-ts.json", "label": "Does not meet" }
   ],
   "_note_real_vs_synthetic": "The first five entries are the original scenarios — only `pass` is a real row; the other four are synthetic and say so in their own `_note`. The nine below are all REAL rows from sxp_activity_criteria, with supplier names from dwh.dim_supplier. They come in supplier pairs (a passing and a failing activity for the same supplier) so the switcher's supplier line reads sensibly. Their detail panels are mostly empty by design — see each fixture's `details._caveat_*` fields for why."
 }

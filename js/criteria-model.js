@@ -135,6 +135,15 @@
     }));
 
   function build(a) {
+    // The T&S tag-rate breakdown, when the tag rule is the reason AND the
+    // fixture actually has tags to show. A severe case supersedes it with the
+    // case table instead. TODO(data): the export has supplier_ts_tag_bookings
+    // as a bare count with no tag split, so this comes from the fixture.
+    const tsTagDetail =
+      a.crit_ts_no_severe_case && !a.crit_ts_tag_rate
+        ? detailsFor(a, "trust-safety")
+        : null;
+
     const sections = [
       {
         id: "review-count",
@@ -185,23 +194,21 @@
             //     review text, not investigated cases, so they can be shared.
             //   investigated case rate (crit_ts_case_rate) — 516:51696
             //     gives no detail at all, deliberately — real T&S cases.
+            // The tag-rate copy ends "Review the key trends below", so it is
+            // used ONLY when there is a breakdown to review. `bft-ts` fails the
+            // tag rule but has zero rows in sxp_booking_defect, so there are no
+            // tags to list; it falls through to the no-detail copy, which is
+            // also accurate there since it fails the case rule too.
             failDescription: !a.crit_ts_no_severe_case
               ? "We track complaints and reviews related to serious issues across all your activities. As you have multiple confirmed cases (below), all your activities are excluded from the program for the current assessment period."
-              : !a.crit_ts_tag_rate
+              : tsTagDetail
                 ? "We track complaints and reviews related to serious issues across all your activities. This activity has been tagged with a high number of safety issues and it is therefore excluded from the program for the current assessment period. Review the key trends below and take action to improve."
                 : "We track complaints and reviews related to serious issues across all your activities. We have identified a high number of cases or investigations related to this activity and it is therefore excluded from the program for the current assessment period. To protect traveler safety, we can’t provide further details at this time.",
             // TODO(data): the export carries supplier_valid_sev12_cases as a
             // bare count — no activity, date, case number or ban expiry. These
             // rows come from a `ts_cases` field the fixtures add by hand.
             cases: !a.crit_ts_no_severe_case ? a.ts_cases || [] : null,
-            // Only the tag-rate failure shows a breakdown, and only when it is
-            // the reason — a severe case supersedes it with the table above.
-            // TODO(data): the export has supplier_ts_tag_bookings as a count
-            // with no tag split, so fixtures supply details["trust-safety"].
-            details:
-              a.crit_ts_no_severe_case && !a.crit_ts_tag_rate
-                ? detailsFor(a, "trust-safety")
-                : null,
+            details: tsTagDetail,
           },
         ],
       },

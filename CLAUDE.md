@@ -68,6 +68,14 @@ in supplier pairs so the switcher's supplier line reads sensibly:
 | `italy-rating` | Towns of Italy | Misses rating — **blocked by city bar** |
 | `italy-defect` | Towns of Italy | Misses DBR — **blocked by city bar** |
 | `italy-pass` | Towns of Italy | Meets everything |
+| `bft-ts` | BFT GROUP | Fails **both** T&S rate rules (B and C) |
+
+`bft-ts` is the only row that fails **both** supplier-level T&S rate rules, and
+the only real one to fail rule B. It has no booking-level rows at all, so there
+are no tags to list — which is why the tag-rate copy ("Review the key trends
+below") is gated on the breakdown actually existing, not just on the rule
+failing. Its export also carried a `supplier_email`; that field is dropped from
+the fixture and must stay dropped, since these files are served publicly.
 
 `italy-rating` and `italy-defect` are the first fixtures to exercise
 `badge.blockedByCityBar` (clears the global minimum, fails the stricter city bar).
