@@ -257,11 +257,14 @@ normal layout with one row failing — three things change:
    toggle — there is no trend or breakdown behind it.
 
 The count tile is a **distinct variant** of the metric tile, per 796:29978 which
-revises 720:66225: its status icon sits in the row body above the label, not
-inside the tile. The excellence tiles keep theirs inside, above the number
-(516:50363). Dropping the icon is what takes the tile from 128px to the design's
-94px — the height is content-driven, so there is nothing to hardcode. The
-renderer tells the two apart by whether the metric states a bar.
+revises 720:66225. Both tiles carry the status icon, but they place it
+differently: the excellence tiles stack it above the number (516:50363), while
+the count tile sets it inline to the number's left, the two forming one 30px
+row. That pairing is why the count tile comes to 94px against the excellence
+tiles' 128px. Nothing is hardcoded to those numbers — both heights are
+content-driven, and the icon centres against the number's line box, which is
+what puts a 24px glyph 3px down from the row's top edge. The renderer tells the
+two variants apart by whether the metric states a bar.
 
 `turismo-fail` and `porto-fail` are the only fixtures in this state.
 

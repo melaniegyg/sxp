@@ -321,6 +321,18 @@
 }
 /* A missed bar outlines the whole tile in critical (516:51043). */
 .tc-metric--not-met { border-color: var(--tc-critical-border); }
+/* The review-count tile pairs its icon with the number on one line, instead of
+   stacking it above (796:29978). Centring is against the number's 30px line
+   box, which is what puts the 24px icon 3px down from the row's top edge. */
+.tc-metric__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Hug the icon+number pair rather than stretching across the tile, matching
+     the design's 58px box. Invisible as it stands — nothing is centred or
+     filled — but it keeps the box honest if either ever gains a background. */
+  align-self: flex-start;
+}
 .tc-metric__value { font: var(--font-title-2); color: var(--gyg-label-primary); margin: 0; }
 /* Figma marks this node whitespace-nowrap; at 14px "Criteria: ≤ 1.5%" is a
    few px wider than the 122px tile's inner width, so let it run rather than wrap. */
