@@ -92,6 +92,34 @@
     }
   }
 
+  // The one tag worth calling out, or null when the data doesn't support it.
+  //
+  // Order already ranks the tags, but that is implicit, so the top one is
+  // marked explicitly — under a deliberately strict guard. Measured across the
+  // warehouse, only about two thirds of activities that carry tags have a
+  // genuine leader: 21% are tied at the top and 15% have a single tag, where a
+  // "most common" claim would be invented or vacuous. All three rules below
+  // have to hold:
+  //
+  //   more than one tag   — nothing to be most common relative to otherwise
+  //   no tie for first    — a tie has no single offender, full stop
+  //   at least 3 bookings — one complaint must never crown a winner
+  //   double the runner-up— 31-vs-24 is not a standout, and badging it would
+  //                         invite arguing with a margin the supplier can't see
+  //
+  // Counts drive this but are never rendered; see mountDisruptions.
+  function dominantTag(disruptions) {
+    const defects = (disruptions || []).flatMap((c) => c.defects || []);
+    const counted = defects.filter((d) => typeof d.count === "number" && d.count > 0);
+    if (counted.length < 2) return null;
+    const sorted = [...counted].sort((a, b) => b.count - a.count);
+    const [first, second] = sorted;
+    if (first.count === second.count) return null;
+    if (first.count < 3) return null;
+    if (first.count < second.count * 2) return null;
+    return first.name;
+  }
+
   // Renders the shared defect-cards rail into `host` and strips the affordances
   // that only make sense in the DBR portal. Used by the metric detail panels
   // and, inline, by the Trust & Safety tag-rate failure (516:52273).
@@ -115,6 +143,7 @@
       ...cat,
       defects: (cat.defects || []).map(({ count, ...defect }) => defect),
     }));
+    const standout = dominantTag(disruptions);
     // accordion:false keeps the single card open — there is nothing to
     // collapse against when each metric shows one category.
     DefectCards.render(wrap, countless, { accordion: false });
@@ -144,6 +173,22 @@
     if (opts && opts.rateName) {
       wrap.querySelectorAll(".dp-advice .dp-heading").forEach((h) => {
         h.textContent = `What you can do to decrease your ${opts.rateName}`;
+      });
+    }
+
+    // Mark the standout tag, when there is one. Matched on the rendered title
+    // rather than by position: the shared module controls the list order, and
+    // keying off "first item" would silently mislabel if that ever changed.
+    if (standout) {
+      wrap.querySelectorAll(".defect-nav-item__title").forEach((t) => {
+        if (t.textContent !== standout) return;
+        const chip = document.createElement("span");
+        chip.className = "tc-top-tag";
+        chip.textContent = "Most common";
+        // The gap is margin, which screen readers and copied text don't see —
+        // without this the title reads "Activity Not As AdvertisedMost common".
+        t.appendChild(document.createTextNode(" "));
+        t.appendChild(chip);
       });
     }
     return wrap;

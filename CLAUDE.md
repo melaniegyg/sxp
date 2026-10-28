@@ -191,6 +191,20 @@ stripping is safe and never yields `undefined`. Note no fixture currently sets
 safe if one ever does. Don't "restore" the count to make a card look complete,
 and don't fix this in `defect-cards.js` — the DBR portal does show counts.
 
+**The top tag is marked "Most common", but only when it earns it.** Order
+already ranks the list; the chip makes that explicit without printing a number.
+`dominantTag()` in `criteria-render.js` applies a deliberately strict guard —
+more than one tag, no tie for first, at least 3 bookings, and **double** the
+runner-up. All four must hold.
+
+The strictness is the point. Across the warehouse only about two thirds of
+activities carrying tags have a genuine leader: 21% are tied at the top and 15%
+have a single tag, where the claim would be invented or vacuous. A looser rule
+(merely beating second place) would badge 31-vs-24 as a standout, which invites
+arguing with a margin the supplier can't see — the same failure the count strip
+exists to avoid. Of the twelve rails the fixtures render, three qualify: `pass`
+(15 vs 4), `bali-ts` pickup (24 vs 6) and `italy-rating` (3 vs 1).
+
 **Their switcher labels say only "Meets" / "Does not meet" — on purpose.** These
 are named real suppliers, and the view is supplier-facing; the scenario column
 above is for us, not for the dropdown. Don't make these labels descriptive to

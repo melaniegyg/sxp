@@ -402,6 +402,20 @@
 /* The Trust & Safety tag-rate rail sits inline under the copy rather than in a
    "See details" panel, and 516:52273 shows no category heading above it — the
    row's own "Trust and Safety check" label already titles the block. */
+/* "Most common" marker on the standout tag. Deliberately quiet — it ranks the
+   list, it is not a second severity signal competing with the red/green rail.
+   Scoped here, like every other deviation, so defect-cards.css stays shared. */
+.tc-disruptions .tc-top-tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--gyg-background-secondary);
+  color: var(--gyg-label-secondary);
+  font: var(--font-label);
+  vertical-align: middle;
+}
+
 .tc-disruptions--inline { margin-top: 16px; }
 .tc-disruptions--inline .cc-left__head { display: none; }
 
