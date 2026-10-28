@@ -35,6 +35,11 @@ html { min-width: 1440px; }
 .topnav__name { font: var(--font-caption-strong); color: var(--gyg-label-primary); }
 .topnav__company { font: var(--font-label); color: var(--gyg-label-secondary); }
 .topnav__chevron { color: var(--gyg-label-tertiary); }
+/* ?supplier — the chip is a plain label, not a control (see
+   js/activity-switcher.js). Drop the chevron and the pointer so nothing
+   invites a click that now does nothing. */
+.topnav__user--locked { cursor: default; }
+.topnav__user--locked .topnav__chevron { display: none; }
 
 /* Sidebar */
 .sidebar {

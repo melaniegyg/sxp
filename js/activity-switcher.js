@@ -30,9 +30,22 @@
     const sublabel = document.getElementById("switcher-sublabel");
     if (!root || !menu) return;
 
+    // Supplier-facing links carry ?supplier, which turns the chip into a plain
+    // label: no dropdown, no chevron, and only the fixture named in the hash is
+    // fetched. That last part is the point — normally every fixture is loaded
+    // up front to label the menu, so without this a supplier sees seventeen
+    // other companies' files go past in the network tab.
+    //
+    // This is a demo affordance, NOT access control. Every fixture stays
+    // readable at data/*.json and dropping the query param brings the switcher
+    // back. It stops the other suppliers being handed over; it does not stop
+    // them being found.
+    const locked = new URLSearchParams(location.search).has("supplier");
+
     let entries = [];
 
     function close() {
+      if (locked) return;
       menu.hidden = true;
       root.setAttribute("aria-expanded", "false");
     }
@@ -45,7 +58,10 @@
       // Primary line is the supplier; the scenario sits underneath so fixtures
       // for the same supplier stay tellable apart.
       label.textContent = entry.supplier;
-      sublabel.textContent = entry.label;
+      // The scenario line is an internal label ("Misses rating"), so it is
+      // dropped for suppliers — they see their company name and nothing that
+      // reads as a verdict on it from the page furniture.
+      sublabel.textContent = locked ? "" : entry.label;
       menu.querySelectorAll("li").forEach((li) =>
         li.setAttribute("aria-selected", String(li.dataset.id === entry.id))
       );
@@ -56,11 +72,20 @@
 
     return fetch(MANIFEST + "?cb=" + Date.now())
       .then((r) => r.json())
-      .then((m) =>
-        // Load every fixture up front so the menu can label each one from its
-        // own data rather than from hand-written strings in the manifest.
+      .then((m) => {
+        const all = m.activities || [];
+        // Unlocked, every fixture is loaded up front so the menu can label each
+        // one from its own data rather than from hand-written manifest strings.
+        // Locked, only the one the hash names is fetched. An unknown or missing
+        // hash falls back to the first entry so the page still renders.
+        const wanted = locked
+          ? all.filter((e) => e.id === location.hash.slice(1)).slice(0, 1)
+          : all;
+        return (wanted.length ? wanted : all.slice(0, 1)).map((e) => e);
+      })
+      .then((list) =>
         Promise.all(
-          (m.activities || []).map((e) =>
+          list.map((e) =>
             fetch("data/" + e.file + "?cb=" + Date.now())
               .then((r) => {
                 if (!r.ok) throw new Error(r.status + " fetching " + e.file);
@@ -77,6 +102,20 @@
       .then((loaded) => {
         entries = loaded.filter(Boolean);
         if (!entries.length) return;
+
+        // Locked: strip the chip's interactive affordances and drop the menu
+        // from the DOM entirely rather than hiding it, so there is no list of
+        // other suppliers to find in the markup.
+        if (locked) {
+          ["role", "tabindex", "aria-haspopup", "aria-expanded", "aria-label"].forEach((a) =>
+            root.removeAttribute(a)
+          );
+          root.classList.add("topnav__user--locked");
+          menu.remove();
+          select(entries[0], false);
+          return;
+        }
+
         menu.innerHTML = entries
           .map(
             (e) => `

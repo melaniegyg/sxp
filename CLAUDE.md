@@ -196,6 +196,27 @@ are named real suppliers, and the view is supplier-facing; the scenario column
 above is for us, not for the dropdown. Don't make these labels descriptive to
 match the five synthetic ones, whose suppliers are invented.
 
+### `?supplier` — links you send to a supplier
+
+A link carrying `?supplier` (e.g. `…/sxp/?supplier#etna`) turns the top-right
+chip into a plain label: no dropdown, no chevron, no scenario line under the
+company name, and the menu is removed from the DOM rather than hidden. Only the
+fixture the hash names is fetched — normally all seventeen load up front so the
+menu can label each from its own data, which would otherwise parade every other
+company past a supplier watching the network tab.
+
+**This is a demo affordance, not access control.** Every fixture stays readable
+at `data/*.json`, and deleting the query param brings the switcher back. It
+stops other suppliers being handed over; it does not stop them being found.
+`data/activities.json` is still fetched in this mode and lists all seventeen
+filenames — which embed tour ids — plus the internal labels. It names no
+suppliers, but it is a trail. Closing that needs a per-supplier manifest or a
+separate build; GitHub Pages cannot resolve the hash server-side.
+
+Without a hash the page falls back to the first fixture, so a bare `?supplier`
+link shows `pass` (City Wonders Ltd.) rather than breaking. Always include the
+hash.
+
 All seventeen fixtures show the same assessment period (Jul 1, 2026 – Jan 1, 2027)
 and the same award date, so the banner reads identically across the switcher. For
 the eleven real rows that period is **not** the range they were measured over —
