@@ -169,6 +169,15 @@ Pickup counts exactly two: `Unclear Pickup Information` and
 `Pickup/Guide Late or No Show`. T&S counts 13: the 12 tags in the
 `Trust & Safety Problems` category plus `Scam Fraud`.
 
+**Filter by tag name, never by `defect_category`.** The two sets are not
+categories and don't line up with them. `Pickup Problems` holds at least two
+further tags — `Change Pick Up Time` and `Change Pick Up Location` — which the
+pickup rate does **not** count, and the nine quality tags are spread across six
+different categories, so category fails in both directions. `bali-ts` shipped
+with `Change Pick Up Time` in its pickup rail for exactly this reason; it is now
+removed. Only the T&S set is nearly a category, and even that needs `Scam Fraud`
+added by hand.
+
 Source: criteria deck appendix "severity & supplier actionability" 1–3, which
 **does** carry the tick columns in the plain-text export — the older note that
 it drops them and needs a PPTX/XML parse is wrong; `read_file_content` is

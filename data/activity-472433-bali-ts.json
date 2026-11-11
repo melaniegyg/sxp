@@ -9,6 +9,7 @@
   "supplier_name": "Potato Bali Tours & Activities",
   "details": {
     "_note": "NOT from the export. Built from this activity's own booking-level rows in production.supply_analytics.sxp_booking_defect, filtered to the tag sets the criteria deck defines: 9 quality tags + non-force-majeure cancellation for `quality-rate`, 2 pickup tags for `pickup-rate`. Tags outside those sets are excluded, so Duration Not As Advertised no longer appears here — it is NOT one of the nine. There is still no `trend` on any metric.",
+    "_note_pickup_filter_fix": "The pickup list previously carried a THIRD tag, `Change Pick Up Time` (1 booking). It is a real tag on this tour and sits in the `Pickup Problems` CATEGORY, which is how it slipped through — but the deck counts two named TAGS, not the category. Filtering by category admits `Change Pick Up Time` and `Change Pick Up Location`; filtering by tag does not. Removed. Build these lists by tag name, never by defect_category — the quality set spans six different categories, so category is not a usable proxy in either direction.",
     "_caveat_no_trend": "No `trend` series on any metric. A monthly rate needs a monthly denominator (bookings per month); sxp_activity_criteria carries only the window aggregate and sxp_booking_defect carries only the numerator. A monthly rating series has no source at all. The detail panel renders an empty chart area as a result.",
     "_caveat_counts_do_not_reconcile": "The pickup counts below are REAL but DO NOT RECONCILE with pickup_defect_bookings above them. sxp_booking_defect is systematically thinner than sxp_activity_criteria: its latest travel_date is 2026-09-14 while these windows run to 2026-10-14, so the final month of every window has no booking-level detail, and even inside the covered range the distinct-booking counts fall short of the aggregates. Expect the disruption list to sum to less than the headline rate implies.",
     "quality-rate": {
@@ -225,21 +226,6 @@
               ],
               "pageLinkLabel": "Review activity details",
               "count": 6
-            },
-            {
-              "name": "Change Pick Up Time",
-              "description": "The pickup time was changed after the traveler booked.",
-              "recAction": "",
-              "recommendations": [
-                "Only publish pickup times you can staff for the whole season",
-                "Give travelers as much notice as possible when a time has to move"
-              ],
-              "relatedReviews": false,
-              "faqLinks": [
-                "Managing Pickups"
-              ],
-              "pageLinkLabel": "Review activity details",
-              "count": 1
             }
           ]
         }
