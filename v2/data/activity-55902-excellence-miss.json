@@ -1,0 +1,178 @@
+{
+  "_note": "SYNTHETIC — not a real sxp_activity_criteria row. Invented activity, supplier and city. Numbers are internally consistent (counts reconcile against the denominator, rates against their bars and crit_* flags) but the activity does not exist. Replace with a real exported row when you have one.",
+  "_scenario": "All three Excellence bars missed at once: rating 4.38 against 4.6, quality defects 3.1% and pickup problems 3.2% against a 2.0% bar. Entry and Trust & Safety both pass, so the failure is purely about on-trip quality — the one case where 'keep working on it' in the banner is actually the right advice. Marrakesh is not a crowded city, so the bars are the global minimums.",
+  "_note_details": "NOT from the export. `trend` is a month-by-month series per metric — sxp_activity_criteria holds only the window aggregate, so there is no source for this. `disruptions` uses the defect-cards shape (see js/defect-cards.js) and its copy is lifted from the design (672:64888, 672:65527). Note `Duration not as advertised` is NOT one of the 9 ticked SXP quality tags, so a real build would not count it toward this rate.",
+  "details": {
+    "rating": {
+      "trend": [
+        { "label": "Jul", "value": 4.52 },
+        { "label": "Aug", "value": 4.46 },
+        { "label": "Sep", "value": 4.41 },
+        { "label": "Oct", "value": 4.35 },
+        { "label": "Nov", "value": 4.33 },
+        { "label": "Dec", "value": 4.38 }
+      ]
+    },
+    "quality-rate": {
+      "trend": [
+        { "label": "Jul", "value": 0.018 },
+        { "label": "Aug", "value": 0.067 },
+        { "label": "Sep", "value": 0.025 },
+        { "label": "Oct", "value": 0.052 },
+        { "label": "Nov", "value": 0.022 },
+        { "label": "Dec", "value": 0.031 }
+      ],
+      "disruptions": [
+        {
+          "category": "Top disruptions",
+          "defects": [
+            {
+              "name": "Activity not as advertised",
+              "description": "The activity delivered did not match the description.",
+              "recAction": "",
+              "recommendations": [
+                "Review the description of your activity and provide all necessary details so travelers know what to expect",
+                "Ensure your photos accurately reflect the experience"
+              ],
+              "relatedReviews": true,
+              "faqLinks": [
+                "Adding Description for Your Product",
+                "Enhancing Your Product Listings"
+              ],
+              "count": 31
+            },
+            {
+              "name": "Duration not as advertised",
+              "description": "The actual duration of the activity differed from what was advertised.",
+              "recAction": "",
+              "recommendations": [
+                "State the real start and end times, including transfers, in the activity duration",
+                "Flag any seasonal variation in the Important Information section"
+              ],
+              "relatedReviews": true,
+              "faqLinks": ["Setting Your Activity Duration"],
+              "count": 24
+            },
+            {
+              "name": "Language wrong or hard to understand",
+              "description": "The guide did not speak the language originally booked for.",
+              "recAction": "",
+              "recommendations": [
+                "Confirm which languages each guide can deliver and keep the option list in sync",
+                "Remove languages you cannot staff reliably rather than risk a mismatch"
+              ],
+              "relatedReviews": true,
+              "faqLinks": ["Managing Activity Languages"],
+              "count": 22
+            }
+          ]
+        }
+      ]
+    },
+    "pickup-rate": {
+      "trend": [
+        { "label": "Jul", "value": 0.016 },
+        { "label": "Aug", "value": 0.041 },
+        { "label": "Sep", "value": 0.038 },
+        { "label": "Oct", "value": 0.019 },
+        { "label": "Nov", "value": 0.027 },
+        { "label": "Dec", "value": 0.032 }
+      ],
+      "disruptions": [
+        {
+          "category": "Top disruptions",
+          "defects": [
+            {
+              "name": "Unclear meeting point location",
+              "description": "The description of meeting point for the activity was not clear, or wrong.",
+              "recAction": "",
+              "recommendations": [
+                "Verify your meeting point address is findable via a map app and add a meeting point photo in the Supplier Portal",
+                "Include landmarks or directions from the nearest transport stop in the Important Information section"
+              ],
+              "relatedReviews": false,
+              "faqLinks": ["Meeting Point Pictures"],
+              "pageLinkLabel": "Review activity details",
+              "count": 44
+            },
+            {
+              "name": "Driver/guide were late or did not show up",
+              "description": "The guide or driver arrived late or did not show up at the meeting / pick up point.",
+              "recAction": "",
+              "recommendations": [
+                "Build buffer time into pickup routes so one delay does not cascade",
+                "Message travelers as soon as you know a pickup will run late"
+              ],
+              "relatedReviews": false,
+              "faqLinks": ["Managing Pickups"],
+              "pageLinkLabel": "Review activity details",
+              "count": 35
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "tour_id": 55902,
+  "activity_title": "Marrakesh: Agafay Desert Quad Bike and Camel Ride",
+  "supplier_id": 1487,
+  "supplier_name": null,
+  "l0_category": "Guided",
+  "l1_category": "Adventure Tours",
+  "l2_category": "Desert Tours",
+  "has_pickup": true,
+  "home_city_id": 311,
+  "home_city": "Marrakesh",
+  "home_country": "Morocco",
+  "window_start": "2026-07-01",
+  "window_end": "2027-01-01",
+  "next_award_date": "2027-01-01",
+  "total_bookings": 2480,
+  "defect_denominator": 2480,
+  "reviews_in_window": 503,
+  "rating_in_window": 4.38,
+  "rating_sd": 0.97,
+  "cancellation_policy_type": "standard",
+  "custom_cancellation_offset_hours": null,
+  "quality_defect_bookings": 77,
+  "quality_defect_rate": 0.031048387096774195,
+  "pickup_defect_bookings": 79,
+  "pickup_defect_rate": 0.03185483870967742,
+  "non_fm_cancellations": 6,
+  "non_fm_cxl_rate": 0.0024193548387096775,
+  "defective_bookings_platform": 142,
+  "platform_dbr": 0.05725806451612903,
+  "destination_step": 0,
+  "defect_rate_bar": 0.02,
+  "rating_bar": 4.6,
+  "ts_tag_bookings": 6,
+  "ts_tag_rate": 0.0024193548387096775,
+  "supplier_valid_sev12_cases": 0,
+  "supplier_weighted_cases": 2.0,
+  "supplier_valid_cases": 2,
+  "supplier_plausible_cases": 1,
+  "supplier_bookings_ts_months": 18640,
+  "supplier_weighted_case_rate": 0.00010729613733905579,
+  "supplier_ts_tag_bookings": 41,
+  "supplier_ts_tag_rate": 0.0021995708154506437,
+  "activity_valid_sev12_cases": 0,
+  "activity_weighted_cases": 0.0,
+  "activity_weighted_case_rate": 0,
+  "crit_in_scope": true,
+  "crit_min_reviews": true,
+  "crit_flexible_cancellation": true,
+  "crit_ts_no_severe_case": true,
+  "crit_ts_case_rate": true,
+  "crit_ts_tag_rate": true,
+  "crit_defect_rate": false,
+  "crit_pickup_rate": false,
+  "crit_rating": false,
+  "crit_defect_rate_min": false,
+  "crit_pickup_rate_min": false,
+  "crit_rating_min": false,
+  "meets_entry": true,
+  "meets_ts": true,
+  "meets_excellence": false,
+  "has_badge": false,
+  "has_badge_min": false
+}

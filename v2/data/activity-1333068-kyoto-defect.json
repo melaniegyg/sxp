@@ -1,0 +1,178 @@
+{
+  "_note": "REAL row from production.supply_analytics.sxp_activity_criteria, exported 2026-06-08 – 2026-10-14. Scalar fields are verbatim. `supplier_name` came with the export this time, as it did for bft-ts, so no dwh.dim_supplier lookup was needed. The export also carried a `supplier_email` (a personal gmail address); it is DROPPED here — this repo publishes to a public GitHub Pages site and the fixture JSON is readable in page source.",
+  "_note_booking_detail": "The export's raw `dbr_tags` (7 rows), `pickup_problem_rate.applicable_records` (1 row) and `trust_and_safety_tags` (empty) arrays are dropped here, matching every other fixture — the page has nowhere to show per-booking rows. They are summarised into details.quality-rate.disruptions and details.pickup-rate.disruptions below.",
+  "_note_next_award_date": "NOT from the export. Set to the close of the intended assessment period (2027-01-01), matching every other fixture so the banner reads the same across the switcher. Award cadence is still an open question in the criteria deck.",
+  "next_award_date": "2027-01-01",
+  "_note_window": "window_start/window_end are the INTENDED assessment period (Jul 1, 2026 – Jan 1, 2027), not this row's own export window (2026-06-08 – 2026-10-14). The metrics below were measured over the export window, so the period label and the numbers come from different ranges — the same deliberate mismatch activity-21293 documents, kept consistent here so every fixture in the switcher shows one period.",
+  "export_window_start": "2026-06-08",
+  "export_window_end": "2026-10-14",
+  "supplier_name": "Matcha experience　Kyoto",
+  "details": {
+    "_note": "Built from the export's own `dbr_tags` array, counting DISTINCT booking_id per tag and filtered to the tag sets the criteria deck defines: the 9 quality tags + Supplier Cancellation (non-FM) for `quality-rate`, the 2 pickup tags for `pickup-rate`. One tag is excluded by that filter — `Payment issues or double charge` (category Payment Problems), which is not one of the nine. Note `Activity Not As Advertised` appears three times in the raw array but on only TWO distinct bookings: booking 413783538 carries it from both `review` and `care_chat` sources. Counting rows rather than bookings would have overstated it.",
+    "_caveat_counts_reconcile_here": "UNUSUALLY, the counts below reconcile exactly. The three quality tags cover distinct bookings {413783538, 415723727, 436223746} = 3, matching quality_defect_bookings = 3; the single pickup tag covers booking 433100106 = 1, matching pickup_defect_bookings = 1. This is the rare case — measured across the warehouse, only about 1.2% of activities with a non-zero quality rate have booking-level tags that fully account for the rate (see CLAUDE.md, 'sxp_booking_defect does not reconcile'). It reconciles here because this fixture's detail comes from the export's own embedded `dbr_tags` array rather than from a separate query against sxp_booking_defect, and because the window ends before that table's coverage gap bites. Do not generalise from it.",
+    "_caveat_trend_invented": "Both `trend` series are INVENTED. No monthly series exists anywhere — a monthly rate needs a monthly denominator and sxp_activity_criteria holds only the window aggregate, while a monthly rating series has no source at all. Only each series' mean is anchored to a real value; the month-to-month shape is illustrative and uses the same fixed zero-sum pattern as the other fixtures.",
+    "rating": {
+      "trend": [
+        { "label": "Jul", "date": "Jul 15, 2026", "value": 4.91 },
+        { "label": "Aug", "date": "Aug 15, 2026", "value": 4.97 },
+        { "label": "Sep", "date": "Sep 15, 2026", "value": 4.99 },
+        { "label": "Oct", "date": "Oct 15, 2026", "value": 4.93 },
+        { "label": "Nov", "date": "Nov 15, 2026", "value": 4.98 },
+        { "label": "Dec", "date": "Dec 15, 2026", "value": 4.93 }
+      ]
+    },
+    "quality-rate": {
+      "trend": [
+        { "label": "Jul", "date": "Jul 15, 2026", "value": 0.005951 },
+        { "label": "Aug", "date": "Aug 15, 2026", "value": 0.009451 },
+        { "label": "Sep", "date": "Sep 15, 2026", "value": 0.010951 },
+        { "label": "Oct", "date": "Oct 15, 2026", "value": 0.006951 },
+        { "label": "Nov", "date": "Nov 15, 2026", "value": 0.010201 },
+        { "label": "Dec", "date": "Dec 15, 2026", "value": 0.007201 }
+      ],
+      "disruptions": [
+        {
+          "category": "Top disruptions",
+          "defects": [
+            {
+              "name": "Activity Not As Advertised",
+              "description": "The activity delivered did not match the description.",
+              "recAction": "",
+              "recommendations": [
+                "Review the description of your activity so travelers know what to expect",
+                "Ensure your photos accurately reflect the experience"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Adding Description for Your Product",
+                "Enhancing Your Product Listings"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 2
+            },
+            {
+              "name": "Extra Charge",
+              "description": "The traveler was asked to pay more than the booked price.",
+              "recAction": "",
+              "recommendations": [
+                "Include every mandatory fee in the price shown on GetYourGuide",
+                "List genuinely optional extras in the Important Information section"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Pricing Your Activity"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 1
+            },
+            {
+              "name": "Unclear Meeting Point Location",
+              "description": "The meeting point description was unclear, or wrong.",
+              "recAction": "",
+              "recommendations": [
+                "Verify the address is findable in a map app and add a meeting point photo",
+                "Include landmarks or directions from the nearest transport stop"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Meeting Point Pictures"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    "_note_pickup_hidden": "The pickup-rate breakdown below is built but NOT rendered: has_pickup is false, so criteria-model.js hides the Pickup Problem Rate row entirely. It is kept for parity with the other fixtures and because the underlying record is real. Note this activity is another instance of the has_pickup=false anomaly documented in CLAUDE.md — it has no pickup, yet the export still carries a pickup tag and a pickup rate for it. It is NOT one of the 112 whose badge turns on that bug, since it fails the quality rate independently.",
+    "pickup-rate": {
+      "disruptions": [
+        {
+          "category": "Top disruptions",
+          "defects": [
+            {
+              "name": "Pickup/Guide Late or No Show",
+              "description": "The guide or driver arrived late or did not show up at the pickup point.",
+              "recAction": "",
+              "recommendations": [
+                "Build buffer time into pickup routes so one delay does not cascade",
+                "Message travelers as soon as you know a pickup will run late"
+              ],
+              "relatedReviews": false,
+              "faqLinks": [
+                "Managing Pickups"
+              ],
+              "pageLinkLabel": "Review activity details",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "tour_id": 1333068,
+  "activity_title": "Kyoto: 100% Private Tea Ceremony, Calligraphy, and Kimono",
+  "supplier_id": 760334,
+  "on_simulator_pages": true,
+  "l0_category": "Guided",
+  "l1_category": "Guided Experiences",
+  "l2_category": "Workshops (Artisanal & Cultural)",
+  "has_pickup": false,
+  "home_city_id": 96826,
+  "home_city": "Kyoto",
+  "home_country": "Japan",
+  "window_start": "2026-07-01",
+  "window_end": "2027-01-01",
+  "total_bookings": 355,
+  "total_travel_days": 355,
+  "defect_denominator": 355,
+  "reviews_in_window": 242,
+  "rating_in_window": 4.954545454545454,
+  "rating_sd": 0.378356349188109,
+  "cancellation_policy_type": "standard",
+  "custom_cancellation_offset_hours": null,
+  "quality_defect_bookings": 3,
+  "quality_defect_rate": 0.008450704225352112,
+  "pickup_defect_bookings": 1,
+  "pickup_defect_rate": 0.0028169014084507044,
+  "non_fm_cancellations": 0,
+  "non_fm_cxl_rate": 0.0,
+  "defective_bookings_platform": 5,
+  "platform_dbr": 0.014084507042253521,
+  "destination_step": 8,
+  "defect_rate_bar": 0.005,
+  "rating_bar": 4.8,
+  "ts_tag_bookings": 0,
+  "ts_tag_rate": 0.0,
+  "supplier_valid_sev12_cases": 0,
+  "supplier_weighted_cases": 0.0,
+  "supplier_valid_cases": 0,
+  "supplier_plausible_cases": 0,
+  "supplier_bookings_ts_months": 357,
+  "supplier_weighted_case_rate": 0,
+  "supplier_ts_tag_bookings": 0,
+  "supplier_ts_tag_rate": 0.0,
+  "activity_valid_sev12_cases": 0,
+  "activity_weighted_cases": 0.0,
+  "activity_weighted_case_rate": 0,
+  "crit_in_scope": true,
+  "crit_min_reviews": true,
+  "crit_flexible_cancellation": true,
+  "crit_ts_no_severe_case": true,
+  "crit_ts_case_rate": true,
+  "crit_ts_tag_rate": true,
+  "crit_defect_rate": false,
+  "crit_pickup_rate": true,
+  "crit_rating": true,
+  "crit_defect_rate_min": true,
+  "crit_pickup_rate_min": true,
+  "crit_rating_min": true,
+  "meets_entry": true,
+  "meets_ts": true,
+  "meets_excellence": false,
+  "has_badge": false,
+  "has_badge_min": true,
+  "_note_city_bar": "This row is BLOCKED BY THE CITY BAR, the third fixture to exercise badge.blockedByCityBar after italy-rating and italy-defect, and the first outside Italy. Kyoto is destination_step 8, so its quality bar is 0.50% rather than the 2.00% global minimum. The activity's 0.845% clears the global bar (crit_defect_rate_min = true) but not Kyoto's (crit_defect_rate = false), which is exactly the condition the model tests: !earnedBadge(a) && earnedBadge(a, true).",
+  "_note_details_rating": "INVENTED, not from the export. Six points generated around the row's real rating_in_window (4.9545) with the same fixed zero-sum shape the other fixtures use, scaled so the series stays under 5.0 and clears the 4.80 bar in every month, matching crit_rating = true. Rounded to 2dp as elsewhere, which drifts the mean slightly: 4.9517 against the real 4.9545. Only the mean is anchored to anything real.",
+  "_note_details_quality_rate": "INVENTED, not from the export. Six points generated around the row's real quality_defect_rate (0.8451%) with the same fixed zero-sum shape, scaled so every month sits ABOVE the 0.50% city bar — matching crit_defect_rate = false, so the chart shades all six months rather than just some. Only the mean is anchored to anything real."
+}

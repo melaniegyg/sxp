@@ -9,6 +9,25 @@ then ‘Excellent experience’ — quoted, lowercase second word. Current is
 **Excellent Experience**: unquoted, title case, per 566:53353 and the revised
 banners. Some identifiers still say `TopChoice`.
 
+## Two trees: round 1 at the root, round 2 in `v2/`
+
+**Check which one you are editing before you change anything.**
+
+| | Round 1 | Round 2 |
+|---|---|---|
+| Files | repo root (`index.html`, `css/`, `js/`, `data/`, `assets/`) | `v2/` — a full copy of all of those |
+| URL | `https://melaniegyg.github.io/sxp/` | `https://melaniegyg.github.io/sxp/v2/` |
+| Local | `http://localhost:8150/` | `http://localhost:8150/v2/` |
+| Status | **Frozen.** Tagged `v1-round1`. | Where all new work goes. |
+
+Round 1 is the state seven suppliers were interviewed against (26–30 Oct 2026),
+and the links sent to them point at the root URL. It does not change. `v2/`
+duplicates every asset rather than reaching up to `../` on purpose — sharing
+would mean a round-2 edit silently altering round 1.
+
+Everything below this section describes behaviour both trees share, unless it
+says otherwise. `v2/CLAUDE.md` covers what is specific to round 2.
+
 ## Running it
 
 ```bash

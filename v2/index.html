@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excellent Experience — Supplier Portal concept</title>
+  <!-- defect-cards.css carries its own :root token fallbacks so it can run
+       standalone, so it MUST load before tokens.css — otherwise those
+       fallbacks override the page's real tokens. Order matters here. -->
+  <link rel="stylesheet" href="css/defect-cards.css">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/criteria.css">
+  <!-- Skip the password gate if already unlocked this session (avoids flash) -->
+  <script>try{if(sessionStorage.getItem('sxp-auth')==='1')document.documentElement.className+=' authed';}catch(e){}</script>
+</head>
+<body>
+
+  <!-- ===================== PASSWORD GATE (cosmetic — see js/auth-gate.js) ===================== -->
+  <div id="auth-gate" class="auth-gate">
+    <form class="auth-gate__card" id="auth-form">
+      <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="auth-gate__logo">
+      <h1 class="auth-gate__title">Protected preview</h1>
+      <p class="auth-gate__desc">Enter the password to view this prototype.</p>
+      <input type="password" id="auth-input" class="auth-gate__input" placeholder="Password" autocomplete="current-password" aria-label="Password">
+      <button type="submit" class="auth-gate__btn">Enter</button>
+      <p class="auth-gate__error hidden" id="auth-error">Incorrect password. Try again.</p>
+    </form>
+  </div>
+
+  <!-- ===================== TOP NAV ===================== -->
+  <header class="topnav">
+    <div style="display:flex;align-items:center;gap:24px;">
+      <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="topnav__logo">
+    </div>
+    <!-- Prototype affordance: switches which fixture in data/ the page renders. -->
+    <div class="topnav__user" id="activity-switcher" role="button" tabindex="0"
+         aria-haspopup="listbox" aria-expanded="false" aria-label="Switch activity">
+      <div class="topnav__avatar"></div>
+      <div class="topnav__user-info">
+        <span class="topnav__name" id="switcher-label">&nbsp;</span>
+        <span class="topnav__company" id="switcher-sublabel">&nbsp;</span>
+      </div>
+      <svg class="topnav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="#858995" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <ul class="switcher-menu" id="switcher-menu" role="listbox" aria-label="Activities" hidden></ul>
+    </div>
+  </header>
+
+  <!-- ===================== SIDEBAR =====================
+       Icons are the Compass SVGs exported from the design (366:10589), not
+       redrawn. Their colours are baked in: #1A2B49 when idle, #0071EB on the
+       active item — so there is no currentColor theming here. -->
+  <aside class="sidebar">
+    <button class="sidebar__item" aria-label="Activities">
+      <img src="assets/icons/monument.svg" alt="" width="16" height="16">
+    </button>
+    <button class="sidebar__item" aria-label="Create">
+      <img src="assets/icons/file-plus.svg" alt="" width="16" height="16">
+    </button>
+    <button class="sidebar__item" aria-label="Manage">
+      <img src="assets/icons/grid.svg" alt="" width="16" height="16">
+    </button>
+    <button class="sidebar__item" aria-label="Bookings">
+      <img src="assets/icons/calendar.svg" alt="" width="16" height="16">
+    </button>
+    <button class="sidebar__item sidebar__item--active" aria-label="Performance">
+      <img src="assets/icons/magnifier-bar-chart.svg" alt="" width="16" height="16">
+    </button>
+    <button class="sidebar__item" aria-label="Finance">
+      <img src="assets/icons/currency.svg" alt="" width="16" height="16">
+    </button>
+    <div class="sidebar__spacer"></div>
+    <!-- Bottom item is an expand affordance in the design, not Settings. -->
+    <button class="sidebar__item" aria-label="Expand menu">
+      <img src="assets/icons/arrow-right.svg" alt="" width="16" height="16">
+    </button>
+  </aside>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="page-main">
+    <div class="page-inner">
+
+      <a href="#" class="back-link">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to Performance
+      </a>
+
+      <h1 class="page-title" id="activity-title">&nbsp;</h1>
+
+      <nav class="perf-tabs" role="tablist">
+        <button class="perf-tab" role="tab" aria-selected="false">Performance overview</button>
+        <button class="perf-tab perf-tab--active" role="tab" aria-selected="true">Excellence program</button>
+        <button class="perf-tab" role="tab" aria-selected="false">Competitor report</button>
+      </nav>
+
+      <!-- ===================== PROMO HEADER ===================== -->
+      <section class="tc-promo">
+        <div class="tc-promo__head">
+          <div class="tc-promo__intro">
+            <h2 class="tc-promo__title">Get recognized with the Excellent Experience badge</h2>
+            <!-- Copy is verbatim from 566:53353, which revises 566:53443: the
+                 figure moved 5% -> 1%, the badge name lost its curly quotes and
+                 took a capital E on Experience, and Originals / Certified became
+                 bold "programs" rather than quoted "badges". The emphasis also
+                 moved — "Every 3 months" is no longer bold, those two names are.
+                 TODO(copy): 1% is closer to the deck's 1.4% of online activities
+                 but still not it, and award cadence ("every 3 months") is listed
+                 in the deck as an explicitly undecided question. -->
+            <p class="tc-promo__desc">The Excellent Experience badge celebrates the top 1% of activities on our marketplace for consistently delivering a quality experience for customers. Every 3 months we check if your activity has met the requirements to be awarded the badge. This replaces both the <strong class="tc-promo__emphasis">Originals</strong> and <strong class="tc-promo__emphasis">Certified</strong> programs.</p>
+          </div>
+          <!-- The badge as a traveller would see it. Figma sets this in GYG Sans
+               VF, which the prototype doesn't ship — GT Eesti Bold stands in. -->
+          <span class="tc-promo__badge">
+            <img src="assets/icons/logo-gyg-mark.svg" alt="" width="24" height="24">
+            Excellent Experience
+          </span>
+        </div>
+
+        <!-- Compass icons, exported from the design. supply-frontend's
+             README-UI.md requires Compass icons and type even though the
+             portal's components are PrimeVue, so PrimeIcons are not an option
+             here. Fill changed from the design's #FA4F2D to #0071EB; that
+             colour is baked into the files, so a re-export restores the orange. -->
+        <div class="tc-promo__cards">
+          <div class="tc-promo__card">
+            <img class="tc-promo__icon" src="assets/icons/compass-badge.svg" alt="" width="24" height="24">
+            <div class="tc-promo__card-text">
+              <p class="tc-promo__card-title">Get booked with confidence</p>
+              <p class="tc-promo__card-desc">The badge puts your commitment to quality front and center for travelers</p>
+            </div>
+          </div>
+          <div class="tc-promo__card">
+            <img class="tc-promo__icon" src="assets/icons/compass-magnifier.svg" alt="" width="24" height="24">
+            <div class="tc-promo__card-text">
+              <p class="tc-promo__card-title">Be seen by more customers</p>
+              <p class="tc-promo__card-desc">Show up higher in search results and get featured in more emails to travelers</p>
+            </div>
+          </div>
+          <div class="tc-promo__card">
+            <img class="tc-promo__icon" src="assets/icons/compass-eye.svg" alt="" width="24" height="24">
+            <div class="tc-promo__card-text">
+              <p class="tc-promo__card-title">Become the easy choice</p>
+              <p class="tc-promo__card-desc">When listings look alike, this badge is what sets you apart from competitors</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="tc-promo__cta" type="button">
+          Learn more
+          <img src="assets/icons/arrow-right-24.svg" alt="" width="24" height="24">
+        </button>
+      </section>
+
+      <!-- ===================== CRITERIA (rendered by js/criteria-render.js) ===================== -->
+      <div id="criteria" class="tc-sections-wrap"></div>
+
+      <div style="height:60px;"></div>
+
+    </div><!-- /page-inner -->
+  </main>
+
+  <button class="help-btn" aria-label="Help">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <circle cx="9" cy="9" r="7.5" stroke="white" stroke-width="1.5"/>
+      <path d="M7 7c0-1.1.9-2 2-2s2 .9 2 2c0 1.1-.9 1.7-1.5 2.2S9 10.2 9 11" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="9" cy="13.5" r=".75" fill="white"/>
+    </svg>
+    Help
+  </button>
+
+  <script src="js/interactions.js"></script>
+  <script src="js/defect-cards.js"></script>
+  <script src="js/trend-chart.js"></script>
+  <script src="js/criteria-model.js"></script>
+  <script src="js/criteria-render.js"></script>
+  <script src="js/activity-switcher.js"></script>
+  <script>
+    // The switcher picks the fixture; add new ones in data/activities.json.
+    ActivitySwitcher.init({
+      onSelect(activity) {
+        const model = TopChoice.build(activity);
+        document.getElementById("activity-title").textContent = model.activityTitle;
+        document.title = model.activityTitle + " — Excellent Experience";
+        TopChoiceRender.render("#criteria", model);
+      },
+      onError(err, entry) {
+        document.getElementById("criteria").innerHTML =
+          '<p class="section-desc">Could not load ' + entry.file + ": " + err.message + "</p>";
+      },
+    });
+  </script>
+  <script src="js/auth-gate.js"></script>
+</body>
+</html>
