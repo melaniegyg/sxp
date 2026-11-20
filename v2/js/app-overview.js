@@ -3,7 +3,7 @@
 // ============================================================
 import { createSxpApp } from "./primevue-setup.js";
 import { AppShell, StatusTag, ExclusionBanner, ICONS } from "./components.js";
-import { createSupplierState, pageHref } from "./supplier-data.js";
+import { createSupplierState, pageHref, initialMonth } from "./supplier-data.js";
 
 const { reactive } = window.Vue;
 
@@ -50,7 +50,7 @@ const App = {
     // the first awards. The page opens on NEXT MONTH (Melanie, 2026-11-20):
     // the assessment is what a supplier comes here for; the dashes are one
     // click away.
-    month: "next",
+    month: initialMonth(),
     months: MONTHS,
     criteria: CRITERIA,
     filterStatus: null,
@@ -98,7 +98,7 @@ const App = {
   },
   methods: {
     href(row) {
-      return pageHref("activity.html", (this.state.entry ? this.state.entry.id : "") + "/" + row.tourId);
+      return pageHref("activity.html", (this.state.entry ? this.state.entry.id : "") + "/" + row.tourId, this.month);
     },
   },
   template: `

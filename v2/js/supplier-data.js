@@ -26,7 +26,21 @@ export const LOCKED = new URLSearchParams(location.search).has("supplier");
 // Every link between the two pages must carry the lock, or one click on
 // "View details" or "Back" drops `?supplier` and the switcher reappears with
 // every other company in it. Build internal hrefs through this, never by hand.
-export const pageHref = (page, hash) => page + (LOCKED ? "?supplier" : "") + "#" + hash;
+//
+// `month` carries the This month / Next month toggle across the two pages
+// (Melanie, 2026-11-20): open "View details" from This month and the activity
+// page opens on This month too, and Back returns to the tab you were on.
+// Only "this" is written — "next" is both pages' default, so it is left off.
+export function pageHref(page, hash, month) {
+  const q = [];
+  if (LOCKED) q.push("supplier");
+  if (month === "this") q.push("month=this");
+  return page + (q.length ? "?" + q.join("&") : "") + "#" + hash;
+}
+
+// The toggle a page should open on: "this" only when the link asked for it.
+export const initialMonth = () =>
+  new URLSearchParams(location.search).get("month") === "this" ? "this" : "next";
 
 export function parseHash() {
   const raw = decodeURIComponent(location.hash.replace(/^#/, ""));

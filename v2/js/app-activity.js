@@ -3,7 +3,7 @@
 // ============================================================
 import { createSxpApp } from "./primevue-setup.js";
 import { AppShell, SectionCard, BadgeBanner, ICONS } from "./components.js";
-import { createSupplierState, pageHref } from "./supplier-data.js";
+import { createSupplierState, pageHref, initialMonth } from "./supplier-data.js";
 
 const { reactive } = window.Vue;
 
@@ -130,10 +130,11 @@ const App = {
   },
   // Opens on NEXT MONTH, like the overview (Melanie, 2026-11-20): the
   // assessment is what "View details" promises; the promo is one click away.
-  data: () => ({ month: "next", months: MONTHS }),
+  // …unless "View details" was clicked on This month, which carries over.
+  data: () => ({ month: initialMonth(), months: MONTHS }),
   computed: {
     act() { return this.model.activity; },
-    backHref() { return pageHref("index.html", this.state.entry ? this.state.entry.id : ""); },
+    backHref() { return pageHref("index.html", this.state.entry ? this.state.entry.id : "", this.month); },
     // Round 1's banner said "keep working on it" even for a supplier-level
     // Trust & Safety ban that no work on this activity can lift. No round-2
     // activity fails T&S, so this is false everywhere today.
