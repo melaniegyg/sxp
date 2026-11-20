@@ -186,7 +186,7 @@ const App = {
              "Activity type"; the warehouse category names (Ticketed /
              Transfers / Trip Enhancers) are internal and never shown. -->
         <template v-if="sup.ineligible.length">
-          <h2 class="sx-h2">Ineligible activities</h2>
+          <h2 class="sx-h2 sx-h2--section">Ineligible activities</h2>
           <DataTable :value="sup.ineligible" dataKey="tourId" class="sx-t">
             <Column field="title" header="Product" />
             <Column field="reason" header="Reason" style="width:220px" />

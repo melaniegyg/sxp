@@ -65,58 +65,81 @@ a.p-button:hover { text-decoration: none; }
    baseline gap pushing the button taller than its label. */
 .sx-btn-icon { display: inline-flex; line-height: 0; }
 
-/* ---------- Page type ---------- */
+/* ---------- Page rhythm (2423:103412) ----------
+   The design nests three groups inside a Content frame: Header (gap 16),
+   Key criteria banner, Badge status (gap 24) and Ineligible (gap 24, plus
+   24 of its own padding-top). The page flattens all of that into
+   .page-inner, whose 24px flex gap supplies the common spacing — so every
+   direct child carries NO margin of its own, and the two places the design
+   differs from 24 are the only exceptions below. A margin here does not
+   replace the gap, it adds to it. */
 .sx-lede {
-  font: var(--font-caption);
+  font: var(--font-body);          /* Body 16/22, not Caption */
   color: var(--sx-ink);
   max-width: 1070px;
-  /* No bottom margin: .page-inner is a flex column with a 24px gap, so any
-     margin here ADDS to it and this one gap ends up double every other. */
+  /* Header groups the title and lede 16 apart, against the column's 24. */
+  margin: -8px 0 0;
+}
+
+/* Title 4 — the design sets Badge status and Ineligible activities at 18/24
+   Bold, the same style as the banner's own heading. */
+.sx-h2 {
+  font: var(--font-title-4);
+  color: var(--sx-ink);
   margin: 0;
 }
+/* Ineligible activities sits in a frame with 24px padding-top on top of the
+   column gap, so it breaks from the table above it by 48 rather than 24. */
+.sx-h2--section { margin-top: 24px; }
+.sx-h2--tight { margin-top: 0; }
 
-.sx-h2 {
-  font: 700 20px/28px var(--font-family);
-  color: var(--sx-ink);
-  margin: 32px 0 12px;
+/* ---------- Program criteria banner (2423:103421) ----------
+   Surface secondary #ebeef1 with a border of the same colour, 16 padding,
+   12 radius, and 20 between the header row and the card strip. */
+.sx-crit {
+  background: var(--gyg-background-secondary);
+  border: 1px solid var(--gyg-background-secondary);
+  border-radius: 12px;
+  box-shadow: none;
 }
-.sx-h2--tight { margin-top: 24px; }
-
-/* ---------- Program criteria banner ---------- */
-.sx-crit { background: #f5f7f9; border-radius: 12px; box-shadow: none; }
 .sx-crit > .p-card-body { padding: 16px; gap: 0; }
 .sx-crit__head {
   display: flex;
-  align-items: flex-start;
+  align-items: center;      /* 2423:103422 centres the button against the text */
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
-.sx-crit__title { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 0; }
-.sx-crit__sub { font: var(--font-caption); color: var(--sx-muted); margin: 4px 0 0; }
+.sx-crit__title { font: var(--font-title-4); color: var(--sx-ink); margin: 0; }
+.sx-crit__sub { font: var(--font-body); color: var(--sx-ink); margin: 4px 0 0; }
 .sx-crit__cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.sx-crit__card { border-radius: 10px; box-shadow: none; }
-.sx-crit__card > .p-card-body { padding: 16px; }
-.sx-crit__card .p-card-content { display: flex; gap: 12px; align-items: flex-start; }
+/* The cards sit ON the grey banner, so they are a lighter grey (#f5f6f8),
+   not white — 2423:103428. */
+.sx-crit__card { background: #f5f6f8; border-radius: 12px; box-shadow: none; }
+.sx-crit__card > .p-card-body { padding: 18px 20px; }
+.sx-crit__card .p-card-content { display: flex; gap: 16px; align-items: flex-start; }
 .sx-crit__card img { flex: none; margin-top: 2px; }
-.sx-crit__card-t { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
-.sx-crit__card-d { font: 400 13px/18px var(--font-family); color: var(--sx-muted); margin: 2px 0 0; }
+.sx-crit__card-t { font: 700 15px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
+.sx-crit__card-d { font: 400 13px/18px var(--font-family); color: var(--sx-ink); margin: 2px 0 0; }
 
 /* ---------- This month / Next month ----------
    A SelectButton, not Tabs: 1970:173336 draws a segmented pill on a grey
    track, which is SelectButton's form. The track and radius are ours; the
    button type, states and focus ring are the preset's. */
+/* 2423:103445: a 40px bar on surface secondary, 4 padding, 4 gap, 8 radius.
+   The tabs are h-full inside it, so they come to 32 and their own vertical
+   padding does not apply — only the 12 horizontal. */
 .sx-months {
-  align-self: flex-start;   /* .page-inner is a flex column — see .sx-tabs note below */
-  background: #f0f2f5;
+  align-self: flex-start;   /* .page-inner is a flex column; see .sx-tabs below */
+  background: var(--gyg-background-secondary);
   border-radius: 8px;
-  padding: 3px;
-  gap: 2px;
+  height: 40px;
+  padding: 4px;
+  gap: 4px;
+  align-items: stretch;
+  margin: 0;
 }
-.sx-months .p-togglebutton { border-radius: 6px; }
-/* Overview emits its toggle into a plain block, so it supplies its own gap.
-   24px to the filter row beneath, per 1970:173336 -> 1970:173343. */
-#app .sx-months { margin-bottom: 0; }
+.sx-months .p-togglebutton { border-radius: 6px; padding: 0 12px; }
 
 /* The page-level Performance tabs ARE an underlined bar, which is Tabs. */
 .sx-perf-tabs { margin-bottom: 4px; }
@@ -143,25 +166,29 @@ a.p-button:hover { text-decoration: none; }
   align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
-  margin: 24px 0;
+  margin: 0;                       /* the column gap supplies 24 either side */
 }
-.sx-filters__controls { display: flex; gap: 14px; }
+.sx-filters__controls { display: flex; gap: 14px; align-items: center; }
 .sx-select { display: block; width: 216px; }
 .sx-select__label {
   display: block;
-  font: var(--font-caption);
-  color: var(--sx-ink);
+  font: 400 16px/21px var(--font-family);
+  color: var(--gyg-label-secondary);
   margin-bottom: 8px;
 }
+/* 44px, which is the select's own min-height in 2423:103448. The ported
+   preset says 40 (formField height), so Figma and the code design system
+   disagree here; the design wins because this page is being matched to it.
+   Worth settling at source — see v2/CLAUDE.md. */
+.sx-filters .p-select { min-height: 44px; }
 
 .sx-period {
-  font: var(--font-label);
-  color: var(--sx-muted);
+  font: var(--font-caption);       /* Caption 14/20, label secondary */
+  color: var(--gyg-label-secondary);
   text-align: right;
-  /* Bottom-aligned by the row's align-items; the padding lifts it off the
-     baseline to sit level with the select text, as 1970:173367 does. */
+  /* The row is items-end, so this sits flush with the bottom of the selects,
+     as 2423:103446 draws it. No extra padding. */
   margin: 0;
-  padding-bottom: 10px;
   white-space: nowrap;
 }
 
@@ -169,21 +196,26 @@ a.p-button:hover { text-decoration: none; }
 
 /* ---------- Overview tables ----------
    DataTable draws rows and headers; the card outline around it is ours. */
+/* 2423:103451 — 8px radius, not 10. The datatable inside it is placed at 82%
+   scale in that frame (13.113px text, 9.835px padding), which is an instance
+   resize rather than a spec; the values below are those numbers unscaled,
+   and they land exactly on the design system's own cell padding of
+   0.75rem 1rem (see js/theme/components/datatable.config.js). */
 .sx-t {
   background: #fff;
   border: 1px solid var(--sx-line);
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
 }
 .sx-t .p-datatable-header-cell {
-  font: 700 13px/18px var(--font-family);
+  font: 500 16px/22px var(--font-family);
   color: var(--sx-ink);
-  padding: 14px 20px;
+  padding: 12px 16px;
 }
 .sx-t .p-datatable-tbody > tr > td {
-  font: var(--font-caption);
+  font: var(--font-body);
   color: var(--sx-ink);
-  padding: 16px 20px;
+  padding: 12px 16px;
   border-bottom: 1px solid var(--sx-line);
 }
 .sx-t .p-datatable-tbody > tr:last-child > td { border-bottom: 0; }
