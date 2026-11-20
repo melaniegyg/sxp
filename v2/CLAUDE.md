@@ -186,6 +186,59 @@ duplication this migration removed, so the design system is treated as
 authoritative for control metrics. Raise it with the design-system owners if
 44px is deliberate rather than drawn.
 
+## The overview is matched to 2423:103412
+
+Audited value by value on 2026-11-20 and corrected. Take the node as
+authoritative for this page; if something here looks arbitrary, it is probably
+measured.
+
+**The column gap carries the page.** `.page-inner` is a flex column with a
+24px gap, which is the design's Content frame gap. Every direct child
+therefore has **no margin of its own** — a margin does not replace the gap, it
+adds to it, which is how `.sx-h2` ended up 56 below the block above it. Two
+exceptions, both from the node: the lede sits **16** under the title (the
+Header frame groups them tighter), and **Ineligible activities** breaks at
+**48** (its frame adds 24 of padding-top).
+
+Values worth not re-guessing: banner is `#ebeef1` with a matching border,
+head-to-cards 20; its cards are `#f5f6f8` — lighter grey *on* the grey, not
+white — at 18/20 padding, 16 gap, 12 radius; headings are Title 4 18/24;
+filter labels Body 16/21 in label-secondary; the period is Caption 14/20 flush
+with the bottom of the selects; table radius 8, cells 12x16.
+
+**The datatable in that node is at 82% scale** (13.113px text, 9.835px
+padding) — an instance resize, not a spec. The CSS uses those numbers
+unscaled, which land exactly on `datatable.config.js`'s own `0.75rem 1rem`.
+
+**The selects are 44px, overriding the preset's 40.** The node's select has
+`min-height: 44`; the ported `formField` says 40. Figma and the code design
+system disagree, and the design wins here because this page is being matched
+to it. Settle it at source rather than copying the override elsewhere.
+
+### Round 2 has the expanded sidebar; round 1 keeps the rail
+
+2423:103459 draws a **288px labelled nav**, not round 1's 56px icon rail, and
+the page column only lands where the design puts it — content at x=312, 1104
+wide — if the nav is that wide. Rebuilt as `.sidenav` in `css/round2.css`,
+settled by Melanie 2026-11-20.
+
+It is a **separate class from `.sidebar`**, so `css/styles.css` stays a
+verbatim copy of round 1's and round 1 keeps its rail untouched. The same goes
+for the `.page-main` / `.page-inner` overrides, which live in `round2.css`
+rather than in the copied stylesheet.
+
+Items are 52px with a 16px icon and a 14/20 Medium label; Performance is the
+open parent and its two children are 44px rows behind a 2px left rule — grey
+for Overview, blue for Excellence program, the active page. Collapse is pinned
+to the bottom by a `flex: 1` spacer, as the node's Bottom frame does.
+
+**Performance uses `magnifier-bar-chart-nav.svg`, not `magnifier-bar-chart.svg`.**
+Same icon, two exports: the nav one is `#1a2b49` because in this node
+Performance is merely the open parent, while the criteria card's is `#0071eb`.
+Fills are baked in and CSS cannot recolour an `<img>`, so they are two files.
+`star.svg`, `arrow-left.svg` and `chevron-down.svg` were pulled from the same
+node for this nav.
+
 ## Done: the defect copy is sheet-driven
 
 `data/defect-catalogue.json`, generated 2026-11-19 from the sheet. Fixtures

@@ -138,14 +138,35 @@ export const SupplierSwitcher = {
 // ---------------------------------------------------------------
 // Both pages carried an identical copy of this markup. One component now, with
 // the page's own content in the default slot.
+// The sidebar is the EXPANDED nav 2423:103459 draws, not round 1's 56px icon
+// rail — settled by Melanie 2026-11-20 so the page column lands where the
+// design puts it (content at x=288, 1104 wide). Round 1 keeps its rail.
+//
+// Items are 52px with a 16px icon and a 14/20 Medium label. Performance is
+// open, and its two children are 44px rows indented behind a 2px left rule:
+// grey for Overview, blue for Excellence program, which is the active page.
+// `trailing` marks the four parents that carry a chevron.
 export const AppShell = {
   components: { SupplierSwitcher },
   props: { suppliers: Array, entry: Object, supplierName: String },
   emits: ["select"],
   data: () => ({
-    nav: [
-      ["Activities", "monument"], ["Create", "file-plus"], ["Manage", "grid"],
-      ["Bookings", "calendar"], ["Performance", "magnifier-bar-chart"], ["Finance", "currency"],
+    navTop: [
+      { label: "Home", icon: "monument" },
+      { label: "Create", icon: "file-plus", chevron: true },
+      { label: "Manage", icon: "grid", chevron: true },
+      { label: "Bookings", icon: "calendar", chevron: true },
+      // The navy export, not the blue one the criteria cards use: in this
+      // node Performance is the open parent, not the active item.
+      { label: "Performance", icon: "magnifier-bar-chart-nav", chevron: true },
+    ],
+    navSub: [
+      { label: "Overview", active: false },
+      { label: "Excellence program", active: true },
+    ],
+    navRest: [
+      { label: "Reviews", icon: "star" },
+      { label: "Finance", icon: "currency" },
     ],
   }),
   template: `
@@ -157,15 +178,36 @@ export const AppShell = {
                         :supplier-name="supplierName" @select="$emit('select', $event)" />
     </header>
 
-    <aside class="sidebar">
-      <button v-for="[label, icon] in nav" :key="label" class="sidebar__item"
-              :class="{ 'sidebar__item--active': label === 'Performance' }" :aria-label="label">
-        <img :src="'assets/icons/' + icon + '.svg'" alt="" width="16" height="16">
-      </button>
-      <div class="sidebar__spacer"></div>
-      <button class="sidebar__item" aria-label="Expand menu">
-        <img src="assets/icons/arrow-right.svg" alt="" width="16" height="16">
-      </button>
+    <aside class="sidenav">
+      <div class="sidenav__container">
+        <div class="sidenav__top">
+          <button v-for="i in navTop" :key="i.label" class="sidenav__item" type="button">
+            <img :src="'assets/icons/' + i.icon + '.svg'" alt="" width="16" height="16">
+            <span class="sidenav__label">{{ i.label }}</span>
+            <img v-if="i.chevron" class="sidenav__chev" src="assets/icons/chevron-down.svg"
+                 alt="" width="16" height="16">
+          </button>
+
+          <div v-for="s in navSub" :key="s.label" class="sidenav__subwrap">
+            <button class="sidenav__sub" :class="{ 'is-active': s.active }" type="button"
+                    :aria-current="s.active ? 'page' : null">
+              <span class="sidenav__label">{{ s.label }}</span>
+            </button>
+          </div>
+
+          <button v-for="i in navRest" :key="i.label" class="sidenav__item" type="button">
+            <img :src="'assets/icons/' + i.icon + '.svg'" alt="" width="16" height="16">
+            <span class="sidenav__label">{{ i.label }}</span>
+          </button>
+        </div>
+
+        <div class="sidenav__bottom">
+          <button class="sidenav__item" type="button">
+            <img src="assets/icons/arrow-left.svg" alt="" width="16" height="16">
+            <span class="sidenav__label">Collapse</span>
+          </button>
+        </div>
+      </div>
     </aside>
 
     <main class="page-main">
