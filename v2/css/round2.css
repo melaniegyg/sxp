@@ -252,8 +252,19 @@ a.p-button:hover { text-decoration: none; }
 .sx-summary__body { font: var(--font-caption); color: var(--sx-ink); margin: 0; }
 .sx-summary__meta { font: var(--font-label); color: var(--gyg-label-tertiary); margin: 8px 0 0; }
 
-/* ---------- See details ---------- */
-.sx-see.p-button { padding: 10px 0 0; gap: 4px; }
+/* ---------- See details ----------
+   A text Button with no padding, so its label lines up with the description
+   above it. The spacing therefore has to be margin, not padding: padding-top
+   with no padding-bottom left the glyphs sitting on the edge of PrimeVue's
+   `overflow: hidden` box and the label looked shaved off. That overflow is
+   there to clip the ripple, and ripple is off (js/primevue-setup.js), so it
+   has nothing to clip here. */
+.sx-see.p-button {
+  padding: 0;
+  margin-top: 10px;
+  gap: 4px;
+  overflow: visible;
+}
 .sx-see__chev { transition: transform .15s ease; }
 .sx-see__chev.is-open { transform: rotate(180deg); }
 .sx-details { margin-top: 12px; }

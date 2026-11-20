@@ -191,7 +191,11 @@ export const AppShell = {
 // in both directions. See CLAUDE.md.
 export const DisruptionList = {
   props: { title: String, items: Array, catalogue: Object },
-  data: () => ({ open: ["0"] }),
+  // Single-open, not `multiple`: opening one closes the rest (Melanie,
+  // 2026-11-20). A tag card carries what you can do about it, so several open
+  // at once is several competing instructions and a lot of scrolling past
+  // them. The first opens by default so the list never reads as inert.
+  data: () => ({ open: "0" }),
   methods: {
     meta(entry) { return (this.catalogue.tags && this.catalogue.tags[entry.tag]) || null; },
     // Falls back to the internal tag name only if the catalogue has no row —
@@ -214,7 +218,7 @@ export const DisruptionList = {
   template: `
     <div class="sx-details">
       <h4 class="sx-details__h">{{ title }}</h4>
-      <Accordion v-model:value="open" multiple class="sx-acc">
+      <Accordion v-model:value="open" class="sx-acc">
         <AccordionPanel v-for="(entry, i) in items" :key="entry.tag" :value="String(i)">
           <AccordionHeader>
             <span class="sx-dc__text">

@@ -16,7 +16,16 @@ const CRITERIA = [
    // Unresolved — see CLAUDE.md.
    "At least 50 new reviews in this period"],
   ["compass-eye", "Operational standards", "24-hour cancellation and no safety issues"],
-  ["compass-magnifier", "Quality standards", "High customer rating and few complaints"],
+  // magnifier-bar-chart, not compass-magnifier: it is the sidebar's
+  // Performance icon, which is where this criterion's numbers come from.
+  // Settled by Melanie 2026-11-20.
+  //
+  // It is drawn on a 16px grid where the two compass icons beside it are
+  // 24px, which normally means mismatched weight. It happens not to here:
+  // the compass ring is 2 units of 24 and these bars are 1.333 of 16, so at
+  // the 20px both render at each comes to 1.667px. Re-check that if either
+  // icon is re-exported at a different size.
+  ["magnifier-bar-chart", "Quality standards", "High customer rating and few complaints"],
 ];
 
 const MONTHS = [

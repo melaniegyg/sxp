@@ -24,7 +24,8 @@ const PromoPanel = {
     criteria: [
       ["compass-badge", "Review count", "At least 50 reviews"],
       ["compass-eye", "Operational standards", "24-hour cancellation policy & trust and safety check"],
-      ["compass-magnifier", "Quality standards", "Rating and complaint rate"],
+      // Matches the overview's Quality standards card — see app-overview.js.
+      ["magnifier-bar-chart", "Quality standards", "Rating and complaint rate"],
     ],
     benefits: [
       ["compass-badge", "Get booked with confidence",
