@@ -1,15 +1,30 @@
 /* ============================================================
    SXP ROUND 2 — overview + activity page
-   Replaces round 1's criteria.css. Loads after tokens.css and styles.css.
+   Loads after tokens.css and styles.css.
 
-   Round 2 fails in AMBER, not round 1's red. The chips on the overview and
-   the section cards' top bars share one scale: green passing, amber failing.
-   The weak-red trend shading is gone with the charts.
+   Round 2 is built from PrimeVue components on the Supplier Portal's own
+   preset (js/theme/, ported from supply-frontend). This file no longer
+   contains buttons, chips, tabs, selects, tables, banners or accordions —
+   those are Button, Tag, SelectButton, Select, DataTable, Message and
+   Accordion, and their colours, radii and type come from the preset.
+
+   What is left is two things:
+     1. Page layout and the blocks PrimeVue has no equivalent for (the
+        pre-launch timeline, the criterion row's metric column).
+     2. A thin "bindings" section that places the PrimeVue components in that
+        layout — padding resets, the section card's top bar, the table's card
+        outline. Those are positioning, never recolouring.
+
+   The cascade makes this safe: PrimeVue's generated CSS sits in an @layer
+   (see js/primevue-setup.js), and unlayered CSS beats layered CSS whatever
+   the specificity. Nothing here needs !important.
+
+   Round 2 fails in AMBER, not round 1's red. Earned reads as a dark solid
+   chip; every failure shares one amber. Both now come from the preset's Tag
+   severities, `contrast` and `warn`.
    ============================================================ */
 
 :root {
-  --sx-amber-bg: #ffecc1;
-  --sx-amber-text: #8a5a00;
   --sx-amber-bar: #ffc94d;
   --sx-green-bar: #b8e6cc;
   --sx-ink: var(--gyg-label-primary);
@@ -17,11 +32,26 @@
   --sx-line: var(--gyg-separator-primary);
 }
 
+/* README-UI.md in supply-frontend: PrimeVue components, Compass typography.
+   PrimeIcons ship with PrimeVue and are not used — every icon on this page is
+   a Figma export. The preset carries no font-family, so set it once here. */
+.p-component,
+.p-component * {
+  font-family: var(--font-family);
+}
+
+/* Button labels are short verbs and nouns; none of them is improved by
+   wrapping. "View details" in a table cell is the one that actually did. */
+.p-button-label { white-space: nowrap; }
+
+/* ---------- Page type ---------- */
 .sx-lede {
   font: var(--font-caption);
   color: var(--sx-ink);
   max-width: 1070px;
-  margin: 0 0 24px;
+  /* No bottom margin: .page-inner is a flex column with a 24px gap, so any
+     margin here ADDS to it and this one gap ends up double every other. */
+  margin: 0;
 }
 
 .sx-h2 {
@@ -32,12 +62,8 @@
 .sx-h2--tight { margin-top: 24px; }
 
 /* ---------- Program criteria banner ---------- */
-.sx-crit {
-  background: #f5f7f9;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 8px;
-}
+.sx-crit { background: #f5f7f9; border-radius: 12px; box-shadow: none; }
+.sx-crit > .p-card-body { padding: 16px; gap: 0; }
 .sx-crit__head {
   display: flex;
   align-items: flex-start;
@@ -48,124 +74,110 @@
 .sx-crit__title { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 0; }
 .sx-crit__sub { font: var(--font-caption); color: var(--sx-muted); margin: 4px 0 0; }
 .sx-crit__cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.sx-crit__card {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  background: var(--gyg-background-primary);
-  border-radius: 10px;
-  padding: 16px;
-}
+.sx-crit__card { border-radius: 10px; box-shadow: none; }
+.sx-crit__card > .p-card-body { padding: 16px; }
+.sx-crit__card .p-card-content { display: flex; gap: 12px; align-items: flex-start; }
 .sx-crit__card img { flex: none; margin-top: 2px; }
 .sx-crit__card-t { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
 .sx-crit__card-d { font: 400 13px/18px var(--font-family); color: var(--sx-muted); margin: 2px 0 0; }
 
-/* ---------- Buttons ---------- */
-.sx-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 999px;
-  font: 500 14px/20px var(--font-family);
-  padding: 10px 18px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.sx-btn--primary { background: var(--gyg-interactive-primary); color: #fff; }
-.sx-btn--secondary {
-  background: #fff;
-  color: var(--gyg-interactive-primary);
-  border-color: var(--gyg-interactive-primary);
-}
-.sx-btn--pill {
-  background: #fff;
-  color: var(--gyg-interactive-primary);
-  border-color: var(--gyg-interactive-primary);
-}
-.sx-btn--secondary:hover, .sx-btn--pill:hover { background: #f0f7ff; }
-
-/* ---------- This month / Next month ---------- */
-.sx-tabs {
-  display: inline-flex;
+/* ---------- This month / Next month ----------
+   A SelectButton, not Tabs: 1970:173336 draws a segmented pill on a grey
+   track, which is SelectButton's form. The track and radius are ours; the
+   button type, states and focus ring are the preset's. */
+.sx-months {
+  align-self: flex-start;   /* .page-inner is a flex column — see .sx-tabs note below */
   background: #f0f2f5;
   border-radius: 8px;
   padding: 3px;
   gap: 2px;
-  margin-bottom: 20px;
 }
-.sx-tab {
-  border: 0;
-  background: transparent;
-  font: 500 14px/20px var(--font-family);
-  color: var(--sx-muted);
-  padding: 7px 14px;
-  border-radius: 6px;
-  cursor: pointer;
+.sx-months .p-togglebutton { border-radius: 6px; }
+/* Overview emits its toggle into a plain block, so it supplies its own gap.
+   24px to the filter row beneath, per 1970:173336 -> 1970:173343. */
+#app .sx-months { margin-bottom: 0; }
+
+/* The page-level Performance tabs ARE an underlined bar, which is Tabs. */
+.sx-perf-tabs { margin-bottom: 4px; }
+
+/* ---------- Filter row (1970:173343) ----------
+   Two selects on the left, the assessment period on the RIGHT OF THE SAME
+   LINE, bottom-aligned with the controls rather than with their labels.
+
+   The Select's own height, radius and border are the preset's (40px, 8px,
+   {surface.300}) — 4px shorter than the 44px the design draws. Left to the
+   design system on purpose: the point of this page is to show real portal
+   components, and a one-off height override would put the duplication back. */
+.sx-filters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 24px 0;
 }
-.sx-tab.is-active { background: #fff; color: var(--gyg-interactive-primary); }
+.sx-filters__controls { display: flex; gap: 14px; }
+.sx-select { display: block; width: 216px; }
+.sx-select__label {
+  display: block;
+  font: var(--font-caption);
+  color: var(--sx-ink);
+  margin-bottom: 8px;
+}
 
 .sx-period {
   font: var(--font-label);
   color: var(--sx-muted);
   text-align: right;
-  margin: 0 0 8px;
+  /* Bottom-aligned by the row's align-items; the padding lifts it off the
+     baseline to sit level with the select text, as 1970:173367 does. */
+  margin: 0;
+  padding-bottom: 10px;
+  white-space: nowrap;
 }
 
-/* ---------- Overview tables ---------- */
+.sx-empty { font: var(--font-caption); color: var(--sx-muted); margin: 0; }
+
+/* ---------- Overview tables ----------
+   DataTable draws rows and headers; the card outline around it is ours. */
 .sx-t {
-  width: 100%;
-  border-collapse: collapse;
   background: #fff;
   border: 1px solid var(--sx-line);
   border-radius: 10px;
   overflow: hidden;
 }
-.sx-t th {
+.sx-t .p-datatable-header-cell {
   font: 700 13px/18px var(--font-family);
   color: var(--sx-ink);
-  text-align: left;
   padding: 14px 20px;
+}
+.sx-t .p-datatable-tbody > tr > td {
+  font: var(--font-caption);
+  color: var(--sx-ink);
+  padding: 16px 20px;
   border-bottom: 1px solid var(--sx-line);
 }
-.sx-t td { padding: 16px 20px; border-bottom: 1px solid var(--sx-line); vertical-align: middle; }
-.sx-t tbody tr:last-child td { border-bottom: 0; }
-.sx-t__name { font: var(--font-caption); color: var(--sx-ink); }
-.sx-t__status { width: 220px; }
-.sx-t__reason { font: var(--font-caption); color: var(--sx-ink); }
-.sx-t__act { width: 140px; text-align: right; }
+.sx-t .p-datatable-tbody > tr:last-child > td { border-bottom: 0; }
+.sx-t__act { text-align: right; }
 .sx-dash { color: var(--gyg-label-tertiary); }
 
-.sx-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  border-radius: 999px;
-  font: 700 12px/16px var(--font-family);
-  padding: 6px 12px;
-}
-/* Earned reads as a dark solid chip; every failure shares one amber. */
-.sx-chip--excellence { background: #1a2b49; color: #fff; }
-.sx-chip--reviews,
-.sx-chip--operations,
-.sx-chip--quality { background: var(--sx-amber-bg); color: var(--sx-amber-text); }
-
-/* ---------- Section cards ---------- */
-.sx-banner { border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; }
-.sx-banner--ok { background: var(--gyg-surface-success-weak); }
-.sx-banner--no { background: var(--sx-amber-bg); }
+/* ---------- The outcome banner ----------
+   A Message. severity="success" is {GYG.surface.successWeak}, severity="warn"
+   is {GYG.surface.warning} #ffecc1 — the two colours round 2 had hand-coded.
+   No icon and no border: the design draws a plain coloured block. */
+.sx-banner { border: 0; border-radius: 10px; }
+.sx-banner .p-message-content { padding: 20px 24px; gap: 0; display: block; }
+.sx-banner .p-message-icon { display: none; }
 .sx-banner__h { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 0; }
 .sx-banner__b { font: var(--font-caption); color: var(--sx-ink); margin: 8px 0 0; }
 
+/* ---------- Section cards ---------- */
 .sx-card {
-  position: relative;
-  background: #fff;
   border: 1px solid var(--sx-line);
   border-radius: 10px;
-  margin-bottom: 20px;
   overflow: hidden;
+  box-shadow: none;
 }
+.sx-card > .p-card-body { padding: 0; gap: 0; }
 /* The rail is a bar across the TOP of each card (2423:103908), not round 1's
    per-row left-rail segments. Per section, so a mixed card takes the amber of
    its failing row — which is always its first row, since rows sort failing
@@ -183,7 +195,9 @@
 .sx-card__period { font: var(--font-label); color: var(--sx-muted); }
 .sx-card__rows { padding: 8px 20px 4px; }
 
-/* ---------- Criterion rows ---------- */
+/* ---------- Criterion rows ----------
+   The metric column — status glyph, big number, "Criteria:" line — has no
+   PrimeVue equivalent; it is a bespoke composition from 516:50363. */
 .sx-row {
   position: relative;
   display: flex;
@@ -202,7 +216,7 @@
 /* The per-row CTA sits top-right of its row, not under the description
    (2423:106343 "Collect more reviews", 2423:106219 "Contact us"). */
 .sx-row__cta { position: absolute; top: 16px; right: 0; margin: 0; }
-.sx-row:has(.sx-row__cta) .sx-row__main { padding-right: 190px; }
+.sx-row:has(.sx-row__cta) .sx-row__main { padding-right: 200px; }
 .sx-row--blocked { align-items: center; }
 .sx-row__blocked { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
 
@@ -222,39 +236,39 @@
 .sx-summary__meta { font: var(--font-label); color: var(--gyg-label-tertiary); margin: 8px 0 0; }
 
 /* ---------- See details ---------- */
-.sx-see {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: none; border: 0; padding: 10px 0 0;
-  font: 500 14px/20px var(--font-family);
-  color: var(--gyg-interactive-primary); cursor: pointer;
-}
-.sx-see svg { transition: transform .15s ease; }
-.sx-see.is-open svg { transform: rotate(180deg); }
+.sx-see.p-button { padding: 10px 0 0; gap: 4px; }
+.sx-see__chev { transition: transform .15s ease; }
+.sx-see__chev.is-open { transform: rotate(180deg); }
 .sx-details { margin-top: 12px; }
 .sx-details__h { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0 0 10px; }
 
-/* ---------- Disruption cards ---------- */
-.sx-dc {
+/* ---------- Disruption breakdown ----------
+   An Accordion drawn as a stack of separate cards rather than one panel, so
+   each tag reads as its own object (2423:103908). */
+.sx-acc .p-accordionpanel {
   border: 1px solid var(--sx-line);
   border-radius: 10px;
   margin-bottom: 8px;
   background: #fff;
 }
-.sx-dc.is-open { border-color: var(--gyg-interactive-primary); }
-.sx-dc__head {
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
-  width: 100%; background: none; border: 0; padding: 14px 16px;
-  text-align: left; cursor: pointer;
+.sx-acc .p-accordionpanel-active { border-color: var(--gyg-interactive-primary); }
+.sx-acc .p-accordionheader {
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 16px;
+  background: transparent;
+  border-radius: 10px;
 }
-.sx-dc__text { display: block; min-width: 0; }
+.sx-acc .p-accordionpanel-active > .p-accordionheader { border-radius: 10px 10px 0 0; }
+.sx-acc .p-accordioncontent-content { background: transparent; border: 0; padding: 0 16px 16px; }
+.sx-dc__text { display: block; min-width: 0; flex: 1 1 auto; }
 .sx-dc__name { display: block; font: 700 14px/20px var(--font-family); color: var(--sx-ink); }
-.sx-dc.is-open .sx-dc__name { color: var(--gyg-interactive-primary); }
+.p-accordionpanel-active .sx-dc__name { color: var(--gyg-interactive-primary); }
 .sx-dc__desc { display: block; font: 400 13px/18px var(--font-family); color: var(--sx-muted); margin-top: 2px; }
-.sx-dc__meta { display: flex; align-items: center; gap: 12px; flex: none; }
-.sx-dc__chev { color: var(--sx-ink); line-height: 0; transition: transform .15s ease; }
-.sx-dc.is-open .sx-dc__chev { transform: rotate(180deg); }
-.sx-dc__body { padding: 0 16px 16px; }
-.sx-dc:not(.is-open) .sx-dc__body { display: none; }
+/* Booking counts ARE shown in round 2 (reversing round 1's strip). They will
+   not always sum to the rate above them — 4 of the 19 activities do not
+   reconcile, in both directions. See CLAUDE.md. */
+.sx-dc__count { margin-left: auto; white-space: nowrap; }
 .sx-dc__h { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 6px 0 8px; }
 .sx-dc__list { margin: 0 0 16px; padding-left: 18px; }
 .sx-dc__list li { font: var(--font-caption); color: var(--sx-ink); margin-bottom: 6px; }
@@ -266,15 +280,6 @@
   color: var(--gyg-interactive-primary); text-decoration: none;
 }
 .sx-dc__links a:hover { text-decoration: underline; }
-
-/* Booking counts ARE shown in round 2 (reversing round 1's strip). They will
-   not always sum to the rate above them — 4 of the 19 activities do not
-   reconcile, in both directions. See CLAUDE.md. */
-.sx-chip-count {
-  background: #1a2b49; color: #fff;
-  border-radius: 999px; padding: 4px 10px;
-  font: 700 12px/16px var(--font-family); white-space: nowrap;
-}
 
 /* ---------- Recommended action ---------- */
 .sx-ra {
@@ -288,13 +293,15 @@
 .sx-ra__desc { font: var(--font-caption); color: var(--sx-muted); margin: 4px 0 0; }
 
 /* ---------- This-month promo panel ---------- */
-.sx-promo { background: #fff; border: 1px solid var(--sx-line); border-radius: 12px; padding: 24px; }
+.sx-promo { border: 1px solid var(--sx-line); border-radius: 12px; box-shadow: none; }
+.sx-promo > .p-card-body { padding: 24px; }
 .sx-promo__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
 .sx-promo__title { font: 700 18px/26px var(--font-family); color: var(--sx-ink); margin: 0; }
 .sx-promo__desc { font: var(--font-caption); color: var(--sx-muted); margin: 8px 0 0; max-width: 880px; }
 .sx-promo__cta { flex: none; }
 .sx-promo__h { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 28px 0 12px; }
 
+/* The six-month ruler is bespoke: not a ProgressBar, not a Timeline. */
 .sx-timeline {
   display: flex; align-items: stretch; gap: 24px;
   background: #e8f1fd; border-radius: 10px; padding: 20px 24px; margin-top: 20px;
@@ -320,19 +327,34 @@
 .sx-promo__list li > span:nth-of-type(1) { flex: 1 1 auto; }
 .sx-promo__list strong { display: block; font: 700 14px/20px var(--font-family); color: var(--sx-ink); }
 .sx-promo__list em { display: block; font-style: normal; font: 400 13px/18px var(--font-family); color: var(--sx-muted); }
-.sx-tracking {
-  flex: none; background: #f0f2f5; color: var(--sx-muted);
-  border-radius: 999px; padding: 6px 12px; font: 500 12px/16px var(--font-family);
-}
 
 .sx-benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.sx-benefit { border: 1px solid var(--sx-line); border-radius: 10px; padding: 20px; }
+.sx-benefit { border: 1px solid var(--sx-line); border-radius: 10px; box-shadow: none; }
+.sx-benefit > .p-card-body { padding: 20px; }
 .sx-benefit__t { font: 700 15px/22px var(--font-family); color: var(--sx-ink); margin: 14px 0 0; }
 .sx-benefit__d { font: var(--font-caption); color: var(--sx-muted); margin: 8px 0 0; }
 
+/* ---------- Supplier switcher ----------
+   A PrimeVue Menu popup. Round 1's hand-built panel in css/criteria.css is
+   gone with it — that file is not loaded here and targeted markup that no
+   longer exists. */
+.topnav__user { position: relative; outline: none; }
+.topnav__user:focus-visible { box-shadow: 0 0 0 2px var(--gyg-interactive-primary); }
+.sx-switcher-menu { min-width: 280px; }
+.sx-switcher-menu .p-menu-item-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font: var(--font-caption-strong);
+  color: var(--gyg-label-primary);
+  white-space: nowrap;
+}
+.sx-switcher-menu .p-menu-item-link.is-selected { background: #f0f7ff; }
+.sx-switcher-menu__meta { color: var(--gyg-label-tertiary); font: var(--font-label); margin-left: 12px; }
+
 /* Locked `?supplier` chip: a plain label, no dropdown affordance. */
 .topnav__user.is-locked { cursor: default; }
-.switcher-menu__meta { color: var(--gyg-label-tertiary); font: var(--font-label); margin-left: 12px; }
 
 @media (max-width: 900px) {
   .sx-crit__cards, .sx-benefits { grid-template-columns: 1fr; }

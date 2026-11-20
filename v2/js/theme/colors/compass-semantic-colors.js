@@ -1,0 +1,103 @@
+// Ported verbatim from getyourguide/supply-frontend
+//   apps/supplier-portal-nuxt/config/primevue-theme/colors/compass-semantic-colors.ts
+// TypeScript stripped, import paths given .js extensions. Nothing else
+// changed: this is the portal's real PrimeVue preset, not an imitation.
+// Re-port from source rather than editing by hand.
+
+const compassSemanticColors = {
+  background: {
+    primary: "#fff",
+    secondary: "#ebeef1",
+  },
+  border: {
+    interactive: "#858995",
+    interactiveDisabled: "#ebeef1",
+    interactiveError: "#c72a3d",
+    interactiveFocused: "#0071eb",
+    interactiveHovered: "#494d58",
+    interactivePressed: "#494d58",
+    nonInteractive: "#ebeef1",
+    primary: "#dcdfe4",
+    primaryDisabled: "#ebeef1",
+    primaryError: "#c72a3d",
+    primaryFocused: "#0071eb",
+    primaryHovered: "#a0a8b6",
+    primaryPressed: "#a0a8b6",
+    secondary: "#ebeef1",
+  },
+  decorative: {
+    baskingYellow: "#ffd938",
+    flamingoPink: "#f4cdd7",
+    guidingRed: "#f53",
+    midnightBlue: "#1a2b49",
+    plantGreen: "#a1d55d",
+    poolsideBlue: "#81beff",
+  },
+  interactive: {
+    critical: "#c72a3d",
+    criticalDisabled: "#dcdfe4",
+    criticalHovered: "#951d2b",
+    criticalPressed: "#951d2b",
+    primary: "#0071eb",
+    primaryDisabled: "#dcdfe4",
+    primaryHovered: "#304c84",
+    primaryPressed: "#304c84",
+    quaternary: "#fff",
+    quaternaryDisabled: "#bfc7cf",
+    quaternaryHovered: "#dcdfe4",
+    quaternaryPressed: "#dcdfe4",
+    secondary: "#1a2b49",
+    secondaryDisabled: "#bfc7cf",
+    secondaryHovered: "#304c84",
+    secondaryPressed: "#304c84",
+    tertiary: "#dcdfe4",
+    tertiaryHovered: "rgba(220,223,228,.5)",
+    tertiaryPressed: "rgba(220,223,228,.5)",
+  },
+  label: {
+    critical: "#c72a3d",
+    discounted: "#c72a3d",
+    gyg: "#f53",
+    onColor: "#fff",
+    primary: "#1a2b49",
+    quaternary: "#fff",
+    secondary: "#63687a",
+    success: "#007850",
+    tertiary: "#858995",
+    warning: "#a65200",
+  },
+  onInteractive: {
+    critical: "#fff",
+    disabled: "#858995",
+    primary: "#fff",
+    quaternary: "#1a2b49",
+    secondary: "#fff",
+    tertiary: "#1a2b49",
+  },
+  separator: {
+    primary: "#ebeef1",
+    secondary: "#dcdfe4",
+  },
+  supportive: {
+    overImage20: "rgba(25,27,32,.2)",
+    overImage50: "rgba(25,27,32,.5)",
+    overView20: "rgba(26,43,73,.2)",
+    overView50: "rgba(26,43,73,.5)",
+    transparent: "transparent",
+  },
+  surface: {
+    criticalStrong: "#c72a3d",
+    criticalWeak: "#ffe8ed",
+    disabled: "#ebeef1",
+    gyg: "#f53",
+    highlight: "#e1f0ff",
+    loader: "#31343d",
+    primary: "#fff",
+    secondary: "#ebeef1",
+    successStrong: "#007850",
+    successWeak: "#d1f6e2",
+    warning: "#ffecc1",
+  },
+};
+
+export default compassSemanticColors;

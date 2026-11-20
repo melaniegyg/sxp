@@ -20,13 +20,19 @@ links to. The switcher switches **suppliers**, not activities (settled
 | File | Role |
 |---|---|
 | `js/criteria-model.js` | `SXP.buildSupplier()` (overview) and `SXP.build()` (one activity) |
-| `js/criteria-render.js` | `SXPRender.renderOverview()` / `renderActivity()`, incl. the breakdown |
-| `js/supplier-switcher.js` | supplier switcher + `?supplier` lock (replaces `activity-switcher.js`) |
-| `css/round2.css` | replaces `criteria.css` |
+| `js/primevue-setup.js` | the preset, the component registry, `createSxpApp()` |
+| `js/theme/` | the Supplier Portal's PrimeVue preset, ported from `supply-frontend` |
+| `js/components.js` | shared components — shell, switcher, cards, rows, breakdown |
+| `js/app-overview.js` · `js/app-activity.js` | one Vue root per page |
+| `js/supplier-data.js` | fixture loading, hash routing, `?supplier` lock |
+| `css/round2.css` | layout and PrimeVue bindings; replaces `criteria.css` |
+| `vendor/` | Vue, PrimeVue and the Lara base preset, as browser builds |
 | `data/supplier-*.json` | five supplier fixtures + `suppliers.json` index |
 | `data/defect-catalogue.json` | generated from the sheet — see below |
 
-**Deleted:** `js/trend-chart.js` (charts are dropped).
+**Deleted:** `js/trend-chart.js` (charts are dropped), and — at the PrimeVue
+migration — `js/criteria-render.js` and `js/supplier-switcher.js`, whose jobs
+are now `js/components.js` and `js/supplier-data.js`.
 
 **Unused but kept:** `js/defect-cards.js`, `css/defect-cards.css`,
 `css/criteria.css`, `js/activity-switcher.js`, `js/cards-data.js`. Round 2
@@ -39,6 +45,100 @@ catalogue instead.
 **Not built, for want of data and design:** the supplier-level exclusion
 banner, and three of the four Trust & Safety failure states. No activity in the
 round-2 data fails T&S, so `Operations not met` never appears.
+
+## Round 2 is built from PrimeVue components
+
+Settled 2026-11-20 by Melanie: *"you should be using primevue for everything."*
+Round 2 had been hand-rolled CSS that imitated the design system — a `.sx-chip`
+that looked like a Tag, a `.sx-tab` that looked like a SelectButton. Those are
+now the real components, on the Supplier Portal's own theme.
+
+**Round 1 is untouched.** It stays frozen and hand-rolled at the repo root.
+This section describes `v2/` only.
+
+### Still no build step
+
+Three browser builds in `vendor/`, loaded as plain `<script>` tags before our
+own ES modules:
+
+| Global | Package | File |
+|---|---|---|
+| `window.Vue` | `vue@3.5.43` | `vendor/vue.global.prod.js` |
+| `window.PrimeVue` | `primevue@4.3.9` | `vendor/primevue.min.js` |
+| `window.PrimeUIX.Themes` | `@primeuix/themes@3.1.1` | `vendor/primeuix-lara.js` |
+
+It is the **global** Vue build, not the runtime-only one, so it carries the
+template compiler and components can be written as plain template strings.
+
+**Vendored, not CDN, on purpose.** Round-1 links went to seven real suppliers
+and round 2 will go the same way; a CDN stall would blank the page for someone
+we asked to look at it. The version is pinned by the file on disk. ~2.1 MB
+uncompressed across the three, which GitHub Pages serves gzipped.
+
+### The theme is the portal's, ported file-for-file
+
+`js/theme/` is `apps/supplier-portal-nuxt/config/primevue-theme/` from
+`getyourguide/supply-frontend`, converted from TypeScript to ES modules by
+stripping `import type` / `export type` / `satisfies` and adding `.js` to the
+import paths. **Nothing else was changed** — 55 files, 50 component configs,
+the GYG colour namespace and the preset's own `css` function all intact.
+`js/primevue-setup.js` composes it the way the portal does,
+`definePreset(Lara, gygPreset)`, so a Tag here is the Tag a supplier sees.
+
+**Re-port it rather than editing it by hand.** A hand-edit is how this drifts
+back into being an imitation.
+
+What that buys, concretely: the earned chip is `severity="contrast"`, which is
+`{GYG.label.primary}` `#1a2b49`; every failure chip is `severity="warn"`, which
+is `{GYG.surface.warning}` `#ffecc1` on `{GYG.label.warning}` `#a65200`. The
+hand-rolled chip had the background right and the text eyeballed at `#8a5a00`.
+
+### Templates are JS strings, never in-DOM
+
+The HTML parser case-folds tag names, so a `<Button>` written into the document
+arrives as the native `<button>` and the component never resolves — the same
+trap for `<Select>`, `<Column>` and `<Tag>`. In a string template Vue does its
+own parsing and the casing survives. This cost an afternoon once; don't pay it
+again by moving a template into the page.
+
+### Which component is which
+
+| Was | Is |
+|---|---|
+| `.sx-chip` | `Tag`, `contrast` / `warn` |
+| `.sx-tab` month toggle | `SelectButton` — a segmented pill, which is what 1970:173336 draws |
+| Performance tabs | `Tabs` / `TabList` / `Tab` — the underlined bar |
+| `.sx-btn--primary/secondary/pill` | `Button` |
+| `.sx-t` tables | `DataTable` + `Column` |
+| `.sx-select` | `Select` |
+| `.sx-banner` | `Message`, `success` / `warn` |
+| `.sx-dc` breakdown | `Accordion` / `AccordionPanel` |
+| `.sx-crit`, `.sx-card`, `.sx-promo`, `.sx-benefit` | `Card` |
+| `.switcher-menu` | `Menu`, popup |
+
+No PrimeVue equivalent, so still bespoke CSS: the pre-launch six-month
+timeline, the criterion row's metric column (status glyph, big number,
+"Criteria:" line), and the recommended-action panel.
+
+**Icons are not PrimeIcons.** `README-UI.md` is explicit that PrimeIcons ship
+with PrimeVue and are not to be used for app icons. Every icon here is a Figma
+export or an inline SVG, and the preset carries no font-family, so
+`css/round2.css` sets Compass on `.p-component` once.
+
+### Why `css/round2.css` can still win
+
+PrimeVue's generated CSS goes into a cascade layer (`cssLayer` in
+`js/primevue-setup.js`). Unlayered CSS beats layered CSS whatever the
+specificity, so the bindings in `round2.css` need no `!important` and no
+selector arms race. Keep it that way: anything in that file that recolours
+rather than positions belongs in the preset instead.
+
+### Known divergence: the filter selects are 40px, the design draws 44px
+
+The preset's `formField` height wins. Overriding it would put back exactly the
+duplication this migration removed, so the design system is treated as
+authoritative for control metrics. Raise it with the design-system owners if
+44px is deliberate rather than drawn.
 
 ## Done: the defect copy is sheet-driven
 
@@ -108,6 +208,11 @@ status per row, and `View details` opens the round-1 criteria page for one of
 them. Below it a second table, **Ineligible activities**, lists activities with
 a `Reason` instead of a status ("Activity type not eligible").
 
+**Ineligible rows carry no `View details`**, and so have no third column —
+settled by Melanie 2026-11-20. These activities are never assessed, so the
+link would open a criteria page with nothing on it. The two tables therefore
+differ in shape, not only in their second column.
+
 **The badge-status chips are the criteria page's three sections**, one chip per
 section, which is why this page needs no new eligibility logic — the section
 statuses `criteria-model.js` already computes are exactly what it renders:
@@ -145,6 +250,31 @@ Next month shows real statuses. That is **not** a general "current month is
 never assessed" rule — it is the pre-launch scenario, where no badge has been
 awarded yet and the first awards land next month. Confirmed by Melanie
 2026-11-19. So `—` means "not yet assessed", never "no badge".
+
+### The filter row, and where the assessment period sits
+
+1970:173343 draws a row **below** the month tabs holding two 216px selects —
+`Filter by badge status` (placeholder "Select status") and `Filter by product`
+("All products") — with `Assessment period: …` right-aligned on that **same
+line**, bottom-aligned with the select controls rather than with their labels.
+The period is not on the tabs' line; it was, and that was wrong.
+
+Three decisions the design does not state:
+
+- **The status options are only the statuses the supplier actually has**, built
+  from the rendered chips rather than from the full set. A menu offering
+  "Operations not met" to a supplier with no such activity returns an empty
+  table for no reason.
+- **Pre-launch the status select is disabled.** Every row shows `—`, so there is
+  no status to filter by. The product select stays live.
+- **The filters narrow the eligible table only.** Ineligible activities are a
+  separate section carrying reasons, not statuses, so a badge-status filter has
+  nothing to say about them and that table is left alone. If both filters
+  exclude everything, the eligible table is replaced by one line rather than
+  left as a bare header.
+
+The design also draws the `Product` and `Badge status` headers as **SortHeader**
+with an icon — the columns are meant to sort. Not built.
 
 ### Eligibility is `crit_in_scope`, and it is already in the export
 

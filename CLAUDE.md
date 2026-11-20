@@ -350,6 +350,12 @@ typography** inside them. PrimeIcons ship with PrimeVue and are *not* to be
 used for app icons. The type scale here matches
 `apps/supplier-portal-nuxt/utils/compass.ts` exactly.
 
+**The two trees honour this differently.** Round 1 imitates PrimeVue in hand
+-written CSS — it predates the decision and is frozen that way. Round 2 loads
+the real library on the portal's own ported theme, so its chips, tables and
+selects *are* the portal's. Don't carry a round-2 component into round 1, and
+don't hand-roll a new one in round 2. See `v2/CLAUDE.md`.
+
 Exception: the badge chip is set in **GYG Sans Headline**, the brand face, not
 Compass GT Eesti. Only the Semibold cut is vendored.
 

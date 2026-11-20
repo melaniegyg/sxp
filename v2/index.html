@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Excellence program — Supplier Portal concept</title>
-  <!-- Round 2 does not load defect-cards.css: the breakdown is rendered by
-       criteria-render.js in the flat accordion 2423:103908 draws, not the DBR
-       portal's category layout. That stylesheet's :root fallbacks would
-       clobber tokens.css anyway, which is why round 1 had to order them. -->
+  <!-- Round 2 does not load defect-cards.css: the breakdown is a PrimeVue
+       Accordion (2423:103908), not the DBR portal's category layout. That
+       stylesheet's :root fallbacks would clobber tokens.css anyway, which is
+       why round 1 had to order them. -->
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/round2.css">
@@ -15,7 +15,9 @@
 </head>
 <body>
 
-  <!-- ===================== PASSWORD GATE (cosmetic — see js/auth-gate.js) ===================== -->
+  <!-- ===================== PASSWORD GATE (cosmetic — see js/auth-gate.js) =====================
+       Outside the Vue app on purpose: it gates the whole document, runs before
+       any data is fetched, and has no reason to wait for the app to mount. -->
   <div id="auth-gate" class="auth-gate">
     <form class="auth-gate__card" id="auth-form">
       <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="auth-gate__logo">
@@ -27,137 +29,18 @@
     </form>
   </div>
 
-  <header class="topnav">
-    <div style="display:flex;align-items:center;gap:24px;">
-      <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="topnav__logo">
-    </div>
-    <div class="topnav__user" id="supplier-switcher" role="button" tabindex="0"
-         aria-haspopup="listbox" aria-expanded="false" aria-label="Switch supplier">
-      <div class="topnav__avatar"></div>
-      <div class="topnav__user-info">
-        <span class="topnav__name" id="switcher-label">&nbsp;</span>
-        <span class="topnav__company" id="switcher-sublabel">&nbsp;</span>
-      </div>
-      <svg class="topnav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M4 6l4 4 4-4" stroke="#858995" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <ul class="switcher-menu" id="switcher-menu" role="listbox" aria-label="Suppliers" hidden></ul>
-    </div>
-  </header>
+  <!-- Top nav, sidebar, page and help button are all rendered by AppShell. -->
+  <div id="app"></div>
 
-  <aside class="sidebar">
-    <button class="sidebar__item" aria-label="Activities"><img src="assets/icons/monument.svg" alt="" width="16" height="16"></button>
-    <button class="sidebar__item" aria-label="Create"><img src="assets/icons/file-plus.svg" alt="" width="16" height="16"></button>
-    <button class="sidebar__item" aria-label="Manage"><img src="assets/icons/grid.svg" alt="" width="16" height="16"></button>
-    <button class="sidebar__item" aria-label="Bookings"><img src="assets/icons/calendar.svg" alt="" width="16" height="16"></button>
-    <button class="sidebar__item sidebar__item--active" aria-label="Performance"><img src="assets/icons/magnifier-bar-chart.svg" alt="" width="16" height="16"></button>
-    <button class="sidebar__item" aria-label="Finance"><img src="assets/icons/currency.svg" alt="" width="16" height="16"></button>
-    <div class="sidebar__spacer"></div>
-    <button class="sidebar__item" aria-label="Expand menu"><img src="assets/icons/arrow-right.svg" alt="" width="16" height="16"></button>
-  </aside>
-
-  <main class="page-main">
-    <div class="page-inner">
-
-      <h1 class="page-title">Excellence program</h1>
-      <p class="sx-lede">The Excellent Experience badge celebrates the best activities on our marketplace where the activity provider has consistently delivered a professional, high-standard experience for our customers.</p>
-
-      <!-- ===================== PROGRAM CRITERIA BANNER =====================
-           The three cards name the same three sections the criteria page
-           shows and the same three chips the table below uses. Names finally
-           agree across all three places as of 2423:105656 / 2423:106930. -->
-      <section class="sx-crit">
-        <div class="sx-crit__head">
-          <div>
-            <h2 class="sx-crit__title">Program criteria</h2>
-            <p class="sx-crit__sub">Calculated every month based on the last 6 months</p>
-          </div>
-          <button class="sx-btn sx-btn--pill" type="button">
-            Learn more
-            <img src="assets/icons/arrow-right-24.svg" alt="" width="20" height="20">
-          </button>
-        </div>
-        <div class="sx-crit__cards">
-          <div class="sx-crit__card">
-            <img src="assets/icons/compass-badge.svg" alt="" width="20" height="20">
-            <div>
-              <p class="sx-crit__card-t">Review count</p>
-              <!-- NOTE(copy): this node keeps "new"; 2423:106930 and 2241:42264
-                   drop it. Unresolved — see CLAUDE.md. -->
-              <p class="sx-crit__card-d">At least 50 new reviews in this period</p>
-            </div>
-          </div>
-          <div class="sx-crit__card">
-            <img src="assets/icons/compass-eye.svg" alt="" width="20" height="20">
-            <div>
-              <p class="sx-crit__card-t">Operational standards</p>
-              <p class="sx-crit__card-d">24-hour cancellation and no safety issues</p>
-            </div>
-          </div>
-          <div class="sx-crit__card">
-            <img src="assets/icons/compass-magnifier.svg" alt="" width="20" height="20">
-            <div>
-              <p class="sx-crit__card-t">Quality standards</p>
-              <p class="sx-crit__card-d">High customer rating and few complaints</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Rendered by js/criteria-render.js -->
-      <div id="overview"></div>
-
-      <div style="height:60px;"></div>
-    </div>
-  </main>
-
-  <button class="help-btn" aria-label="Help">
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-      <circle cx="9" cy="9" r="7.5" stroke="white" stroke-width="1.5"/>
-      <path d="M7 7c0-1.1.9-2 2-2s2 .9 2 2c0 1.1-.9 1.7-1.5 2.2S9 10.2 9 11" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-      <circle cx="9" cy="13.5" r=".75" fill="white"/>
-    </svg>
-    Help
-  </button>
+  <!-- Vendored browser builds, not a CDN: round-2 links go to real suppliers
+       and a CDN stall would blank the page. See js/primevue-setup.js. -->
+  <script src="vendor/vue.global.prod.js"></script>
+  <script src="vendor/primevue.min.js"></script>
+  <script src="vendor/primeuix-lara.js"></script>
 
   <script src="js/interactions.js"></script>
   <script src="js/criteria-model.js"></script>
-  <script src="js/criteria-render.js"></script>
-  <script src="js/supplier-switcher.js"></script>
-  <script>
-    // THIS MONTH is the pre-launch state: no badge has been awarded yet, so
-    // every row shows an em dash rather than a status. NEXT MONTH shows the
-    // assessment that decides the first awards. Confirmed 2026-11-19 — the
-    // dash means "not yet assessed", never "no badge".
-    let preLaunch = true;
-    let current = null;
-
-    function draw() {
-      if (!current) return;
-      SXPRender.renderOverview("#overview", current.model, {
-        preLaunch,
-        supplierKey: current.key,
-      });
-      document.querySelectorAll(".sx-tab").forEach((t) => {
-        t.addEventListener("click", () => {
-          preLaunch = t.dataset.tab === "this";
-          draw();
-        });
-      });
-    }
-
-    SupplierSwitcher.init({
-      onSelect(file, entry) {
-        current = { model: SXP.buildSupplier(file), key: entry.id };
-        document.title = file.supplier_name + " — Excellence program";
-        draw();
-      },
-      onError(err, entry) {
-        document.getElementById("overview").innerHTML =
-          '<p class="sx-lede">Could not load ' + entry.file + ": " + err.message + "</p>";
-      },
-    });
-  </script>
+  <script type="module" src="js/app-overview.js"></script>
   <script src="js/auth-gate.js"></script>
 </body>
 </html>
