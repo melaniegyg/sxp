@@ -442,14 +442,23 @@ a.p-button:hover { text-decoration: none; }
 /* ---------- Disruption breakdown ----------
    An Accordion drawn as a stack of separate cards rather than one panel, so
    each tag reads as its own object (2423:103908). */
-/* Panels are separate 8px cards 10 apart, each with a 1px non-interactive
-   border — that border IS in 2423:105848, so it stays. */
-.sx-acc { display: flex; flex-direction: column; gap: 10px; }
+/* No border on the panels. 2423:105848 draws one (1px #ebeef1, and 2px
+   #0071eb when open) and the page followed it, but Melanie removed the blue
+   on 2026-11-20 and the rest of it straight after — the tag list sits inside
+   a bordered criteria card already, so outlining each row boxed a box.
+
+   What carries the structure instead is the design system's own accordion:
+   accordion.config.js sets header.borderWidth "1px 0 0" with the first at 0,
+   so the panels are separated by a top rule — a divider list, which is how
+   the portal's accordion looks everywhere else. The 10px gap goes with the
+   border: it was spacing bordered cards apart, and left to itself it would
+   strand each divider in the middle of a gap. */
+.sx-acc { display: flex; flex-direction: column; gap: 0; }
 .sx-acc .p-accordionpanel {
-  border: 1px solid var(--sx-line);
+  border: 0;
   border-radius: 8px;
   margin: 0;
-  background: #fff;
+  background: transparent;
 }
 /* The open panel keeps the same grey border as the closed ones. 2423:103908
    draws it blue, and the page followed that until Melanie removed it
@@ -464,6 +473,10 @@ a.p-button:hover { text-decoration: none; }
   background: transparent;
   border-radius: 8px;
 }
+/* No hover background, deliberately: accordion.config.js sets
+   hoverBackground to {surface.0}, i.e. white on white. The portal's accordion
+   leans on the divider, the chevron and the pointer cursor instead, and this
+   follows it rather than inventing a tint. */
 .sx-acc .p-accordionpanel-active > .p-accordionheader { border-radius: 8px 8px 0 0; padding: 12px 16px; }
 .sx-acc .p-accordioncontent-content { background: transparent; border: 0; padding: 0 16px 16px; }
 .sx-dc__text { display: block; min-width: 0; flex: 1 1 auto; }
