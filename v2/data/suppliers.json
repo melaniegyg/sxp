@@ -1,0 +1,45 @@
+{
+  "_note": "Round-2 index. One file per SUPPLIER (the overview lists all of a supplier's activities). Exported 2026-11-17 for the 2nd-round Rally study. All real rows; no synthetic fixtures. No personal fields.",
+  "suppliers": [
+    {
+      "id": "edinburgh-capital-tours",
+      "file": "supplier-594168-edinburgh-capital-tours.json",
+      "supplierId": 594168,
+      "supplierName": "Edinburgh Capital Tours",
+      "activities": 1,
+      "badges": 1
+    },
+    {
+      "id": "liulian-travel",
+      "file": "supplier-742608-liulian-travel.json",
+      "supplierId": 742608,
+      "supplierName": "Liulian Travel",
+      "activities": 5,
+      "badges": 0
+    },
+    {
+      "id": "party-deck",
+      "file": "supplier-406783-party-deck.json",
+      "supplierId": 406783,
+      "supplierName": "Party Deck",
+      "activities": 3,
+      "badges": 0
+    },
+    {
+      "id": "split-local-tours",
+      "file": "supplier-499177-split-local-tours.json",
+      "supplierId": 499177,
+      "supplierName": "Split Local Tours",
+      "activities": 5,
+      "badges": 0
+    },
+    {
+      "id": "taller-andaluz-de-cocina-cooking-school",
+      "file": "supplier-13075-taller-andaluz-de-cocina-cooking-school.json",
+      "supplierId": 13075,
+      "supplierName": "Taller Andaluz de Cocina -Cooking School",
+      "activities": 5,
+      "badges": 2
+    }
+  ]
+}

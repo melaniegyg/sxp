@@ -4,7 +4,7 @@
     {
       "name": "sxp",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["scripts/serve.py"],
+      "runtimeArgs": ["/Users/melanie.loffbird/Documents/mels claude projects/sxp/scripts/serve.py"],
       "port": 8150
     }
   ]

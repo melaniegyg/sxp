@@ -1,407 +1,308 @@
 // ============================================================
-// TOP CHOICE — criteria renderer
+// SXP ROUND 2 — renderer
 //
-//   TopChoiceRender.render("#criteria", TopChoice.build(activity));
+//   SXPRender.renderActivity(mount, model, catalogue)
+//   SXPRender.renderOverview(mount, supplierModel)
 //
-// Renders the three criteria sections. Every row renders from the same
-// shape, so a failing activity needs no separate template — it just
-// carries status "not-met" and (optionally) failHelp.
+// Round 2 does NOT use js/defect-cards.js. That module draws the DBR portal's
+// layout — a category card with a left-hand defect nav — and 2423:103908 draws
+// a flat accordion of tag cards with a booking-count chip. The module is
+// shared and unchanged; its recommended-action copy was lifted into
+// data/defect-catalogue.json instead. Trend charts are gone entirely.
 // ============================================================
 (function (global) {
   "use strict";
 
   const esc = (s) =>
-    String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    String(s == null ? "" : s).replace(/[&<>"]/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
+  // Pass is a checkbox, fail an X in the same dark square. Neither is red or
+  // green — colour lives in the section card's top bar. (2423:103908)
   const ICON_MET =
-    '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m16.5 9.5-5.8 6.2L7.5 12.6l1.45-1.37 1.7 1.6L15 8.1z"/><path fill-rule="evenodd" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2m0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16" clip-rule="evenodd"/></svg>';
-  // status / circle-slash — "blocked, prohibited, denied". The design uses this
-  // for EVERY failed criterion: section rows, the status banner and the metric
-  // tiles alike (516:50949, 516:51696, 555:53045). There is no warning glyph.
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6.5 12.2l3.6 3.6 7.2-7.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const ICON_NOT_MET =
-    '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2m0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16" clip-rule="evenodd"/><path d="m6.343 16.243 9.9-9.9 1.414 1.414-9.9 9.9z"/></svg>';
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="0" y="0" width="24" height="24" rx="4" fill="currentColor"/><path d="M8 8l8 8M16 8l-8 8" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>';
+  const ICON_CHEVRON =
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const ICON_EXTERNAL =
+    '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M6 2h8v8M14 2L6.5 9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M11 10.5V14H2V5h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const ICON_SPARKLE =
+    '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3l1.8 4.9L18.7 9.7l-4.9 1.8L12 16.4l-1.8-4.9L5.3 9.7l4.9-1.8z" fill="currentColor"/><path d="M18.5 14l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z" fill="currentColor"/></svg>';
 
-  const icon = (status) =>
-    `<span class="tc-status tc-status--${status}">${status === "met" ? ICON_MET : ICON_NOT_MET}</span>`;
+  const statusIcon = (s) => (s === "met" ? ICON_MET : ICON_NOT_MET);
 
-  // Confirmed Trust & Safety cases, itemised (design 516:51482). Columns the
-  // export can't fill yet render empty rather than being dropped, so the shape
-  // stays honest about what's missing.
-  //
-  // "Excluded until" holds a bare date. An earlier revision (720:66815) titled
-  // it "Notes" and carried prose ("Ban effective until Jan 1, 2027"); 516:51482
-  // moves the wording into the header, so the cells are dates only.
-  const CASE_COLS = [
-    { key: "activity", label: "Activity" },
-    { key: "confirmed", label: "Case confirmed" },
-    { key: "case_number", label: "Case number" },
-    { key: "excluded_until", label: "Excluded until" },
-  ];
+  // ---------------------------------------------------------------
+  // The disruption breakdown
+  // ---------------------------------------------------------------
+  // Booking counts ARE shown in round 2 (settled 2026-11-19), reversing round
+  // 1's strip. They will not always sum to the rate printed above them — the
+  // export's booking-level rows and its aggregate disagree for 4 of these 19
+  // activities, in both directions. See CLAUDE.md.
+  function disruptionCard(entry, catalogue, open) {
+    const meta = (catalogue.tags && catalogue.tags[entry.tag]) || null;
+    // Fall back to the internal tag name only if the catalogue has no row —
+    // better a visible internal string than a blank card.
+    const name = (meta && meta.name) || entry.tag;
+    const desc = (meta && meta.description) || "";
+    const ra =
+      meta && meta.recActionKey ? (catalogue.recActions || {})[meta.recActionKey] : null;
 
-  function renderCases(cases) {
-    if (!cases || !cases.length) return "";
-    const head = CASE_COLS.map(
-      (c) => `<th class="tc-cases__th tc-cases__col--${c.key}">${esc(c.label)}</th>`
-    ).join("");
-    const rows = cases
-      .map(
-        (c) =>
-          "<tr>" +
-          CASE_COLS.map(
-            (col) => `<td class="tc-cases__td">${c[col.key] ? esc(c[col.key]) : ""}</td>`
-          ).join("") +
-          "</tr>"
-      )
-      .join("");
-    return `
-      <table class="tc-cases">
-        <thead><tr>${head}</tr></thead>
-        <tbody>${rows}</tbody>
-      </table>`;
+    const bookings = entry.count === 1 ? "1 booking" : entry.count + " bookings";
+
+    let body = "";
+    if (meta && meta.whatYouCanDo && meta.whatYouCanDo.length) {
+      body +=
+        '<h5 class="sx-dc__h">What you can do</h5><ul class="sx-dc__list">' +
+        meta.whatYouCanDo.map((r) => "<li>" + esc(r) + "</li>").join("") +
+        "</ul>";
+    }
+    if (ra) {
+      // fillCount: the drawn "Address X reviews…" is this {count} placeholder.
+      const title = String(ra.title).replace(/\{count\}/g, entry.count);
+      body +=
+        '<div class="sx-ra">' +
+        '<div class="sx-ra__main">' +
+        '<span class="sx-ra__icon">' +
+        '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M16 13H8v-2h8zm-8 4h8v-2H8z" fill="currentColor"/><path fill="currentColor" fill-rule="evenodd" d="M4 2v16a4 4 0 004 4h8a4 4 0 004-4V6.586L15.414 2zm2 16V4h8v4h4v10a2 2 0 01-2 2H8a2 2 0 01-2-2" clip-rule="evenodd"/></svg>' +
+        "</span><div>" +
+        '<p class="sx-ra__title">' + esc(title) + "</p>" +
+        '<p class="sx-ra__desc">' + esc(ra.description) + "</p>" +
+        "</div></div>" +
+        '<button type="button" class="sx-btn sx-btn--primary">' +
+        esc(ra.buttonLabel || "Take action") +
+        "</button></div>";
+    }
+    if (meta && meta.resources && meta.resources.length) {
+      body +=
+        '<h5 class="sx-dc__h">Resources</h5><ul class="sx-dc__links">' +
+        meta.resources
+          .map((r) =>
+            r.url
+              ? '<li><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' +
+                esc(r.title) + ICON_EXTERNAL + "</a></li>"
+              : '<li><span class="sx-dc__link--flat">' + esc(r.title) + ICON_EXTERNAL + "</span></li>"
+          )
+          .join("") +
+        "</ul>";
+    }
+
+    return (
+      '<article class="sx-dc' + (open ? " is-open" : "") + '">' +
+      '<button type="button" class="sx-dc__head" aria-expanded="' + (open ? "true" : "false") + '">' +
+      '<span class="sx-dc__text"><span class="sx-dc__name">' + esc(name) + "</span>" +
+      (desc ? '<span class="sx-dc__desc">' + esc(desc) + "</span>" : "") +
+      "</span>" +
+      '<span class="sx-dc__meta"><span class="sx-chip-count">' + esc(bookings) + "</span>" +
+      '<span class="sx-dc__chev">' + ICON_CHEVRON + "</span></span>" +
+      "</button>" +
+      (body ? '<div class="sx-dc__body">' + body + "</div>" : "") +
+      "</article>"
+    );
   }
 
-  // The expanded "See details" panel: a trend chart, and for the two rate
-  // metrics a Top-disruptions breakdown. That breakdown is the defect-cards
-  // module lifted from the DBR portal — same rail, advice, FAQ links and CTAs
-  // the design shows (672:64888) — so it is reused rather than rebuilt.
-  function buildDetail(panel, row) {
-    if (!row || !row.details) {
-      panel.innerHTML =
-        '<p class="tc-details__placeholder">No trend data for this activity yet.</p>';
-      return;
-    }
-
-    panel.innerHTML = '<div class="tc-trend"></div>';
-    if (row.details.trend && row.metric && row.metric.chart) {
-      TrendChart.render(panel.querySelector(".tc-trend"), {
-        points: row.details.trend,
-        max: row.metric.chart.max,
-        bar: row.metric.chart.bar,
-        kind: row.metric.chart.kind,
-        ariaLabel: row.label + " over the assessment period",
-      });
-    }
-
-    if (row.details.disruptions && row.details.disruptions.length) {
-      // Name the metric in the advice heading — "…decrease your disrupted
-      // booking rate". The row labels lowercase to exactly the design's
-      // wording, so there is no second copy of these names to drift.
-      mountDisruptions(panel, row.details.disruptions, {
-        rateName: row.metric ? row.label.toLowerCase() : null,
-      });
-    }
-  }
-
-  // The one tag worth calling out, or null when the data doesn't support it.
-  //
-  // Order already ranks the tags, but that is implicit, so the top one is
-  // marked explicitly — under a deliberately strict guard. Measured across the
-  // warehouse, only about two thirds of activities that carry tags have a
-  // genuine leader: 21% are tied at the top and 15% have a single tag, where a
-  // "most common" claim would be invented or vacuous. All three rules below
-  // have to hold:
-  //
-  //   more than one tag   — nothing to be most common relative to otherwise
-  //   no tie for first    — a tie has no single offender, full stop
-  //   at least 3 bookings — one complaint must never crown a winner
-  //   double the runner-up— 31-vs-24 is not a standout, and badging it would
-  //                         invite arguing with a margin the supplier can't see
-  //
-  // Counts drive this but are never rendered; see mountDisruptions.
-  function dominantTag(disruptions) {
-    const defects = (disruptions || []).flatMap((c) => c.defects || []);
-    const counted = defects.filter((d) => typeof d.count === "number" && d.count > 0);
-    if (counted.length < 2) return null;
-    const sorted = [...counted].sort((a, b) => b.count - a.count);
-    const [first, second] = sorted;
-    if (first.count === second.count) return null;
-    if (first.count < 3) return null;
-    if (first.count < second.count * 2) return null;
-    return first.name;
-  }
-
-  // Renders the shared defect-cards rail into `host` and strips the affordances
-  // that only make sense in the DBR portal. Used by the metric detail panels
-  // and, inline, by the Trust & Safety tag-rate failure (516:52273).
-  function mountDisruptions(host, disruptions, opts) {
-    const wrap = document.createElement("div");
-    wrap.className = "tc-disruptions" + (opts && opts.inline ? " tc-disruptions--inline" : "");
-    host.appendChild(wrap);
-    // Tag counts are NEVER shown to the supplier. Two reasons: a bare "15"
-    // invites arguing with the number instead of acting on the tag, and the
-    // booking-level rows these counts come from do not reconcile with the rate
-    // printed above them (sxp_booking_defect undercounts — see CLAUDE.md), so
-    // any figure here would visibly fail to add up. Order still carries the
-    // ranking, so the worst tag stays first.
-    //
-    // `count` is read by the shared module in exactly one place, to fill
-    // "{count}" in a recommended-action title, and its fillCount() already
-    // renders "recent" when the field is absent — "Address recent reviews that
-    // mention capacity". So dropping it here is enough; defect-cards.js stays
-    // untouched for the DBR portal, which does show counts.
-    const countless = disruptions.map((cat) => ({
-      ...cat,
-      defects: (cat.defects || []).map(({ count, ...defect }) => defect),
-    }));
-    const standout = dominantTag(disruptions);
-    // accordion:false keeps the single card open — there is nothing to
-    // collapse against when each metric shows one category.
-    DefectCards.render(wrap, countless, { accordion: false });
-
-    // The card is already inside a collapsible row, so its own collapse
-    // affordance is redundant: drop the chevron, and demote the heading from
-    // a toggle button to plain text rather than leaving a button that does
-    // nothing. Done here so the shared module stays untouched for the DBR
-    // portal, which still needs the collapsing behaviour.
-    wrap.querySelectorAll(".cc-collapse").forEach((b) => b.remove());
-    wrap.querySelectorAll(".cc-left__head").forEach((head) => {
-      const plain = document.createElement("div");
-      plain.className = head.className;
-      plain.innerHTML = head.innerHTML;
-      head.replaceWith(plain);
-    });
-
-    // The shared module's heading is a bare "What you can do". On a metric
-    // panel the design names the rate it would improve — "What you can do to
-    // decrease your disrupted booking rate" — which matters because up to
-    // three of these rails can be open at once and the generic heading gives
-    // no clue which metric the advice belongs to.
-    //
-    // Only rate rows get a name. The Trust & Safety rail keeps the generic
-    // heading: its row is a check, not a rate, so "decrease your trust and
-    // safety check" would be nonsense and no design covers it.
-    if (opts && opts.rateName) {
-      wrap.querySelectorAll(".dp-advice .dp-heading").forEach((h) => {
-        h.textContent = `What you can do to decrease your ${opts.rateName}`;
-      });
-    }
-
-    // Mark the standout tag, when there is one. Matched on the rendered title
-    // rather than by position: the shared module controls the list order, and
-    // keying off "first item" would silently mislabel if that ever changed.
-    if (standout) {
-      wrap.querySelectorAll(".defect-nav-item__title").forEach((t) => {
-        if (t.textContent !== standout) return;
-        const chip = document.createElement("span");
-        chip.className = "tc-top-tag";
-        chip.textContent = "Most common";
-        // The gap is margin, which screen readers and copied text don't see —
-        // without this the title reads "Activity Not As AdvertisedMost common".
-        t.appendChild(document.createTextNode(" "));
-        t.appendChild(chip);
-      });
-    }
-    return wrap;
-  }
-
-  function renderRow(row) {
+  // ---------------------------------------------------------------
+  // One criterion row
+  // ---------------------------------------------------------------
+  function rowHtml(row, catalogue) {
     const failing = row.status === "not-met";
-    // The design hides this helper text on passing rows and reveals it on
-    // failing ones, alongside a CTA.
-    const help =
-      failing && row.failHelp
-        ? `<p class="tc-row__help">${esc(row.failHelp)}</p>`
-        : "";
 
-    if (row.metric) {
-      // Two tile variants, told apart by whether the metric states a bar.
-      //
-      // The excellence tiles state the bar they are judged against and carry
-      // the status icon INSIDE the tile, above the number (516:50363).
-      //
-      // The review-count tile instead dates the number ("As of Oct 26") and
-      // sets its icon INLINE, to the left of the number rather than above it
-      // (796:29978). That pairing is one 30px-tall row, so the icon centres
-      // against the number and the tile comes to 94px rather than the
-      // excellence tiles' 128px. The height is content-driven either way —
-      // nothing here is hardcoded to match the design's numbers.
-      //
-      // Only the excellence tiles have a trend or breakdown behind them, so
-      // only they get a "See details" toggle.
-      const isCount = !row.metric.barText;
-      const caption = isCount
-        ? esc(row.metric.caption || "")
-        : `Criteria:<br>${esc(row.metric.barText)}`;
-      const value = `<p class="tc-metric__value">${esc(row.metric.value)}</p>`;
-      const expandable = Boolean(row.metric.chart || row.details);
-      return `
-        <div class="tc-row tc-row--metric tc-row--${esc(row.status)}" data-row="${esc(row.id)}">
-          <div class="tc-metric${isCount ? " tc-metric--count" : ""}${failing ? " tc-metric--not-met" : ""}">
-            ${
-              isCount
-                ? `<div class="tc-metric__head">${icon(row.status)}${value}</div>`
-                : `${icon(row.status)}${value}`
-            }
-            <p class="tc-metric__bar">${caption}</p>
-          </div>
-          <div class="tc-row__body">
-            <p class="tc-row__label">${esc(row.label)}</p>
-            <p class="tc-row__desc">${esc(row.description)}</p>
-            ${help}
-            ${
-              expandable
-                ? `<button class="tc-details" type="button" aria-expanded="false">
-              See details
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </button>
-            <div class="tc-details__panel hidden" data-detail="${esc(row.id)}"></div>`
-                : ""
-            }
-          </div>
-        </div>`;
+    // The collapsed below-the-gate line: no metric, no detail, just a
+    // statement that the metrics are withheld.
+    if (row.id === "quality-blocked") {
+      return (
+        '<div class="sx-row sx-row--blocked">' +
+        '<span class="sx-row__icon">' + statusIcon(row.status) + "</span>" +
+        '<p class="sx-row__blocked">' + esc(row.label) + "</p>" +
+        "</div>"
+      );
     }
 
-    // Some gates replace their description outright when they fail, rather
-    // than keeping it and adding a note underneath.
-    const replaced = failing && row.failDescription;
-    // The T&S tag-rate failure shows its tag rail inline, with no "See details"
-    // toggle — the design puts it straight under the copy (516:52273). The
-    // placeholder is filled after innerHTML, since defect-cards mounts to a node.
-    const inlineRail =
-      failing && row.details && row.details.disruptions && row.details.disruptions.length
-        ? `<div data-inline-disruptions="${esc(row.id)}"></div>`
-        : "";
-    // A row may carry no description at all — the below-the-gate excellence
-    // line is a single statement with nothing beneath it (720:66225). Guard
-    // rather than rendering the string "undefined".
-    const desc = row.description
-      ? `<p class="tc-row__desc">${esc(row.description)}</p>`
-      : "";
-    const body = replaced
-      ? `<p class="tc-row__fail-desc">${esc(row.failDescription)}</p>${renderCases(row.cases)}${inlineRail}`
-      : `${desc}${help}${inlineRail}`;
-
-    return `
-      <div class="tc-row tc-row--${esc(row.status)}" data-row="${esc(row.id)}">
-        ${icon(row.status, row.failIcon)}
-        <div class="tc-row__body${replaced ? " tc-row__body--replaced" : ""}">
-          <p class="tc-row__label">${esc(row.label)}</p>
-          ${body}
-        </div>
-      </div>`;
-  }
-
-  function renderSection(section) {
-    // A section's rail turns red as soon as any row in it fails.
-    const failed = section.rows.some((r) => r.status === "not-met");
-    return `
-      <section class="tc-section tc-section--${failed ? "not-met" : "met"}" data-section="${esc(section.id)}">
-        <div class="tc-section__head">
-          <h3 class="tc-section__title">${esc(section.title)}</h3>
-        </div>
-        <div class="tc-section__rows">${section.rows.map(renderRow).join("")}</div>
-      </section>`;
-  }
-
-  // Copy is verbatim from the design. The badge name is unquoted and title-case
-  // ("Excellent Experience"), matching the revised promo header (566:53353).
-  //
-  // The two dates are formatted differently ON PURPOSE, as the design has them:
-  // the success HEADLINE drops the year ("from January 1") while its own
-  // description keeps it ("on January 1, 2027"), as does the failure headline.
-  // An earlier note here said carrying the year into the headline was a
-  // deliberate divergence — the design now settles it the other way.
-  //
-  // Note the prepositions differ too: "from" in the success headline, "on"
-  // everywhere else. Dates are templated and each clause drops when absent.
-  function renderBanner(badge) {
-    const date = badge.awardDate ? esc(badge.awardDate) : null;
-    const monthDay = badge.awardDateMonthDay ? esc(badge.awardDateMonthDay) : null;
-
-    if (badge.earned) {
-      return `
-        <div class="tc-banner tc-banner--met">
-          <div class="tc-banner__head">
-            ${icon("met")}
-            <p class="tc-banner__title">Nice work! This activity will receive an Excellent Experience badge${monthDay ? ` from ${monthDay}` : ""}</p>
-          </div>
-          <p class="tc-banner__desc">As long as you continue to meet all the criteria below, the badge will appear on your listing${date ? ` on ${date}` : ""}.</p>
-        </div>`;
+    const m = row.metric;
+    let left = '<span class="sx-row__icon">' + statusIcon(row.status) + "</span>";
+    if (m) {
+      left +=
+        '<span class="sx-row__value">' + esc(m.value) + "</span>" +
+        (m.criteria
+          ? '<span class="sx-row__criteria">Criteria:<br>' + esc(m.criteria) + "</span>"
+          : "");
     }
-    return `
-      <div class="tc-banner tc-banner--not-met">
-        <div class="tc-banner__head">
-          ${icon("not-met")}
-          <p class="tc-banner__title">You currently don&rsquo;t meet the requirements to be awarded the Excellent Experience badge${date ? ` on ${date}` : ""}</p>
-        </div>
-        <p class="tc-banner__desc">This activity doesn&rsquo;t meet the criteria to receive the badge. Keep working on it so you can get awarded with it next time.</p>
-      </div>`;
+
+    // The failing variant replaces the description rather than appending to
+    // it — the cancellation row's fail copy tells you what to do instead of
+    // restating the rule.
+    const desc = failing && row.failDescription ? row.failDescription : row.description;
+
+    let main =
+      '<p class="sx-row__label">' + esc(row.label) + "</p>" +
+      (desc ? '<p class="sx-row__desc">' + esc(desc) + "</p>" : "");
+
+    // TODO(data): nothing in the export backs the Review summary block; it
+    // renders only when a fixture supplies `review_summary`. None does today.
+    if (failing && row.reviewSummary) {
+      main +=
+        '<div class="sx-summary"><p class="sx-summary__h">' + ICON_SPARKLE +
+        "Review summary</p><p class=\"sx-summary__body\">" + esc(row.reviewSummary.text) +
+        '</p><p class="sx-summary__meta">' + esc(row.reviewSummary.meta) + "</p></div>";
+    }
+
+    // `0%` is its own component variant with no toggle, and a passing non-zero
+    // rate still expands. So the gate is "is there a breakdown", never "is the
+    // rate failing" — the only gate the data supports, since 94.3% of
+    // activities with a non-zero rate have no tagged bookings at all.
+    const tags = row.disruptions || [];
+    if (tags.length) {
+      main +=
+        '<button type="button" class="sx-see" aria-expanded="false">' +
+        '<span>See details</span>' + ICON_CHEVRON + "</button>" +
+        '<div class="sx-details" hidden>' +
+        '<h4 class="sx-details__h">' + esc(row.disruptionsTitle || "Top complaints for this activity") + "</h4>" +
+        tags.map((t, i) => disruptionCard(t, catalogue, i === 0)).join("") +
+        "</div>";
+    }
+
+    if (row.cta && failing) {
+      main += '<button type="button" class="sx-btn sx-btn--secondary sx-row__cta">' +
+        esc(row.cta.label) + "</button>";
+    }
+
+    return (
+      '<div class="sx-row' + (failing ? " is-failing" : "") + '">' +
+      '<div class="sx-row__left">' + left + "</div>" +
+      '<div class="sx-row__main">' + main + "</div>" +
+      "</div>"
+    );
   }
 
-  // Assessment-period select (757:29008), replacing the plain "Assessment
-  // period: …" line.
-  //
-  // DELIBERATELY INERT. Only the current period has data — sxp_activity_criteria
-  // holds one row per activity covering one window — so the earlier ranges are
-  // generated labels with nothing behind them. There is no change handler: the
-  // dropdown opens and a past range can be picked, but the criteria below do
-  // not reload, because there is nothing to reload them from.
-  //
-  // Consequence worth knowing before demoing: pick an earlier range and the
-  // label will disagree with the numbers underneath it. Wire this up only once
-  // the export carries history, or lock the control to the current period.
-  function renderPeriodSelect(period) {
-    const opts = (period.options || [])
-      .map(
-        (o) =>
-          `<option${o.current ? " selected" : ""}>${esc(o.label)}</option>`
-      )
-      .join("");
-    return `
-      <div class="tc-period">
-        <label class="tc-period__label" for="tc-period">Assessment period</label>
-        <div class="tc-period__control">
-          <select class="tc-period__select" id="tc-period">${opts}</select>
-          <svg class="tc-period__chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-      </div>`;
-  }
-
-  function render(target, model) {
-    const el = typeof target === "string" ? document.querySelector(target) : target;
+  // ---------------------------------------------------------------
+  // Activity page
+  // ---------------------------------------------------------------
+  function renderActivity(mount, model, catalogue) {
+    const el = typeof mount === "string" ? document.querySelector(mount) : mount;
     if (!el) return;
+    catalogue = catalogue || {};
 
-    // Banner sits under the heading, above the criteria it summarises.
-    el.innerHTML = `
-      <div class="tc-heading">
-        <h2 class="section-heading">How to earn the badge for this activity</h2>
-        ${renderPeriodSelect(model.period)}
-      </div>
-      ${renderBanner(model.badge)}
-      <div class="tc-sections">${model.sections.map(renderSection).join("")}</div>`;
+    const earned = model.badge.earned;
+    const banner = earned
+      ? '<div class="sx-banner sx-banner--ok">' +
+        "<p class=\"sx-banner__h\">Nice work! This activity will receive an Excellent Experience badge in " +
+        esc(model.badge.awardMonth) + "</p>" +
+        '<p class="sx-banner__b">As long as you continue to meet all the criteria below, the badge will be awarded on <strong>' +
+        esc(model.badge.awardDate) + "</strong></p></div>"
+      : '<div class="sx-banner sx-banner--no">' +
+        '<p class="sx-banner__h">This activity does not yet meet the criteria for the Excellent Experience badge</p>' +
+        '<p class="sx-banner__b">Review what is not met below. Criteria are reassessed every month, and the next badges are awarded on <strong>' +
+        esc(model.badge.awardDate) + "</strong>" +
+        // Only say "keep working on it" where work on THIS activity can
+        // actually change the outcome. A supplier-level Trust & Safety ban
+        // cannot — which is round 1's documented copy bug. No activity in the
+        // round-2 data fails T&S, so this branch is currently unreachable.
+        (model.sections.some(
+          (s) => s.id === "operational" && s.rows.some((r) => r.id === "trust-safety" && r.status === "not-met")
+        )
+          ? ". This is a Trust &amp; Safety exclusion and applies across your activities."
+          : "") +
+        "</p></div>";
 
-    // Build each detail panel lazily — charts and the disruption rail are only
-    // worth rendering once a supplier actually opens the row.
-    const rowsById = {};
-    model.sections.forEach((s) => s.rows.forEach((r) => (rowsById[r.id] = r)));
+    const sections = model.sections
+      .map((s) => {
+        const failed = s.rows.some((r) => r.status === "not-met");
+        return (
+          '<section class="sx-card' + (failed ? " is-failing" : "") + '">' +
+          '<div class="sx-card__bar"></div>' +
+          '<header class="sx-card__head"><h3>' + esc(s.title) + "</h3>" +
+          '<span class="sx-card__period">' + esc(model.period.text) + "</span></header>" +
+          '<div class="sx-card__rows">' + s.rows.map((r) => rowHtml(r, catalogue)).join("") + "</div>" +
+          "</section>"
+        );
+      })
+      .join("");
 
-    // Inline rails (Trust & Safety tag rate) are not behind a toggle, so they
-    // mount immediately rather than on first open.
-    el.querySelectorAll("[data-inline-disruptions]").forEach((slot) => {
-      const row = rowsById[slot.dataset.inlineDisruptions];
-      if (row && row.details && row.details.disruptions) {
-        mountDisruptions(slot, row.details.disruptions, { inline: true });
-      }
-    });
+    el.innerHTML = banner + sections;
+    wireToggles(el);
+  }
 
-    el.querySelectorAll(".tc-details").forEach((btn) => {
+  function wireToggles(root) {
+    root.querySelectorAll(".sx-see").forEach((btn) => {
       btn.addEventListener("click", () => {
         const panel = btn.nextElementSibling;
-        const open = !panel.classList.contains("hidden");
-        panel.classList.toggle("hidden", open);
-        btn.setAttribute("aria-expanded", String(!open));
-        btn.classList.toggle("open", !open);
-        if (!open && !panel.dataset.built) {
-          buildDetail(panel, rowsById[panel.dataset.detail]);
-          panel.dataset.built = "1";
-        }
+        const open = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", open ? "false" : "true");
+        btn.classList.toggle("is-open", !open);
+        if (panel) panel.hidden = open;
+      });
+    });
+    root.querySelectorAll(".sx-dc__head").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const card = btn.closest(".sx-dc");
+        const open = card.classList.contains("is-open");
+        card.classList.toggle("is-open", !open);
+        btn.setAttribute("aria-expanded", open ? "false" : "true");
       });
     });
   }
 
-  global.TopChoiceRender = { render };
+  // ---------------------------------------------------------------
+  // Overview page
+  // ---------------------------------------------------------------
+  function renderOverview(mount, sup, opts) {
+    const el = typeof mount === "string" ? document.querySelector(mount) : mount;
+    if (!el) return;
+    opts = opts || {};
+    const preLaunch = opts.preLaunch;
+
+    const chipHtml = (chip) => {
+      if (preLaunch) return '<span class="sx-dash">&mdash;</span>';
+      if (!chip) return "";
+      return (
+        '<span class="sx-chip sx-chip--' + esc(chip.id) + '">' +
+        (chip.id === "excellence"
+          ? '<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7.5 12.3l3 3 6-6.4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+          : "") +
+        esc(chip.label) + "</span>"
+      );
+    };
+
+    const row = (r) =>
+      '<tr><td class="sx-t__name">' + esc(r.title) + "</td>" +
+      '<td class="sx-t__status">' + chipHtml(r.chip) + "</td>" +
+      '<td class="sx-t__act"><a class="sx-btn sx-btn--secondary" href="activity.html#' +
+      esc(opts.supplierKey || "") + "/" + esc(r.tourId) + '">View details</a></td></tr>';
+
+    let html =
+      '<h2 class="sx-h2">Badge status</h2>' +
+      '<div class="sx-tabs" role="tablist">' +
+      '<button type="button" class="sx-tab' + (preLaunch ? " is-active" : "") +
+      '" data-tab="this">This month</button>' +
+      '<button type="button" class="sx-tab' + (preLaunch ? "" : " is-active") +
+      '" data-tab="next">Next month</button></div>' +
+      '<p class="sx-period">Assessment period: ' + esc(sup.period.text.replace("Period checked: ", "")) + "</p>" +
+      '<table class="sx-t"><thead><tr><th>Product</th><th>Badge status</th><th></th></tr></thead><tbody>' +
+      sup.eligible.map(row).join("") +
+      "</tbody></table>";
+
+    // Ineligible activities are a separate table with a Reason, not a status —
+    // they are never assessed, so they have no criteria to meet. The reason
+    // stays the generic "Activity type": the warehouse category names
+    // (Ticketed / Transfers / Trip Enhancers) are internal and never shown.
+    if (sup.ineligible.length) {
+      html +=
+        '<h2 class="sx-h2">Ineligible activities</h2>' +
+        '<table class="sx-t"><thead><tr><th>Product</th><th>Reason</th><th></th></tr></thead><tbody>' +
+        sup.ineligible
+          .map(
+            (r) =>
+              '<tr><td class="sx-t__name">' + esc(r.title) + "</td>" +
+              '<td class="sx-t__status sx-t__reason">' + esc(r.reason) + "</td>" +
+              '<td class="sx-t__act"><a class="sx-btn sx-btn--secondary" href="activity.html#' +
+              esc(opts.supplierKey || "") + "/" + esc(r.tourId) + '">View details</a></td></tr>'
+          )
+          .join("") +
+        "</tbody></table>";
+    }
+
+    el.innerHTML = html;
+  }
+
+  global.SXPRender = { renderActivity, renderOverview };
 })(window);

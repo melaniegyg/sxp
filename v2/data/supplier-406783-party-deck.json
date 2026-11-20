@@ -1,0 +1,709 @@
+{
+  "supplier_id": 406783,
+  "supplier_name": "Party Deck",
+  "study": "Supplier Excellence Program - 2nd round (Rally)",
+  "exported_at": "2026-11-17",
+  "source": "Criteria: production.supply_analytics.sxp_activity_criteria (latest window per tour). Tags: production.on_trip.dim_booking_defect joined to dwh.fact_booking_v2, travel date within each tour's criteria window.",
+  "dbr_tag_scope": {
+    "displayed_quality_tags": [
+      "Activity Not As Advertised",
+      "Guide Language Wrong or Low Proficiency",
+      "Supplier Not Responsive",
+      "Unexpected Cancellation",
+      "Unclear Meeting Point Location",
+      "Extra Charge",
+      "Attraction Closed",
+      "Activity Oversubscribed",
+      "Unsuitable For Disabled Customers"
+    ],
+    "counted_not_displayed": "Non-force-majeure supplier cancellation (dim_booking_defect.has_supplier_cancellation; no FM flag available in this table)"
+  },
+  "note": "Point-in-time snapshot; criteria recompute on a rolling window.",
+  "summary": {
+    "activities": 3,
+    "has_badge": 0,
+    "has_badge_min": 0,
+    "activity_ids": [
+      694395,
+      697227,
+      994466
+    ]
+  },
+  "activities": [
+    {
+      "tour_id": 694395,
+      "activity_title": "Strangers-to-Friends Ruin Pub Crawl: VIP Entry, Games & Shots",
+      "supplier_id": 406783,
+      "on_simulator_pages": false,
+      "l0_category": "Guided",
+      "l1_category": "Food & Drink Experiences",
+      "l2_category": "Food & Drink Tours & Tastings",
+      "has_pickup": true,
+      "home_city_id": 29,
+      "home_city": "Budapest",
+      "home_country": "Hungary",
+      "window_start": "2026-05-15",
+      "window_end": "2026-11-07",
+      "total_bookings": 1481,
+      "total_travel_days": 1481,
+      "defect_denominator": 1481,
+      "reviews_in_window": 557,
+      "rating_in_window": 4.824057450628366,
+      "rating_sd": 0.6525512055235048,
+      "cancellation_policy_type": "standard",
+      "custom_cancellation_offset_hours": null,
+      "quality_defect_bookings": 33,
+      "quality_defect_rate": 0.02228224172856178,
+      "pickup_defect_bookings": 12,
+      "pickup_defect_rate": 0.008102633355840648,
+      "non_fm_cancellations": 6,
+      "non_fm_cxl_rate": 0.004051316677920324,
+      "non_fm_cancellations_dbr": 0,
+      "defective_bookings_platform": 36,
+      "platform_dbr": 0.024307900067521943,
+      "destination_step": 6,
+      "defect_rate_bar": 0.01,
+      "rating_bar": 4.8,
+      "ts_tag_bookings": 0,
+      "ts_tag_rate": 0.0,
+      "supplier_valid_sev12_cases": 0,
+      "supplier_weighted_cases": 0.0,
+      "supplier_valid_cases": 1,
+      "supplier_plausible_cases": 0,
+      "supplier_bookings_ts_months": 1733,
+      "supplier_weighted_case_rate": 0.0,
+      "supplier_ts_tag_bookings": 0,
+      "supplier_ts_tag_rate": 0.0,
+      "activity_valid_sev12_cases": 0,
+      "activity_weighted_cases": 0.0,
+      "activity_weighted_case_rate": 0.0,
+      "crit_in_scope": true,
+      "crit_min_reviews": true,
+      "crit_flexible_cancellation": true,
+      "crit_ts_no_severe_case": true,
+      "crit_ts_case_rate": true,
+      "crit_ts_tag_rate": true,
+      "crit_defect_rate": false,
+      "crit_pickup_rate": true,
+      "crit_rating": true,
+      "crit_defect_rate_min": false,
+      "crit_pickup_rate_min": true,
+      "crit_rating_min": true,
+      "meets_entry": true,
+      "meets_ts": true,
+      "meets_excellence": false,
+      "has_badge": false,
+      "has_badge_min": false,
+      "dbr_tags": [
+        {
+          "booking_id": 407353786,
+          "travel_date": "2026-05-22",
+          "defect_tag": "Attraction Closed",
+          "defect_category": "Attraction Closed",
+          "defect_source": "review"
+        },
+        {
+          "booking_id": 407353786,
+          "travel_date": "2026-05-22",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "review"
+        },
+        {
+          "booking_id": 404000957,
+          "travel_date": "2026-05-24",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 408917572,
+          "travel_date": "2026-05-29",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 409002679,
+          "travel_date": "2026-05-29",
+          "defect_tag": "Supplier Not Responsive",
+          "defect_category": "Communication Problems",
+          "defect_source": "review"
+        },
+        {
+          "booking_id": 410551076,
+          "travel_date": "2026-06-06",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "review"
+        },
+        {
+          "booking_id": 410596788,
+          "travel_date": "2026-06-06",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 412485100,
+          "travel_date": "2026-06-15",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "review"
+        },
+        {
+          "booking_id": 413851483,
+          "travel_date": "2026-06-19",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 415044909,
+          "travel_date": "2026-06-24",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 419507119,
+          "travel_date": "2026-07-11",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 421108167,
+          "travel_date": "2026-07-16",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 421886511,
+          "travel_date": "2026-07-19",
+          "defect_tag": "Unexpected Cancellation",
+          "defect_category": "Communication Problems",
+          "defect_source": "care_chat"
+        },
+        {
+          "booking_id": 423289308,
+          "travel_date": "2026-07-23",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 428087540,
+          "travel_date": "2026-08-06",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "care_chat"
+        },
+        {
+          "booking_id": 429768789,
+          "travel_date": "2026-08-18",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 432885730,
+          "travel_date": "2026-08-20",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 436342013,
+          "travel_date": "2026-09-01",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 437077132,
+          "travel_date": "2026-09-02",
+          "defect_tag": "Activity Not As Advertised",
+          "defect_category": "Activity Not As Advertised",
+          "defect_source": "review"
+        },
+        {
+          "booking_id": 437676808,
+          "travel_date": "2026-09-08",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 438889424,
+          "travel_date": "2026-09-09",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 440440528,
+          "travel_date": "2026-09-14",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 441361193,
+          "travel_date": "2026-09-17",
+          "defect_tag": "Supplier Not Responsive",
+          "defect_category": "Communication Problems",
+          "defect_source": "review"
+        },
+        {
+          "booking_id": 441361193,
+          "travel_date": "2026-09-17",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "review"
+        },
+        {
+          "booking_id": 412917539,
+          "travel_date": "2026-09-18",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 443134585,
+          "travel_date": "2026-09-25",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 439037874,
+          "travel_date": "2026-09-29",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "care_chat"
+        },
+        {
+          "booking_id": 444515753,
+          "travel_date": "2026-09-29",
+          "defect_tag": "Supplier Not Responsive",
+          "defect_category": "Communication Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 444515753,
+          "travel_date": "2026-09-29",
+          "defect_tag": "Supplier Not Responsive",
+          "defect_category": "Communication Problems",
+          "defect_source": "care_chat"
+        },
+        {
+          "booking_id": 444781171,
+          "travel_date": "2026-09-30",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        },
+        {
+          "booking_id": 444899344,
+          "travel_date": "2026-10-09",
+          "defect_tag": "Supplier Not Responsive",
+          "defect_category": "Communication Problems",
+          "defect_source": "review"
+        },
+        {
+          "booking_id": 444899344,
+          "travel_date": "2026-10-09",
+          "defect_tag": "Unexpected Cancellation",
+          "defect_category": "Communication Problems",
+          "defect_source": "care_chat"
+        }
+      ],
+      "pickup_problem_rate": {
+        "rate": 0.008102633355840648,
+        "pickup_defect_bookings": 12,
+        "applicable_records": [
+          {
+            "booking_id": 407353786,
+            "travel_date": "2026-05-22",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 408100135,
+            "travel_date": "2026-05-25",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 410551076,
+            "travel_date": "2026-06-06",
+            "defect_tag": "Change Pick Up Location",
+            "defect_category": "Pickup Problems",
+            "defect_source": "review"
+          },
+          {
+            "booking_id": 413851483,
+            "travel_date": "2026-06-19",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "care_chat"
+          },
+          {
+            "booking_id": 413851483,
+            "travel_date": "2026-06-19",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 413851483,
+            "travel_date": "2026-06-19",
+            "defect_tag": "Unclear Pickup Information",
+            "defect_category": "Pickup Problems",
+            "defect_source": "care_chat"
+          },
+          {
+            "booking_id": 427821362,
+            "travel_date": "2026-08-15",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "care_chat"
+          },
+          {
+            "booking_id": 434025515,
+            "travel_date": "2026-08-23",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 436747668,
+            "travel_date": "2026-09-01",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 440485092,
+            "travel_date": "2026-09-14",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 440867287,
+            "travel_date": "2026-09-16",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 440867287,
+            "travel_date": "2026-09-16",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "care_chat"
+          },
+          {
+            "booking_id": 442552307,
+            "travel_date": "2026-09-22",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "care_chat"
+          },
+          {
+            "booking_id": 439037874,
+            "travel_date": "2026-09-29",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 444515753,
+            "travel_date": "2026-09-29",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "care_chat"
+          },
+          {
+            "booking_id": 444515753,
+            "travel_date": "2026-09-29",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 444781171,
+            "travel_date": "2026-09-30",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "care_chat"
+          },
+          {
+            "booking_id": 446533919,
+            "travel_date": "2026-10-08",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "care_chat"
+          },
+          {
+            "booking_id": 446533919,
+            "travel_date": "2026-10-08",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          },
+          {
+            "booking_id": 444899344,
+            "travel_date": "2026-10-09",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "review"
+          },
+          {
+            "booking_id": 444899344,
+            "travel_date": "2026-10-09",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "care_chat"
+          },
+          {
+            "booking_id": 446337647,
+            "travel_date": "2026-10-09",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "relay"
+          }
+        ]
+      },
+      "trust_and_safety_tags": [],
+      "dbr_reconciliation": {
+        "quality_defect_bookings_criteria": 33,
+        "quality_defect_bookings_dim": 30,
+        "of_which_supplier_cancellations_counted_not_displayed": 2,
+        "pickup_defect_bookings_criteria": 12,
+        "pickup_defect_bookings_dim": 16,
+        "quality_match": false,
+        "pickup_match": false
+      },
+      "quality_breakdown": {
+        "Unclear Meeting Point Location": 23,
+        "Supplier Not Responsive": 4,
+        "Unexpected Cancellation": 2,
+        "Attraction Closed": 1,
+        "Activity Not As Advertised": 1
+      },
+      "pickup_breakdown": {
+        "Pickup/Guide Late or No Show": 15,
+        "Unclear Pickup Information": 1
+      },
+      "_note_pickup_breakdown": "Re-filtered from pickup_problem_rate.applicable_records, which the export builds from the Pickup Problems CATEGORY and therefore includes Change Pick Up Time / Change Pick Up Location. Those two tags are not counted by the pickup rate. Distinct booking_id.",
+      "_note_raw_tags": "dbr_tags and pickup_problem_rate.applicable_records are raw rows, not display data. Render quality_breakdown / pickup_breakdown."
+    },
+    {
+      "tour_id": 697227,
+      "activity_title": "Budapest: Beyond Pub Crawl with Karaoke, Games, & 7 Shots",
+      "supplier_id": 406783,
+      "on_simulator_pages": false,
+      "l0_category": "Guided",
+      "l1_category": "Food & Drink Experiences",
+      "l2_category": "Food & Drink Tours & Tastings",
+      "has_pickup": false,
+      "home_city_id": 29,
+      "home_city": "Budapest",
+      "home_country": "Hungary",
+      "window_start": "2026-06-06",
+      "window_end": "2026-09-20",
+      "total_bookings": 19,
+      "total_travel_days": 19,
+      "defect_denominator": 19,
+      "reviews_in_window": 8,
+      "rating_in_window": 5.0,
+      "rating_sd": 0.0,
+      "cancellation_policy_type": "standard",
+      "custom_cancellation_offset_hours": null,
+      "quality_defect_bookings": 1,
+      "quality_defect_rate": 0.05263157894736842,
+      "pickup_defect_bookings": 0,
+      "pickup_defect_rate": 0.0,
+      "non_fm_cancellations": 0,
+      "non_fm_cxl_rate": 0.0,
+      "non_fm_cancellations_dbr": 0,
+      "defective_bookings_platform": 1,
+      "platform_dbr": 0.05263157894736842,
+      "destination_step": 6,
+      "defect_rate_bar": 0.01,
+      "rating_bar": 4.8,
+      "ts_tag_bookings": 0,
+      "ts_tag_rate": 0.0,
+      "supplier_valid_sev12_cases": 0,
+      "supplier_weighted_cases": 0.0,
+      "supplier_valid_cases": 1,
+      "supplier_plausible_cases": 0,
+      "supplier_bookings_ts_months": 1733,
+      "supplier_weighted_case_rate": 0.0,
+      "supplier_ts_tag_bookings": 0,
+      "supplier_ts_tag_rate": 0.0,
+      "activity_valid_sev12_cases": 0,
+      "activity_weighted_cases": 0.0,
+      "activity_weighted_case_rate": 0.0,
+      "crit_in_scope": true,
+      "crit_min_reviews": false,
+      "crit_flexible_cancellation": true,
+      "crit_ts_no_severe_case": true,
+      "crit_ts_case_rate": true,
+      "crit_ts_tag_rate": true,
+      "crit_defect_rate": false,
+      "crit_pickup_rate": true,
+      "crit_rating": true,
+      "crit_defect_rate_min": false,
+      "crit_pickup_rate_min": true,
+      "crit_rating_min": true,
+      "meets_entry": false,
+      "meets_ts": true,
+      "meets_excellence": false,
+      "has_badge": false,
+      "has_badge_min": false,
+      "dbr_tags": [
+        {
+          "booking_id": 411532624,
+          "travel_date": "2026-07-17",
+          "defect_tag": "Unclear Meeting Point Location",
+          "defect_category": "Meeting Point Problems",
+          "defect_source": "relay"
+        }
+      ],
+      "pickup_problem_rate": {
+        "rate": 0.0,
+        "pickup_defect_bookings": 0,
+        "applicable_records": [],
+        "note": "No 'Pickup Problems' records in the criteria window."
+      },
+      "trust_and_safety_tags": [],
+      "dbr_reconciliation": {
+        "quality_defect_bookings_criteria": 1,
+        "quality_defect_bookings_dim": 1,
+        "of_which_supplier_cancellations_counted_not_displayed": 0,
+        "pickup_defect_bookings_criteria": 0,
+        "pickup_defect_bookings_dim": 0,
+        "quality_match": true,
+        "pickup_match": true
+      },
+      "quality_breakdown": {
+        "Unclear Meeting Point Location": 1
+      },
+      "pickup_breakdown": {},
+      "_note_pickup_breakdown": "Re-filtered from pickup_problem_rate.applicable_records, which the export builds from the Pickup Problems CATEGORY and therefore includes Change Pick Up Time / Change Pick Up Location. Those two tags are not counted by the pickup rate. Distinct booking_id.",
+      "_note_raw_tags": "dbr_tags and pickup_problem_rate.applicable_records are raw rows, not display data. Render quality_breakdown / pickup_breakdown."
+    },
+    {
+      "tour_id": 994466,
+      "activity_title": "Wine Tasting with Fun Games and Delicious Snacks",
+      "supplier_id": 406783,
+      "on_simulator_pages": false,
+      "l0_category": "Guided",
+      "l1_category": "Food & Drink Experiences",
+      "l2_category": "Food & Drink Tours & Tastings",
+      "has_pickup": false,
+      "home_city_id": 29,
+      "home_city": "Budapest",
+      "home_country": "Hungary",
+      "window_start": "2026-09-10",
+      "window_end": "2026-09-10",
+      "total_bookings": 1,
+      "total_travel_days": 1,
+      "defect_denominator": 1,
+      "reviews_in_window": 1,
+      "rating_in_window": 1.0,
+      "rating_sd": null,
+      "cancellation_policy_type": "standard",
+      "custom_cancellation_offset_hours": null,
+      "quality_defect_bookings": 1,
+      "quality_defect_rate": 1.0,
+      "pickup_defect_bookings": 1,
+      "pickup_defect_rate": 1.0,
+      "non_fm_cancellations": 1,
+      "non_fm_cxl_rate": 1.0,
+      "non_fm_cancellations_dbr": 0,
+      "defective_bookings_platform": 1,
+      "platform_dbr": 1.0,
+      "destination_step": 6,
+      "defect_rate_bar": 0.01,
+      "rating_bar": 4.8,
+      "ts_tag_bookings": 0,
+      "ts_tag_rate": 0.0,
+      "supplier_valid_sev12_cases": 0,
+      "supplier_weighted_cases": 0.0,
+      "supplier_valid_cases": 1,
+      "supplier_plausible_cases": 0,
+      "supplier_bookings_ts_months": 1733,
+      "supplier_weighted_case_rate": 0.0,
+      "supplier_ts_tag_bookings": 0,
+      "supplier_ts_tag_rate": 0.0,
+      "activity_valid_sev12_cases": 0,
+      "activity_weighted_cases": 0.0,
+      "activity_weighted_case_rate": 0.0,
+      "crit_in_scope": true,
+      "crit_min_reviews": false,
+      "crit_flexible_cancellation": true,
+      "crit_ts_no_severe_case": true,
+      "crit_ts_case_rate": true,
+      "crit_ts_tag_rate": true,
+      "crit_defect_rate": false,
+      "crit_pickup_rate": false,
+      "crit_rating": false,
+      "crit_defect_rate_min": false,
+      "crit_pickup_rate_min": false,
+      "crit_rating_min": false,
+      "meets_entry": false,
+      "meets_ts": true,
+      "meets_excellence": false,
+      "has_badge": false,
+      "has_badge_min": false,
+      "dbr_tags": [
+        {
+          "booking_id": 434887328,
+          "travel_date": "2026-09-10",
+          "defect_tag": "Unexpected Cancellation",
+          "defect_category": "Communication Problems",
+          "defect_source": "review"
+        }
+      ],
+      "pickup_problem_rate": {
+        "rate": 1.0,
+        "pickup_defect_bookings": 1,
+        "applicable_records": [
+          {
+            "booking_id": 434887328,
+            "travel_date": "2026-09-10",
+            "defect_tag": "Pickup/Guide Late or No Show",
+            "defect_category": "Pickup Problems",
+            "defect_source": "review"
+          }
+        ]
+      },
+      "trust_and_safety_tags": [],
+      "dbr_reconciliation": {
+        "quality_defect_bookings_criteria": 1,
+        "quality_defect_bookings_dim": 1,
+        "of_which_supplier_cancellations_counted_not_displayed": 0,
+        "pickup_defect_bookings_criteria": 1,
+        "pickup_defect_bookings_dim": 1,
+        "quality_match": true,
+        "pickup_match": true
+      },
+      "quality_breakdown": {
+        "Unexpected Cancellation": 1
+      },
+      "pickup_breakdown": {
+        "Pickup/Guide Late or No Show": 1
+      },
+      "_note_pickup_breakdown": "Re-filtered from pickup_problem_rate.applicable_records, which the export builds from the Pickup Problems CATEGORY and therefore includes Change Pick Up Time / Change Pick Up Location. Those two tags are not counted by the pickup rate. Distinct booking_id.",
+      "_note_raw_tags": "dbr_tags and pickup_problem_rate.applicable_records are raw rows, not display data. Render quality_breakdown / pickup_breakdown."
+    }
+  ]
+}

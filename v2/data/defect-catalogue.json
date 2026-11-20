@@ -1,0 +1,227 @@
+{
+  "_source": "Google Sheets \"Defect → Action Mapping\", tab \"SupEx Defects\", read 2026-11-19",
+  "_columns_used": {
+    "name": "DEFECT NAME [Supplier]",
+    "description": "DESCRIPTION",
+    "advice": "GYG Advice \n(Ly 01/09/26)\nFinalized by Marcus 09/09/26 — the finalised column; the older plain \"GYG Advice\" column was NOT used",
+    "resources": "FAQ LINKS (cell text plus hyperlink targets)",
+    "sxpCategory": "SXP Category",
+    "relatedReviews": "RELATED REVIEWS",
+    "recActionKey": "REC ACTION (SUPER) — a key, not copy",
+    "pageLink": "PAGE LINK"
+  },
+  "tags": {
+    "Activity Not As Advertised": {
+      "sxpCategory": "Quality",
+      "name": "Activity not as described",
+      "description": "The activity delivered did not match the description.",
+      "whatYouCanDo": [
+        "Review the description, highlights, inclusions, photos etc in your listing to ensure they accurately reflect the real experience",
+        "Update details whenever the experience changes and check recent reviews for gaps between what you advertise and what customers receive"
+      ],
+      "resources": [
+        {
+          "title": "Adding Description and Highlights for Your Product",
+          "url": "https://supply.getyourguide.support/hc/en-us/articles/13981009256605-Adding-Description-and-Highlights-for-Your-Product"
+        },
+        {
+          "title": "Enhancing Your Product Listings With Extra Information",
+          "url": "https://supply.getyourguide.support/hc/en-us/articles/20309268701085-Enhancing-Your-Product-Listings-With-Extra-Information"
+        }
+      ],
+      "relatedReviews": true,
+      "recActionKey": "Booking defect - Not as advertised",
+      "pageLink": "Review activity details"
+    },
+    "Guide Language Wrong or Low Proficiency": {
+      "sxpCategory": "Quality",
+      "name": "Language wrong or hard to understand",
+      "description": "The guide did not speak the language originally booked for.",
+      "whatYouCanDo": [
+        "Only list languages you can reliably deliver and verify each guide's language proficiency before allocating them to a booking",
+        "Remove a language from your listing immediately if you can no longer deliver it consistently"
+      ],
+      "resources": [],
+      "relatedReviews": true,
+      "recActionKey": "Catalog - Update guide details",
+      "pageLink": "Review activity details"
+    },
+    "Supplier Not Responsive": {
+      "sxpCategory": "Quality",
+      "name": "Activity provider did not respond to customer",
+      "description": "The supplier was unresponsive to customer contact.",
+      "whatYouCanDo": [
+        "Ensure your contact email in Account Management is correct and monitored daily",
+        "Reply to customer messages via the Messages tab within one business day and ensure guides carry a reachable phone during the activity"
+      ],
+      "resources": [
+        {
+          "title": "Contacting GetYourGuide customers",
+          "url": "https://supply.getyourguide.support/hc/en-us/articles/13981013868445-Contacting-GetYourGuide-customers"
+        },
+        {
+          "title": "Messages in the Supplier Portal",
+          "url": "https://supply.getyourguide.support/hc/en-us/articles/34781062388637-Messages-in-the-Supplier-Portal"
+        }
+      ],
+      "relatedReviews": false,
+      "recActionKey": null,
+      "pageLink": "Go to messages"
+    },
+    "Unexpected Cancellation": {
+      "sxpCategory": "Quality",
+      "name": "Activity was cancelled without warning",
+      "description": "The activity was cancelled without prior warning.",
+      "whatYouCanDo": [
+        "Block out dates you cannot operate as soon as you know and set cut-off times so bookings close early enough for you to plan",
+        "Notify all affected customers immediately via the Messages tab and review your participant limits regularly"
+      ],
+      "resources": [
+        {
+          "title": "Managing Availability for your product",
+          "url": "https://supply.getyourguide.support/hc/en-us/articles/26538009743645-Managing-Availability-for-your-product"
+        },
+        {
+          "title": "Setting up cut-off times for your product",
+          "url": "https://supply.getyourguide.support/hc/en-us/articles/13980997018141-Setting-up-cut-off-times-for-your-product"
+        }
+      ],
+      "relatedReviews": false,
+      "recActionKey": null,
+      "pageLink": "Go to messages"
+    },
+    "Unclear Meeting Point Location": {
+      "sxpCategory": "Quality",
+      "name": "Unclear meeting point location",
+      "description": "The description of meeting point for the activity was not clear, or wrong.",
+      "whatYouCanDo": [
+        "Verify your meeting point address is findable via a map app and add a meeting point photo in the Supplier Portal",
+        "Include landmarks or directions from the nearest transport stop in the Important Information section"
+      ],
+      "resources": [
+        {
+          "title": "Introducing Meeting Point Pictures: Show Travelers Exactly Where to Meet You",
+          "url": "https://www.getyourguide.supply/articles/introducing-meeting-point-pictures-show-travelers-exactly-where-to-meet-you"
+        }
+      ],
+      "relatedReviews": false,
+      "recActionKey": "VizOps - Add meeting point picture",
+      "pageLink": "Review activity details"
+    },
+    "Extra Charge": {
+      "sxpCategory": "Quality",
+      "name": "Unexpected extra charge on the activity",
+      "description": "Customers were unexpectedly required to pay additional charges on spot.",
+      "whatYouCanDo": [
+        "Include all costs in the GetYourGuide price - no surprise charges should apply on the day",
+        "Clearly list any non-included fees (entrance, tips, equipment) in the \"What's not included\" section"
+      ],
+      "resources": [],
+      "relatedReviews": false,
+      "recActionKey": null,
+      "pageLink": "Review activity details"
+    },
+    "Attraction Closed": {
+      "sxpCategory": "Quality",
+      "name": "Attraction or stop was closed",
+      "description": "Customers arrived to find the attraction unexpectedly closed.",
+      "whatYouCanDo": [
+        "Block out dates when the attraction is closed (e.g. public holidays, maintenance) as soon as you know about them",
+        "Check the attraction's opening calendar regularly and keep your availability on GetYourGuide up to date",
+        "If a closure is unexpected, inform affected customers as early as possible via the Messages tab in the Portal"
+      ],
+      "resources": [],
+      "relatedReviews": false,
+      "recActionKey": null,
+      "pageLink": "Review activity details"
+    },
+    "Activity Oversubscribed": {
+      "sxpCategory": "Quality",
+      "name": "Activity was full/overbooked and customer could not join",
+      "description": "The activity was overbooked and customer didn't have access to it.",
+      "whatYouCanDo": [
+        "Review and update your maximum participant limits for each activity option",
+        "Set up cut-off times for your product so bookings close before capacity is reached",
+        "Keep your availability in sync across all sales channels to avoid overbooking"
+      ],
+      "resources": [],
+      "relatedReviews": false,
+      "recActionKey": "Booking defect - Activity overcrowded",
+      "pageLink": "Go to Availability"
+    },
+    "Unsuitable For Disabled Customers": {
+      "sxpCategory": "Quality",
+      "name": "Unsuitable for customers with a disability",
+      "description": "The activity was not accessible for disabled customers.",
+      "whatYouCanDo": [
+        "Clearly state all accessibility limitations (stairs, uneven terrain, no wheelchair access) in your listing",
+        "Add a dedicated Accessibility note in the Important Information tab explaining which sections of the activity are and are not accessible"
+      ],
+      "resources": [],
+      "relatedReviews": true,
+      "recActionKey": null,
+      "pageLink": "Review activity details"
+    },
+    "Unclear Pickup Information": {
+      "sxpCategory": "Pickup Problem",
+      "name": "Unclear pickup information",
+      "description": "Information about pickup location or pickup was not provided, or it has not been confirmed by supplier.",
+      "whatYouCanDo": [
+        "Use the Pickup Planner to confirm pickup times and locations with customers at least 24 hours before the activity by using our \"Message Multiple Customers\" feature",
+        "Include the pickup time, location, driver name, and vehicle details in your pre-activity message"
+      ],
+      "resources": [
+        {
+          "title": "Managing Pickup Information for Your Bookings",
+          "url": "https://supply.getyourguide.support/hc/en-us/articles/26538099419549-Managing-Pickup-Information-for-Your-Bookings"
+        }
+      ],
+      "relatedReviews": false,
+      "recActionKey": null,
+      "pageLink": "Review activity details"
+    },
+    "Pickup/Guide Late or No Show": {
+      "sxpCategory": "Pickup Problem",
+      "name": "Driver/guide were late or did not show up",
+      "description": "The guide or driver arrived late or did not show up at the meeting / pick up point.",
+      "whatYouCanDo": [
+        "Assign guides and drivers the day before and ensure they arrive at least 10–15 minutes early",
+        "If a delay is unavoidable, contact all affected customers immediately via Messages or your emergency contact number"
+      ],
+      "resources": [
+        {
+          "title": "Assigning Guides to Bookings",
+          "url": "https://supply.getyourguide.support/hc/en-us/articles/31227999459741-Assigning-Guides-to-Bookings"
+        }
+      ],
+      "relatedReviews": false,
+      "recActionKey": null,
+      "pageLink": "Review activity details"
+    }
+  },
+  "_note_recaction": "recActionKey is the sheet's REC ACTION (SUPER) value, which is a KEY into DEFAULT_RA_COPY in js/defect-cards.js — that module supplies the title (which may contain {count}), description, button label and icon. The sheet has no such copy; do not look for it there. Only 4 of the 11 tags carry a key, and 3 of those appear in the round-2 data.",
+  "_note_pagelink": "pageLink is the sheet's PAGE LINK column: the label of the destination the recommended action sends the supplier to. It is NOT the button label on the recommended-action card, which defect-cards.js sets (\"Take action\").",
+  "recActions": {
+    "Booking defect - Not as advertised": {
+      "title": "Address {count} reviews mentioning the activity was not as advertised",
+      "description": "Make sure your activity description matches the experience you provide. Include key details to set clear expectations for travelers.",
+      "buttonLabel": "Take action"
+    },
+    "Catalog - Update guide details": {
+      "title": "Add more guide details",
+      "description": "Add details about the staff who lead or assist during an activity. This helps customers know what to expect and can increase bookings.",
+      "buttonLabel": "Add details"
+    },
+    "VizOps - Add meeting point picture": {
+      "title": "Help customers find your meeting point by adding a photo",
+      "description": "Recent customer feedback shows your meeting point is hard to find. A photo of the exact location reduces confusion, no-shows, and negative reviews.",
+      "buttonLabel": "Take action"
+    },
+    "Booking defect - Activity overcrowded": {
+      "title": "Address {count} recent reviews that mention capacity",
+      "description": "Review your maximum group size and update it if needed. To prevent overcrowding, ensure participants cannot book beyond the maximum group size.",
+      "buttonLabel": "Take action"
+    }
+  },
+  "_note_recactions_copy": "recActions is lifted verbatim from DEFAULT_RA_COPY in js/defect-cards.js, so round 2 renders the breakdown without loading that module — its DBR-portal layout (category card with a left defect nav) is not what 2423:103908 draws. defect-cards.js is unchanged and still shared; round 2 simply does not use it. {count} is filled with the tag's distinct booking count."
+}

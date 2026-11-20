@@ -3,15 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Excellent Experience — Supplier Portal concept</title>
-  <!-- defect-cards.css carries its own :root token fallbacks so it can run
-       standalone, so it MUST load before tokens.css — otherwise those
-       fallbacks override the page's real tokens. Order matters here. -->
-  <link rel="stylesheet" href="css/defect-cards.css">
+  <title>Excellence program — Supplier Portal concept</title>
+  <!-- Round 2 does not load defect-cards.css: the breakdown is rendered by
+       criteria-render.js in the flat accordion 2423:103908 draws, not the DBR
+       portal's category layout. That stylesheet's :root fallbacks would
+       clobber tokens.css anyway, which is why round 1 had to order them. -->
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/criteria.css">
-  <!-- Skip the password gate if already unlocked this session (avoids flash) -->
+  <link rel="stylesheet" href="css/round2.css">
   <script>try{if(sessionStorage.getItem('sxp-auth')==='1')document.documentElement.className+=' authed';}catch(e){}</script>
 </head>
 <body>
@@ -28,14 +27,12 @@
     </form>
   </div>
 
-  <!-- ===================== TOP NAV ===================== -->
   <header class="topnav">
     <div style="display:flex;align-items:center;gap:24px;">
       <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="topnav__logo">
     </div>
-    <!-- Prototype affordance: switches which fixture in data/ the page renders. -->
-    <div class="topnav__user" id="activity-switcher" role="button" tabindex="0"
-         aria-haspopup="listbox" aria-expanded="false" aria-label="Switch activity">
+    <div class="topnav__user" id="supplier-switcher" role="button" tabindex="0"
+         aria-haspopup="listbox" aria-expanded="false" aria-label="Switch supplier">
       <div class="topnav__avatar"></div>
       <div class="topnav__user-info">
         <span class="topnav__name" id="switcher-label">&nbsp;</span>
@@ -44,123 +41,74 @@
       <svg class="topnav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M4 6l4 4 4-4" stroke="#858995" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      <ul class="switcher-menu" id="switcher-menu" role="listbox" aria-label="Activities" hidden></ul>
+      <ul class="switcher-menu" id="switcher-menu" role="listbox" aria-label="Suppliers" hidden></ul>
     </div>
   </header>
 
-  <!-- ===================== SIDEBAR =====================
-       Icons are the Compass SVGs exported from the design (366:10589), not
-       redrawn. Their colours are baked in: #1A2B49 when idle, #0071EB on the
-       active item — so there is no currentColor theming here. -->
   <aside class="sidebar">
-    <button class="sidebar__item" aria-label="Activities">
-      <img src="assets/icons/monument.svg" alt="" width="16" height="16">
-    </button>
-    <button class="sidebar__item" aria-label="Create">
-      <img src="assets/icons/file-plus.svg" alt="" width="16" height="16">
-    </button>
-    <button class="sidebar__item" aria-label="Manage">
-      <img src="assets/icons/grid.svg" alt="" width="16" height="16">
-    </button>
-    <button class="sidebar__item" aria-label="Bookings">
-      <img src="assets/icons/calendar.svg" alt="" width="16" height="16">
-    </button>
-    <button class="sidebar__item sidebar__item--active" aria-label="Performance">
-      <img src="assets/icons/magnifier-bar-chart.svg" alt="" width="16" height="16">
-    </button>
-    <button class="sidebar__item" aria-label="Finance">
-      <img src="assets/icons/currency.svg" alt="" width="16" height="16">
-    </button>
+    <button class="sidebar__item" aria-label="Activities"><img src="assets/icons/monument.svg" alt="" width="16" height="16"></button>
+    <button class="sidebar__item" aria-label="Create"><img src="assets/icons/file-plus.svg" alt="" width="16" height="16"></button>
+    <button class="sidebar__item" aria-label="Manage"><img src="assets/icons/grid.svg" alt="" width="16" height="16"></button>
+    <button class="sidebar__item" aria-label="Bookings"><img src="assets/icons/calendar.svg" alt="" width="16" height="16"></button>
+    <button class="sidebar__item sidebar__item--active" aria-label="Performance"><img src="assets/icons/magnifier-bar-chart.svg" alt="" width="16" height="16"></button>
+    <button class="sidebar__item" aria-label="Finance"><img src="assets/icons/currency.svg" alt="" width="16" height="16"></button>
     <div class="sidebar__spacer"></div>
-    <!-- Bottom item is an expand affordance in the design, not Settings. -->
-    <button class="sidebar__item" aria-label="Expand menu">
-      <img src="assets/icons/arrow-right.svg" alt="" width="16" height="16">
-    </button>
+    <button class="sidebar__item" aria-label="Expand menu"><img src="assets/icons/arrow-right.svg" alt="" width="16" height="16"></button>
   </aside>
 
-  <!-- ===================== MAIN CONTENT ===================== -->
   <main class="page-main">
     <div class="page-inner">
 
-      <a href="#" class="back-link">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Back to Performance
-      </a>
+      <h1 class="page-title">Excellence program</h1>
+      <p class="sx-lede">The Excellent Experience badge celebrates the best activities on our marketplace where the activity provider has consistently delivered a professional, high-standard experience for our customers.</p>
 
-      <h1 class="page-title" id="activity-title">&nbsp;</h1>
-
-      <nav class="perf-tabs" role="tablist">
-        <button class="perf-tab" role="tab" aria-selected="false">Performance overview</button>
-        <button class="perf-tab perf-tab--active" role="tab" aria-selected="true">Excellence program</button>
-        <button class="perf-tab" role="tab" aria-selected="false">Competitor report</button>
-      </nav>
-
-      <!-- ===================== PROMO HEADER ===================== -->
-      <section class="tc-promo">
-        <div class="tc-promo__head">
-          <div class="tc-promo__intro">
-            <h2 class="tc-promo__title">Get recognized with the Excellent Experience badge</h2>
-            <!-- Copy is verbatim from 566:53353, which revises 566:53443: the
-                 figure moved 5% -> 1%, the badge name lost its curly quotes and
-                 took a capital E on Experience, and Originals / Certified became
-                 bold "programs" rather than quoted "badges". The emphasis also
-                 moved — "Every 3 months" is no longer bold, those two names are.
-                 TODO(copy): 1% is closer to the deck's 1.4% of online activities
-                 but still not it, and award cadence ("every 3 months") is listed
-                 in the deck as an explicitly undecided question. -->
-            <p class="tc-promo__desc">The Excellent Experience badge celebrates the top 1% of activities on our marketplace for consistently delivering a quality experience for customers. Every 3 months we check if your activity has met the requirements to be awarded the badge. This replaces both the <strong class="tc-promo__emphasis">Originals</strong> and <strong class="tc-promo__emphasis">Certified</strong> programs.</p>
+      <!-- ===================== PROGRAM CRITERIA BANNER =====================
+           The three cards name the same three sections the criteria page
+           shows and the same three chips the table below uses. Names finally
+           agree across all three places as of 2423:105656 / 2423:106930. -->
+      <section class="sx-crit">
+        <div class="sx-crit__head">
+          <div>
+            <h2 class="sx-crit__title">Program criteria</h2>
+            <p class="sx-crit__sub">Calculated every month based on the last 6 months</p>
           </div>
-          <!-- The badge as a traveller would see it. Figma sets this in GYG Sans
-               VF, which the prototype doesn't ship — GT Eesti Bold stands in. -->
-          <span class="tc-promo__badge">
-            <img src="assets/icons/logo-gyg-mark.svg" alt="" width="24" height="24">
-            Excellent Experience
-          </span>
+          <button class="sx-btn sx-btn--pill" type="button">
+            Learn more
+            <img src="assets/icons/arrow-right-24.svg" alt="" width="20" height="20">
+          </button>
         </div>
-
-        <!-- Compass icons, exported from the design. supply-frontend's
-             README-UI.md requires Compass icons and type even though the
-             portal's components are PrimeVue, so PrimeIcons are not an option
-             here. Fill changed from the design's #FA4F2D to #0071EB; that
-             colour is baked into the files, so a re-export restores the orange. -->
-        <div class="tc-promo__cards">
-          <div class="tc-promo__card">
-            <img class="tc-promo__icon" src="assets/icons/compass-badge.svg" alt="" width="24" height="24">
-            <div class="tc-promo__card-text">
-              <p class="tc-promo__card-title">Get booked with confidence</p>
-              <p class="tc-promo__card-desc">The badge puts your commitment to quality front and center for travelers</p>
+        <div class="sx-crit__cards">
+          <div class="sx-crit__card">
+            <img src="assets/icons/compass-badge.svg" alt="" width="20" height="20">
+            <div>
+              <p class="sx-crit__card-t">Review count</p>
+              <!-- NOTE(copy): this node keeps "new"; 2423:106930 and 2241:42264
+                   drop it. Unresolved — see CLAUDE.md. -->
+              <p class="sx-crit__card-d">At least 50 new reviews in this period</p>
             </div>
           </div>
-          <div class="tc-promo__card">
-            <img class="tc-promo__icon" src="assets/icons/compass-magnifier.svg" alt="" width="24" height="24">
-            <div class="tc-promo__card-text">
-              <p class="tc-promo__card-title">Be seen by more customers</p>
-              <p class="tc-promo__card-desc">Show up higher in search results and get featured in more emails to travelers</p>
+          <div class="sx-crit__card">
+            <img src="assets/icons/compass-eye.svg" alt="" width="20" height="20">
+            <div>
+              <p class="sx-crit__card-t">Operational standards</p>
+              <p class="sx-crit__card-d">24-hour cancellation and no safety issues</p>
             </div>
           </div>
-          <div class="tc-promo__card">
-            <img class="tc-promo__icon" src="assets/icons/compass-eye.svg" alt="" width="24" height="24">
-            <div class="tc-promo__card-text">
-              <p class="tc-promo__card-title">Become the easy choice</p>
-              <p class="tc-promo__card-desc">When listings look alike, this badge is what sets you apart from competitors</p>
+          <div class="sx-crit__card">
+            <img src="assets/icons/compass-magnifier.svg" alt="" width="20" height="20">
+            <div>
+              <p class="sx-crit__card-t">Quality standards</p>
+              <p class="sx-crit__card-d">High customer rating and few complaints</p>
             </div>
           </div>
         </div>
-
-        <button class="tc-promo__cta" type="button">
-          Learn more
-          <img src="assets/icons/arrow-right-24.svg" alt="" width="24" height="24">
-        </button>
       </section>
 
-      <!-- ===================== CRITERIA (rendered by js/criteria-render.js) ===================== -->
-      <div id="criteria" class="tc-sections-wrap"></div>
+      <!-- Rendered by js/criteria-render.js -->
+      <div id="overview"></div>
 
       <div style="height:60px;"></div>
-
-    </div><!-- /page-inner -->
+    </div>
   </main>
 
   <button class="help-btn" aria-label="Help">
@@ -173,23 +121,40 @@
   </button>
 
   <script src="js/interactions.js"></script>
-  <script src="js/defect-cards.js"></script>
-  <script src="js/trend-chart.js"></script>
   <script src="js/criteria-model.js"></script>
   <script src="js/criteria-render.js"></script>
-  <script src="js/activity-switcher.js"></script>
+  <script src="js/supplier-switcher.js"></script>
   <script>
-    // The switcher picks the fixture; add new ones in data/activities.json.
-    ActivitySwitcher.init({
-      onSelect(activity) {
-        const model = TopChoice.build(activity);
-        document.getElementById("activity-title").textContent = model.activityTitle;
-        document.title = model.activityTitle + " — Excellent Experience";
-        TopChoiceRender.render("#criteria", model);
+    // THIS MONTH is the pre-launch state: no badge has been awarded yet, so
+    // every row shows an em dash rather than a status. NEXT MONTH shows the
+    // assessment that decides the first awards. Confirmed 2026-11-19 — the
+    // dash means "not yet assessed", never "no badge".
+    let preLaunch = true;
+    let current = null;
+
+    function draw() {
+      if (!current) return;
+      SXPRender.renderOverview("#overview", current.model, {
+        preLaunch,
+        supplierKey: current.key,
+      });
+      document.querySelectorAll(".sx-tab").forEach((t) => {
+        t.addEventListener("click", () => {
+          preLaunch = t.dataset.tab === "this";
+          draw();
+        });
+      });
+    }
+
+    SupplierSwitcher.init({
+      onSelect(file, entry) {
+        current = { model: SXP.buildSupplier(file), key: entry.id };
+        document.title = file.supplier_name + " — Excellence program";
+        draw();
       },
       onError(err, entry) {
-        document.getElementById("criteria").innerHTML =
-          '<p class="section-desc">Could not load ' + entry.file + ": " + err.message + "</p>";
+        document.getElementById("overview").innerHTML =
+          '<p class="sx-lede">Could not load ' + entry.file + ": " + err.message + "</p>";
       },
     });
   </script>

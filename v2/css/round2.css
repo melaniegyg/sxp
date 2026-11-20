@@ -1,0 +1,341 @@
+/* ============================================================
+   SXP ROUND 2 — overview + activity page
+   Replaces round 1's criteria.css. Loads after tokens.css and styles.css.
+
+   Round 2 fails in AMBER, not round 1's red. The chips on the overview and
+   the section cards' top bars share one scale: green passing, amber failing.
+   The weak-red trend shading is gone with the charts.
+   ============================================================ */
+
+:root {
+  --sx-amber-bg: #ffecc1;
+  --sx-amber-text: #8a5a00;
+  --sx-amber-bar: #ffc94d;
+  --sx-green-bar: #b8e6cc;
+  --sx-ink: var(--gyg-label-primary);
+  --sx-muted: var(--gyg-label-secondary);
+  --sx-line: var(--gyg-separator-primary);
+}
+
+.sx-lede {
+  font: var(--font-caption);
+  color: var(--sx-ink);
+  max-width: 1070px;
+  margin: 0 0 24px;
+}
+
+.sx-h2 {
+  font: 700 20px/28px var(--font-family);
+  color: var(--sx-ink);
+  margin: 32px 0 12px;
+}
+.sx-h2--tight { margin-top: 24px; }
+
+/* ---------- Program criteria banner ---------- */
+.sx-crit {
+  background: #f5f7f9;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 8px;
+}
+.sx-crit__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.sx-crit__title { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 0; }
+.sx-crit__sub { font: var(--font-caption); color: var(--sx-muted); margin: 4px 0 0; }
+.sx-crit__cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.sx-crit__card {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--gyg-background-primary);
+  border-radius: 10px;
+  padding: 16px;
+}
+.sx-crit__card img { flex: none; margin-top: 2px; }
+.sx-crit__card-t { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
+.sx-crit__card-d { font: 400 13px/18px var(--font-family); color: var(--sx-muted); margin: 2px 0 0; }
+
+/* ---------- Buttons ---------- */
+.sx-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  font: 500 14px/20px var(--font-family);
+  padding: 10px 18px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.sx-btn--primary { background: var(--gyg-interactive-primary); color: #fff; }
+.sx-btn--secondary {
+  background: #fff;
+  color: var(--gyg-interactive-primary);
+  border-color: var(--gyg-interactive-primary);
+}
+.sx-btn--pill {
+  background: #fff;
+  color: var(--gyg-interactive-primary);
+  border-color: var(--gyg-interactive-primary);
+}
+.sx-btn--secondary:hover, .sx-btn--pill:hover { background: #f0f7ff; }
+
+/* ---------- This month / Next month ---------- */
+.sx-tabs {
+  display: inline-flex;
+  background: #f0f2f5;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+  margin-bottom: 20px;
+}
+.sx-tab {
+  border: 0;
+  background: transparent;
+  font: 500 14px/20px var(--font-family);
+  color: var(--sx-muted);
+  padding: 7px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.sx-tab.is-active { background: #fff; color: var(--gyg-interactive-primary); }
+
+.sx-period {
+  font: var(--font-label);
+  color: var(--sx-muted);
+  text-align: right;
+  margin: 0 0 8px;
+}
+
+/* ---------- Overview tables ---------- */
+.sx-t {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid var(--sx-line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sx-t th {
+  font: 700 13px/18px var(--font-family);
+  color: var(--sx-ink);
+  text-align: left;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--sx-line);
+}
+.sx-t td { padding: 16px 20px; border-bottom: 1px solid var(--sx-line); vertical-align: middle; }
+.sx-t tbody tr:last-child td { border-bottom: 0; }
+.sx-t__name { font: var(--font-caption); color: var(--sx-ink); }
+.sx-t__status { width: 220px; }
+.sx-t__reason { font: var(--font-caption); color: var(--sx-ink); }
+.sx-t__act { width: 140px; text-align: right; }
+.sx-dash { color: var(--gyg-label-tertiary); }
+
+.sx-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  font: 700 12px/16px var(--font-family);
+  padding: 6px 12px;
+}
+/* Earned reads as a dark solid chip; every failure shares one amber. */
+.sx-chip--excellence { background: #1a2b49; color: #fff; }
+.sx-chip--reviews,
+.sx-chip--operations,
+.sx-chip--quality { background: var(--sx-amber-bg); color: var(--sx-amber-text); }
+
+/* ---------- Section cards ---------- */
+.sx-banner { border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; }
+.sx-banner--ok { background: var(--gyg-surface-success-weak); }
+.sx-banner--no { background: var(--sx-amber-bg); }
+.sx-banner__h { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 0; }
+.sx-banner__b { font: var(--font-caption); color: var(--sx-ink); margin: 8px 0 0; }
+
+.sx-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--sx-line);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+/* The rail is a bar across the TOP of each card (2423:103908), not round 1's
+   per-row left-rail segments. Per section, so a mixed card takes the amber of
+   its failing row — which is always its first row, since rows sort failing
+   first. */
+.sx-card__bar { height: 8px; background: var(--sx-green-bar); }
+.sx-card.is-failing .sx-card__bar { background: var(--sx-amber-bar); }
+.sx-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 20px 4px;
+}
+.sx-card__head h3 { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 0; }
+.sx-card__period { font: var(--font-label); color: var(--sx-muted); }
+.sx-card__rows { padding: 8px 20px 4px; }
+
+/* ---------- Criterion rows ---------- */
+.sx-row {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  padding: 16px 0;
+  border-top: 1px solid var(--sx-line);
+}
+.sx-card__rows > .sx-row:first-child { border-top: 0; }
+.sx-row__left { flex: none; width: 76px; }
+.sx-row__icon { display: block; color: var(--sx-ink); line-height: 0; }
+.sx-row__value { display: block; font: 700 26px/32px var(--font-family); color: var(--sx-ink); margin-top: 10px; }
+.sx-row__criteria { display: block; font: var(--font-label); color: var(--sx-muted); margin-top: 8px; }
+.sx-row__main { flex: 1 1 auto; min-width: 0; }
+.sx-row__label { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
+.sx-row__desc { font: var(--font-caption); color: var(--sx-muted); margin: 4px 0 0; }
+/* The per-row CTA sits top-right of its row, not under the description
+   (2423:106343 "Collect more reviews", 2423:106219 "Contact us"). */
+.sx-row__cta { position: absolute; top: 16px; right: 0; margin: 0; }
+.sx-row:has(.sx-row__cta) .sx-row__main { padding-right: 190px; }
+.sx-row--blocked { align-items: center; }
+.sx-row__blocked { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
+
+/* Review summary — the AI block on a failing rating. No data source exists;
+   it renders only when a fixture supplies one. */
+.sx-summary {
+  border: 1px solid var(--sx-line);
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 14px;
+}
+.sx-summary__h {
+  display: flex; align-items: center; gap: 8px;
+  font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0 0 8px;
+}
+.sx-summary__body { font: var(--font-caption); color: var(--sx-ink); margin: 0; }
+.sx-summary__meta { font: var(--font-label); color: var(--gyg-label-tertiary); margin: 8px 0 0; }
+
+/* ---------- See details ---------- */
+.sx-see {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: none; border: 0; padding: 10px 0 0;
+  font: 500 14px/20px var(--font-family);
+  color: var(--gyg-interactive-primary); cursor: pointer;
+}
+.sx-see svg { transition: transform .15s ease; }
+.sx-see.is-open svg { transform: rotate(180deg); }
+.sx-details { margin-top: 12px; }
+.sx-details__h { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0 0 10px; }
+
+/* ---------- Disruption cards ---------- */
+.sx-dc {
+  border: 1px solid var(--sx-line);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background: #fff;
+}
+.sx-dc.is-open { border-color: var(--gyg-interactive-primary); }
+.sx-dc__head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+  width: 100%; background: none; border: 0; padding: 14px 16px;
+  text-align: left; cursor: pointer;
+}
+.sx-dc__text { display: block; min-width: 0; }
+.sx-dc__name { display: block; font: 700 14px/20px var(--font-family); color: var(--sx-ink); }
+.sx-dc.is-open .sx-dc__name { color: var(--gyg-interactive-primary); }
+.sx-dc__desc { display: block; font: 400 13px/18px var(--font-family); color: var(--sx-muted); margin-top: 2px; }
+.sx-dc__meta { display: flex; align-items: center; gap: 12px; flex: none; }
+.sx-dc__chev { color: var(--sx-ink); line-height: 0; transition: transform .15s ease; }
+.sx-dc.is-open .sx-dc__chev { transform: rotate(180deg); }
+.sx-dc__body { padding: 0 16px 16px; }
+.sx-dc:not(.is-open) .sx-dc__body { display: none; }
+.sx-dc__h { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 6px 0 8px; }
+.sx-dc__list { margin: 0 0 16px; padding-left: 18px; }
+.sx-dc__list li { font: var(--font-caption); color: var(--sx-ink); margin-bottom: 6px; }
+.sx-dc__links { list-style: none; margin: 0; padding: 0; }
+.sx-dc__links li { margin-bottom: 6px; }
+.sx-dc__links a, .sx-dc__link--flat {
+  display: inline-flex; align-items: center; gap: 6px;
+  font: 500 14px/20px var(--font-family);
+  color: var(--gyg-interactive-primary); text-decoration: none;
+}
+.sx-dc__links a:hover { text-decoration: underline; }
+
+/* Booking counts ARE shown in round 2 (reversing round 1's strip). They will
+   not always sum to the rate above them — 4 of the 19 activities do not
+   reconcile, in both directions. See CLAUDE.md. */
+.sx-chip-count {
+  background: #1a2b49; color: #fff;
+  border-radius: 999px; padding: 4px 10px;
+  font: 700 12px/16px var(--font-family); white-space: nowrap;
+}
+
+/* ---------- Recommended action ---------- */
+.sx-ra {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  border: 1px solid var(--sx-line); border-radius: 10px;
+  padding: 16px; margin-bottom: 16px;
+}
+.sx-ra__main { display: flex; gap: 12px; align-items: flex-start; min-width: 0; }
+.sx-ra__icon { color: var(--sx-ink); flex: none; line-height: 0; margin-top: 2px; }
+.sx-ra__title { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
+.sx-ra__desc { font: var(--font-caption); color: var(--sx-muted); margin: 4px 0 0; }
+
+/* ---------- This-month promo panel ---------- */
+.sx-promo { background: #fff; border: 1px solid var(--sx-line); border-radius: 12px; padding: 24px; }
+.sx-promo__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.sx-promo__title { font: 700 18px/26px var(--font-family); color: var(--sx-ink); margin: 0; }
+.sx-promo__desc { font: var(--font-caption); color: var(--sx-muted); margin: 8px 0 0; max-width: 880px; }
+.sx-promo__cta { flex: none; }
+.sx-promo__h { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 28px 0 12px; }
+
+.sx-timeline {
+  display: flex; align-items: stretch; gap: 24px;
+  background: #e8f1fd; border-radius: 10px; padding: 20px 24px; margin-top: 20px;
+}
+.sx-timeline__months { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; flex: 1 1 auto; }
+.sx-tm__label { display: block; font: 700 12px/16px var(--font-family); color: var(--gyg-interactive-primary); }
+.sx-tm__bar { display: block; height: 6px; border-radius: 3px; background: #a9cdf5; margin-top: 12px; }
+.sx-tm.is-current .sx-tm__bar { background: var(--gyg-interactive-primary); }
+.sx-tm__today { display: block; font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin-top: 8px; }
+.sx-timeline__award {
+  flex: none; width: 180px; padding-left: 24px;
+  border-left: 1px solid #a9cdf5; display: flex; flex-direction: column; justify-content: center;
+}
+.sx-timeline__date { font: 700 28px/34px var(--font-family); color: var(--gyg-interactive-primary); margin: 0; }
+.sx-timeline__note { font: var(--font-label); color: var(--sx-muted); margin: 4px 0 0; }
+
+.sx-promo__list { list-style: none; margin: 0; padding: 0; }
+.sx-promo__list li {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 0; border-bottom: 1px solid var(--sx-line);
+}
+.sx-promo__list li:last-child { border-bottom: 0; }
+.sx-promo__list li > span:nth-of-type(1) { flex: 1 1 auto; }
+.sx-promo__list strong { display: block; font: 700 14px/20px var(--font-family); color: var(--sx-ink); }
+.sx-promo__list em { display: block; font-style: normal; font: 400 13px/18px var(--font-family); color: var(--sx-muted); }
+.sx-tracking {
+  flex: none; background: #f0f2f5; color: var(--sx-muted);
+  border-radius: 999px; padding: 6px 12px; font: 500 12px/16px var(--font-family);
+}
+
+.sx-benefits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.sx-benefit { border: 1px solid var(--sx-line); border-radius: 10px; padding: 20px; }
+.sx-benefit__t { font: 700 15px/22px var(--font-family); color: var(--sx-ink); margin: 14px 0 0; }
+.sx-benefit__d { font: var(--font-caption); color: var(--sx-muted); margin: 8px 0 0; }
+
+/* Locked `?supplier` chip: a plain label, no dropdown affordance. */
+.topnav__user.is-locked { cursor: default; }
+.switcher-menu__meta { color: var(--gyg-label-tertiary); font: var(--font-label); margin-left: 12px; }
+
+@media (max-width: 900px) {
+  .sx-crit__cards, .sx-benefits { grid-template-columns: 1fr; }
+  .sx-timeline { flex-direction: column; }
+  .sx-timeline__award { width: auto; padding-left: 0; border-left: 0; border-top: 1px solid #a9cdf5; padding-top: 16px; }
+}
