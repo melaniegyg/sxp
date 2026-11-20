@@ -203,7 +203,19 @@ again by moving a template into the page.
 
 No PrimeVue equivalent, so still bespoke CSS: the pre-launch six-month
 timeline, the criterion row's metric column (status glyph, big number,
-"Criteria:" line), and the recommended-action panel.
+"Criteria:" line).
+
+**The recommended-action card is the portal's, not ours** (Melanie,
+2026-11-20). `RecommendedActionCard` in `js/components.js` is ported from
+supply-frontend's `recommended-action-card.vue` and
+`recommended-action-action-button.vue`: same structure, and a CTA wrapper
+that never shrinks. Its **spacing follows Figma 2423:104676**, not the portal's
+looser desktop margins (Melanie, 2026-11-20): 20 padding, 32 gap, 8 between
+icon and text, 160px regular-size button. Note it sits inside a section
+`.sx-card`, so `.sx-card .p-card-content` must be reset on it. The hand-built `.sx-ra` box it
+replaced let its button shrink below its label, which clipped "Tomar medidas".
+Before hand-building anything else, search supply-frontend first —
+`gh search code --repo getyourguide/supply-frontend <name>`.
 
 **Icons are not PrimeIcons.** `README-UI.md` is explicit that PrimeIcons ship
 with PrimeVue and are not to be used for app icons. Every icon here is a Figma

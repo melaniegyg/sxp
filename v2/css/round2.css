@@ -626,18 +626,30 @@ a.p-button:hover { text-decoration: none; }
 }
 .sx-dc__links a:hover { text-decoration: underline; }
 
-/* ---------- Recommended action ---------- */
-/* Recommended Action Card 2423:105838 — 20 padding, 32 gap, 8 radius, with
-   a Title 4 18/24 heading over Body 16/22 in label primary. */
-.sx-ra {
-  display: flex; align-items: center; justify-content: space-between; gap: 32px;
-  border: 1px solid var(--gyg-background-secondary); border-radius: 8px;
-  padding: 20px; margin: 0 0 24px;
-}
-.sx-ra__main { display: flex; gap: 8px; align-items: flex-start; min-width: 0; }
-.sx-ra__icon { color: var(--sx-ink); flex: none; line-height: 0; margin-top: 2px; }
-.sx-ra__title { font: var(--font-title-4); color: var(--sx-ink); margin: 0; }
-.sx-ra__desc { font: var(--font-body); color: var(--sx-ink); margin: 4px 0 0; }
+/* ---------- Recommended action ----------
+   The Supplier Portal's RecommendedActionCard (see components.js) — its
+   structure and its never-shrinking CTA — on the spacing Figma draws for it,
+   Recommended Action Card 2423:104676. The portal's desktop margins (min-h
+   6.5rem, text ml-4 mr-8, CTA mr-4) read too loose here; Melanie,
+   2026-11-20, kept the design's tighter box:
+
+     20 padding, 8 radius, 1px border-#ebeef1, items centred, 32 gap
+     content: 24 icon, 8 gap, Title 4 over Body with 4 between
+     CTA: regular-size Button, 160 wide, never shrinks  */
+.sx-rac { margin: 0 0 24px; box-shadow: 0 0 0 1px var(--sx-line); }
+.sx-rac .p-card-body { padding: 20px; }
+/* It sits inside a section .sx-card, whose `.sx-card .p-card-content`
+   padding (0 16 16) would otherwise reach in and add 16 to each side. */
+.sx-rac .p-card-content { padding: 0; }
+.sx-rac__row { display: flex; flex-wrap: wrap; align-items: center; gap: 32px; }
+.sx-rac__main { display: flex; flex: 1 1 0%; gap: 8px; align-items: flex-start; min-width: 0; }
+.sx-rac__icon { flex: none; color: var(--sx-ink); line-height: 0; }
+.sx-rac__icon svg { width: 24px; height: 24px; }
+.sx-rac__text { flex: 1 1 0%; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.sx-rac__title { font: var(--font-title-4); color: var(--sx-ink); margin: 0; }
+.sx-rac__body { font: var(--font-body); color: var(--sx-ink); margin: 0; }
+.sx-rac__action { flex: none; }
+.sx-rac__btn { min-width: 160px; font-weight: 500; white-space: nowrap; }
 
 /* ---------- This-month promo panel ---------- */
 .sx-promo { border: 1px solid var(--sx-line); border-radius: 12px; box-shadow: none; }

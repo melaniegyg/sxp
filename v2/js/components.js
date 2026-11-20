@@ -310,6 +310,46 @@ export const AppShell = {
 };
 
 // ---------------------------------------------------------------
+// Recommended action card — ported from the Supplier Portal
+// ---------------------------------------------------------------
+// supply-frontend: apps/supplier-portal-nuxt/components/pages/performance/
+// recommended-actions/recommended-action-card.vue (+ the action button,
+// recommended-action-action-button.vue). Replaces round 2's hand-rolled
+// .sx-ra box (Melanie, 2026-11-20: "it's already built in the portal").
+//
+// Same structure: a PrimeVue Card; icon, then a text column, then the CTA in
+// a wrapper that is flex: none so long copy can never squeeze it. Spacing
+// follows Figma 2423:104676 rather than the portal's looser desktop margins
+// (Melanie, 2026-11-20) — see .sx-rac in round2.css. Left out, for want of a backend: the dismiss button and form,
+// eyebrow, footer/uplift tag, analytics, and the dialog actions.
+export const RecommendedActionCard = {
+  props: { title: String, body: Array, actionLabel: String },
+  emits: ["button-click"],
+  computed: { icons: () => ICONS },
+  template: `
+    <Card class="sx-rac" data-testid="recommended-action-card">
+      <template #content>
+        <div class="sx-rac__row">
+          <div class="sx-rac__main">
+            <span class="sx-rac__icon" v-html="icons.recAction"></span>
+            <div class="sx-rac__text">
+              <h3 class="sx-rac__title">{{ title }}</h3>
+              <div>
+                <p v-for="line in body" :key="line" class="sx-rac__body">{{ line }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="sx-rac__action">
+            <Button class="sx-rac__btn" :label="actionLabel"
+                    @click="$emit('button-click')" />
+          </div>
+        </div>
+      </template>
+    </Card>
+  `,
+};
+
+// ---------------------------------------------------------------
 // Disruption breakdown
 // ---------------------------------------------------------------
 // A PrimeVue Accordion. Was .sx-dc — a <button> with aria-expanded, a hidden
@@ -327,6 +367,7 @@ export const AppShell = {
 // when the top two are tied, and not when there is only one complaint, where
 // "most common" would be vacuous.
 export const DisruptionList = {
+  components: { RecommendedActionCard },
   props: { title: String, items: Array, catalogue: Object },
   // Single-open, not `multiple`: opening one closes the rest (Melanie,
   // 2026-11-20). A tag card carries what you can do about it, so several open
@@ -381,16 +422,9 @@ export const DisruptionList = {
               <ul class="sx-dc__list"><li v-for="r in doList(entry)" :key="r">{{ r }}</li></ul>
             </template>
 
-            <div v-if="rec(entry)" class="sx-ra">
-              <div class="sx-ra__main">
-                <span class="sx-ra__icon" v-html="icons.recAction"></span>
-                <div>
-                  <p class="sx-ra__title">{{ recTitle(entry) }}</p>
-                  <p class="sx-ra__desc">{{ rec(entry).description }}</p>
-                </div>
-              </div>
-              <Button :label="rec(entry).buttonLabel || t('dc.takeAction')" />
-            </div>
+            <RecommendedActionCard v-if="rec(entry)" :title="recTitle(entry)"
+                                   :body="[rec(entry).description]"
+                                   :action-label="rec(entry).buttonLabel || t('dc.takeAction')" />
 
             <template v-if="resources(entry).length">
               <h5 class="sx-dc__h">{{ t('dc.resources') }}</h5>
