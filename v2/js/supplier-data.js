@@ -23,6 +23,11 @@
 
 export const LOCKED = new URLSearchParams(location.search).has("supplier");
 
+// Every link between the two pages must carry the lock, or one click on
+// "View details" or "Back" drops `?supplier` and the switcher reappears with
+// every other company in it. Build internal hrefs through this, never by hand.
+export const pageHref = (page, hash) => page + (LOCKED ? "?supplier" : "") + "#" + hash;
+
 export function parseHash() {
   const raw = decodeURIComponent(location.hash.replace(/^#/, ""));
   const [key, tour] = raw.split("/");

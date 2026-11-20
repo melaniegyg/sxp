@@ -84,6 +84,27 @@ times from writing a prop name in backticks. After editing any template:
 cd v2 && for f in js/*.js; do node --check "$f" || echo "FAIL $f"; done
 ```
 
+## Supplier links (`?supplier`)
+
+Same affordance as round 1, see `../CLAUDE.md`: `…/sxp/v2/?supplier#<id>`
+turns the switcher into a plain label and fetches only that supplier's file
+(plus `suppliers.json` and the defect catalogue). The five links:
+
+| Supplier | Link |
+|---|---|
+| Edinburgh Capital Tours | `https://melaniegyg.github.io/sxp/v2/?supplier#edinburgh-capital-tours` |
+| Liulian Travel | `https://melaniegyg.github.io/sxp/v2/?supplier#liulian-travel` |
+| Party Deck | `https://melaniegyg.github.io/sxp/v2/?supplier#party-deck` |
+| Split Local Tours | `https://melaniegyg.github.io/sxp/v2/?supplier#split-local-tours` |
+| Taller Andaluz de Cocina | `https://melaniegyg.github.io/sxp/v2/?supplier#taller-andaluz-de-cocina-cooking-school` |
+
+**Every link between the two pages must go through `pageHref()`** in
+`js/supplier-data.js`. Until 2026-11-20 "View details" and "Back" were built
+by hand, dropped `?supplier`, and brought the switcher back after one click.
+
+Still not access control: `suppliers.json` names all five suppliers, every
+fixture is readable at `data/*.json`, and editing the hash switches company.
+
 ## Round 2 is built from PrimeVue components
 
 Settled 2026-11-20 by Melanie: *"you should be using primevue for everything."*

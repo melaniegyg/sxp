@@ -3,7 +3,7 @@
 // ============================================================
 import { createSxpApp } from "./primevue-setup.js";
 import { AppShell, SectionCard, BadgeBanner, ICONS } from "./components.js";
-import { createSupplierState } from "./supplier-data.js";
+import { createSupplierState, pageHref } from "./supplier-data.js";
 
 const { reactive } = window.Vue;
 
@@ -133,7 +133,7 @@ const App = {
   data: () => ({ month: "next", months: MONTHS }),
   computed: {
     act() { return this.model.activity; },
-    backHref() { return "index.html#" + (this.state.entry ? this.state.entry.id : ""); },
+    backHref() { return pageHref("index.html", this.state.entry ? this.state.entry.id : ""); },
     // Round 1's banner said "keep working on it" even for a supplier-level
     // Trust & Safety ban that no work on this activity can lift. No round-2
     // activity fails T&S, so this is false everywhere today.

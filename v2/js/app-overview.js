@@ -3,7 +3,7 @@
 // ============================================================
 import { createSxpApp } from "./primevue-setup.js";
 import { AppShell, StatusTag, ExclusionBanner, ICONS } from "./components.js";
-import { createSupplierState } from "./supplier-data.js";
+import { createSupplierState, pageHref } from "./supplier-data.js";
 
 const { reactive } = window.Vue;
 
@@ -98,7 +98,7 @@ const App = {
   },
   methods: {
     href(row) {
-      return "activity.html#" + (this.state.entry ? this.state.entry.id : "") + "/" + row.tourId;
+      return pageHref("activity.html", (this.state.entry ? this.state.entry.id : "") + "/" + row.tourId);
     },
   },
   template: `
