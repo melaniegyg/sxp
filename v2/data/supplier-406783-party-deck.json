@@ -1,6 +1,11 @@
 {
   "supplier_id": 406783,
   "supplier_name": "Party Deck",
+  "supplier_exclusion": {
+    "reason": "review_manipulation",
+    "until": "2027-02-01",
+    "_note": "HAND-WRITTEN for the prototype (Melanie, 2026-11-20): Party Deck is on the review-manipulation list. sxp_activity_criteria has no exclusion, ban or expiry column, so neither the flag nor the date comes from the export. The date is the one drawn in 2241:42264."
+  },
   "study": "Supplier Excellence Program - 2nd round (Rally)",
   "exported_at": "2026-11-17",
   "source": "Criteria: production.supply_analytics.sxp_activity_criteria (latest window per tour). Tags: production.on_trip.dim_booking_defect joined to dwh.fact_booking_v2, travel date within each tour's criteria window.",

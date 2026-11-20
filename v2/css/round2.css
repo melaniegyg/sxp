@@ -352,6 +352,16 @@ a.p-button:hover { text-decoration: none; }
 .sx-banner__row img { flex: none; display: block; }
 .sx-banner--fail .sx-banner__h { font: var(--font-title-3); }
 .sx-banner--fail .sx-banner__b { font: var(--font-body); margin-top: 16px; }
+/* Supplier-level exclusion (review manipulation): 2241:42264 / 2553:99723
+   draw it on gyg/surface/critical-weak #ffe8ed with ink text, no icon. The
+   preset's error Message is red.50 on red.500 — background and text both
+   differ — so this binds the design's surface and ink rather than taking the
+   preset's red text. */
+.sx-banner--critical { background: var(--gyg-surface-critical-weak); }
+.sx-banner--critical .p-message-text,
+.sx-banner--critical .sx-banner__h,
+.sx-banner--critical .sx-banner__b { color: var(--sx-ink); }
+.sx-row__email { color: inherit; text-decoration: underline; }
 
 /* ---------- Section cards ---------- */
 /* 2423:106763 — radius 8, pt 24 / pb 16 / px 16. */

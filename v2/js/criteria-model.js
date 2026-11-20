@@ -71,12 +71,9 @@
     fmtShort(PERIOD_END);
 
   // --- Criteria lines -----------------------------------------
-  // NOTE(copy): the review-count component draws an EXCLUSIVE operator,
-  // `>50`, under a label that says "At least 50" — inclusive. They disagree
-  // at exactly the boundary. Drawn form reproduced deliberately; see "More
-  // threshold and copy contradictions" in CLAUDE.md.
-  const reviewsCriteria = `>${MIN_REVIEWS}`;
-
+  // No row carries a "Criteria:" line under its number any more. The review
+  // count's `>50` went with 2423:106466 (label "50 reviews from this
+  // period"), which also ends the old clash between `>50` and "At least 50".
   // The quality rows no longer carry a "Criteria:" line under the number —
   // 2519:10642 folds the bar into the description sentence instead, and with
   // INCLUSIVE wording ("4.6 or higher", "2% or lower"), so the old `> 4.6` /
@@ -143,8 +140,14 @@
     operations: { id: "operations", label: "Operations not met" },
     quality: { id: "quality", label: "Quality not met" },
   };
-  function chipFor(a) {
+  // A supplier-level exclusion (review manipulation, 2241:42264) fails
+  // Operations on EVERY in-scope activity and wins the cascade — the design
+  // chips all five rows "Operations not met", including ones that would
+  // otherwise read "Reviews not met". Ineligible activities stay where they
+  // are: they were never in the program to be excluded from.
+  function chipFor(a, exclusion) {
     if (!a.crit_in_scope) return null; // listed under Ineligible instead
+    if (exclusion) return CHIPS.operations;
     const s = sectionStatus(a);
     if (!s.review) return CHIPS.review;
     if (!s.operations) return CHIPS.operations;
@@ -178,7 +181,8 @@
       .map(([tag, count]) => ({ tag, count }))
       .sort((x, y) => y.count - x.count || x.tag.localeCompare(y.tag));
 
-  function build(a) {
+  // `exclusion` is the supplier file's `supplier_exclusion`, or null.
+  function build(a, exclusion = null) {
     const s = sectionStatus(a);
     const belowReviewGate = !s.review;
 
@@ -193,17 +197,15 @@
           {
             id: "min-reviews",
             bannerReason: "too few reviews",
-            label: `At least ${MIN_REVIEWS} reviews`,
+            // 2423:106466 / 2423:106417: "50 reviews from this period". The
+            // count shows only when failing; passing is the glyph alone.
+            label: `${MIN_REVIEWS} reviews from this period`,
             description:
               "This minimum gives us enough evidence to understand the quality of your activity",
             status: status(a.crit_min_reviews),
-            // Failing, the row grows a count and a CTA. Round 1's variant
-            // carried an "As of <date>" caption and no criteria line
-            // (796:29978); the round-2 component reverses that — criteria
-            // line, no date — so the asOf TODO goes away with it.
             ...(belowReviewGate
               ? {
-                  metric: { value: String(a.reviews_in_window), criteria: reviewsCriteria },
+                  metric: { value: String(a.reviews_in_window) },
                   cta: { label: "Collect more reviews" },
                 }
               : {}),
@@ -236,8 +238,18 @@
             // rate) are judged across ALL the supplier's activities, so this
             // row can fail because of a different activity entirely.
             status: status(
-              a.crit_ts_no_severe_case && a.crit_ts_case_rate && a.crit_ts_tag_rate
+              !exclusion &&
+                a.crit_ts_no_severe_case && a.crit_ts_case_rate && a.crit_ts_tag_rate
             ),
+            // Review manipulation, 2553:99731. The email is underlined in the
+            // node; the row renders it as a mailto link.
+            ...(exclusion
+              ? {
+                  failDescription:
+                    "This activity is not eligible for the badge because your account has been flagged for review manipulation. Search for messages from {email} in your emails to find more details.",
+                  failEmail: "supplierpartner.care@getyourguide.com",
+                }
+              : {}),
             // Only ONE failing variant is drawn (`Severe - Activity`). The
             // other three modes — supplier-level severe, rule B case rate,
             // rule C tag rate — have no design and no data: none of these 19
@@ -248,11 +260,11 @@
             // TODO(data): no field carries the ban expiry. Round 1 hand-wrote
             // `ts_cases`; the round-2 component needs only the date, not the
             // case table, but the six-month invariant still governs it.
-            failDescription: a.ts_excluded_until
+            ...(exclusion ? {} : { failDescription: a.ts_excluded_until
               ? `This activity is not eligible for the badge because it has a severe trust and safety case confirmed in the last 6 months. From ${fmtLong(
                   a.ts_excluded_until
                 )} it will be eligible again.`
-              : "This activity is not eligible for the badge because it has a severe trust and safety case confirmed in the last 6 months.",
+              : "This activity is not eligible for the badge because it has a severe trust and safety case confirmed in the last 6 months." }),
           },
         ],
       },
@@ -346,10 +358,15 @@
       rows: [...sec.rows.filter(rowFailed), ...sec.rows.filter((r) => !rowFailed(r))],
     }));
     const sectionFailed = (sec) => sec.rows.some(rowFailed);
-    const sections = [
+    const failingFirst = [
       ...ordered.filter(sectionFailed),
       ...ordered.filter((sec) => !sectionFailed(sec)),
     ];
+    // Excluded, Operational standards leads (2553:99707), even ahead of a
+    // failing review count — the same section the overview chip names.
+    const sections = exclusion
+      ? [...failingFirst.filter((x) => x.id === "operational"), ...failingFirst.filter((x) => x.id !== "operational")]
+      : failingFirst;
 
     // The failing banner, from 2519:10642: "This activity does not meet the
     // quality standards to be awarded the badge" / "This activity doesn't
@@ -373,7 +390,14 @@
     // Below the review gate the copy is Melanie's own (2026-11-20) — the
     // design draws no banner for this state. It replaces the generic
     // "does not meet the review count…" / "due to too few reviews".
-    const failBanner = belowReviewGate
+    // Excluded: 2553:99723. Red, no icon — `critical` rather than `warn`.
+    const failBanner = exclusion
+      ? {
+          critical: true,
+          headline: "This activity does not meet the operational standards to be eligible for the program",
+          body: "This activity is not eligible for the badge because your supplier account has been flagged for review manipulation.",
+        }
+      : belowReviewGate
       ? {
           headline: "This activity does not have enough reviews to be eligible for the program",
           body: `This activity is not eligible for the badge because it doesn’t have ${MIN_REVIEWS} reviews in last 6 months.`,
@@ -392,11 +416,11 @@
       activityTitle: a.activity_title,
       inScope: a.crit_in_scope,
       badge: {
-        earned: earnedBadge(a),
+        earned: !exclusion && earnedBadge(a),
         // Clears the global minimum but not its own stricter city bar — it
         // would qualify in a less crowded city. Four such blocks across three
         // of these activities (Split ×2, Kyoto).
-        blockedByCityBar: !earnedBadge(a) && earnedBadge(a, true),
+        blockedByCityBar: !exclusion && !earnedBadge(a) && earnedBadge(a, true),
         city: a.home_city,
         cityStep: a.destination_step,
         awardDate: fmtLong(AWARD_DATE),
@@ -414,7 +438,7 @@
       tourId: a.tour_id,
       title: a.activity_title,
       inScope: a.crit_in_scope,
-      chip: chipFor(a),
+      chip: chipFor(a, file.supplier_exclusion || null),
       reason: INELIGIBLE_REASON,
       activity: a,
     }));
@@ -424,6 +448,14 @@
       period: { text: PERIOD_TEXT, start: PERIOD_START, end: PERIOD_END },
       awardDate: fmtLong(AWARD_DATE),
       awardMonth: fmtMonth(AWARD_DATE),
+      // 2241:42264: "Due to review manipulation, your activities are not
+      // eligible for the program until February 1, 2027".
+      exclusion: file.supplier_exclusion
+        ? {
+            headline: `Due to review manipulation, your activities are not eligible for the program until ${fmtLong(file.supplier_exclusion.until)}`,
+            body: "Your supplier account has been flagged due to evidence you have engaged in behavior that goes against our review policy. Reviews must reflect the experience of genuine customers and must not be influenced or manipulated in any way. As a result, your activities are excluded from the program for now.",
+          }
+        : null,
       eligible: rows.filter((r) => r.inScope),
       ineligible: rows.filter((r) => !r.inScope),
     };

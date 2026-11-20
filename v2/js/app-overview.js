@@ -2,7 +2,7 @@
 // OVERVIEW PAGE — index.html
 // ============================================================
 import { createSxpApp } from "./primevue-setup.js";
-import { AppShell, StatusTag, ICONS } from "./components.js";
+import { AppShell, StatusTag, ExclusionBanner, ICONS } from "./components.js";
 import { createSupplierState } from "./supplier-data.js";
 
 const { reactive } = window.Vue;
@@ -34,7 +34,7 @@ const MONTHS = [
 ];
 
 const App = {
-  components: { AppShell, StatusTag },
+  components: { AppShell, StatusTag, ExclusionBanner },
   setup() {
     const model = reactive({ sup: null });
     const { state, init, select } = createSupplierState(reactive, (file) => {
@@ -47,8 +47,10 @@ const App = {
   data: () => ({
     // THIS MONTH is the pre-launch state: no badge has been awarded yet, so
     // every row shows an em dash. NEXT MONTH shows the assessment that decides
-    // the first awards.
-    month: "this",
+    // the first awards. The page opens on NEXT MONTH (Melanie, 2026-11-20):
+    // the assessment is what a supplier comes here for; the dashes are one
+    // click away.
+    month: "next",
     months: MONTHS,
     criteria: CRITERIA,
     filterStatus: null,
@@ -147,6 +149,10 @@ const App = {
       <p v-if="state.error" class="sx-lede">{{ state.error }}</p>
 
       <template v-if="sup">
+        <!-- Supplier-level exclusion, 2241:42264. It sits above "Badge status"
+             and the month toggle, so it shows on both tabs: the exclusion is
+             a standing fact about the account, not an assessment result. -->
+        <ExclusionBanner v-if="sup.exclusion" :exclusion="sup.exclusion" />
         <h2 class="sx-h2">Badge status</h2>
         <SelectButton v-model="month" :options="months" optionLabel="label" optionValue="value"
                       :allowEmpty="false" class="sx-months" />

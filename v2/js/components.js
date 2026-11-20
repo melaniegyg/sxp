@@ -391,6 +391,16 @@ export const CriterionRow = {
     // failing" — the only gate the data supports, since 94.3% of activities
     // with a non-zero rate have no tagged bookings at all.
     tags() { return this.row.disruptions || []; },
+    // A description may carry one {email} placeholder (the review-manipulation
+    // T&S row), rendered as a mailto link. Split here so the template stays
+    // plain text either side of it.
+    descParts() {
+      const d = this.desc || "";
+      const email = this.failing && this.row.failEmail;
+      if (!email || !d.includes("{email}")) return null;
+      const [before, after] = d.split("{email}");
+      return { before, email, after };
+    },
     icons: () => ICONS,
   },
   template: `
@@ -414,7 +424,8 @@ export const CriterionRow = {
 
       <div class="sx-row__main">
         <p class="sx-row__label">{{ row.label }}</p>
-        <p v-if="desc" class="sx-row__desc">{{ desc }}</p>
+        <p v-if="descParts" class="sx-row__desc">{{ descParts.before }}<a class="sx-row__email" :href="'mailto:' + descParts.email">{{ descParts.email }}</a>{{ descParts.after }}</p>
+        <p v-else-if="desc" class="sx-row__desc">{{ desc }}</p>
 
         <!-- TODO(data): nothing in the export backs the Review summary block;
              it renders only when a fixture supplies review_summary. None does. -->
@@ -439,7 +450,10 @@ export const CriterionRow = {
                           :items="tags" :catalogue="catalogue" />
         </template>
 
-        <Button v-if="row.cta && failing" class="sx-row__cta" severity="contrast" outlined
+        <!-- Primary outlined — #0071eb border and label, as 2423:106466 draws
+             "Collect more reviews" and 2423:106505 "Contact us". Was
+             severity="contrast" (navy) until Melanie, 2026-11-20. -->
+        <Button v-if="row.cta && failing" class="sx-row__cta" outlined rounded
                 :label="row.cta.label" />
       </div>
     </div>
@@ -478,6 +492,20 @@ export const SectionCard = {
 };
 
 // ---------------------------------------------------------------
+// Supplier-level exclusion banner (overview), 2241:42264
+// ---------------------------------------------------------------
+// Red, no icon, Title 3 headline with the until-date, Body underneath.
+export const ExclusionBanner = {
+  props: { exclusion: Object },
+  template: `
+    <Message severity="error" :closable="false" class="sx-banner sx-banner--fail sx-banner--critical">
+      <p class="sx-banner__h">{{ exclusion.headline }}</p>
+      <p class="sx-banner__b">{{ exclusion.body }}</p>
+    </Message>
+  `,
+};
+
+// ---------------------------------------------------------------
 // The outcome banner
 // ---------------------------------------------------------------
 export const BadgeBanner = {
@@ -496,6 +524,13 @@ export const BadgeBanner = {
          The copy is built in criteria-model.js (badge.failBanner) — the node
          draws one case, the model generalises it. The award date it used to
          carry is gone, as in the design. -->
+    <!-- A supplier-level exclusion is red and has no icon (2553:99723);
+         everything else is the amber banner with the warning triangle. -->
+    <Message v-else-if="badge.failBanner && badge.failBanner.critical" severity="error"
+             :closable="false" class="sx-banner sx-banner--fail sx-banner--critical">
+      <p class="sx-banner__h">{{ badge.failBanner.headline }}</p>
+      <p class="sx-banner__b">{{ badge.failBanner.body }}</p>
+    </Message>
     <Message v-else severity="warn" :closable="false" class="sx-banner sx-banner--fail">
       <div class="sx-banner__row">
         <img src="assets/icons/triangle-exclamation-24.svg" alt="" width="24" height="24">

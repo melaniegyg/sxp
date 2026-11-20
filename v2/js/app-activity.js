@@ -122,13 +122,15 @@ const App = {
       const list = file.activities || [];
       const a = list.find((x) => x.tour_id === tourId) || list[0];
       if (!a) return;
-      model.activity = window.SXP.build(a);
+      model.activity = window.SXP.build(a, file.supplier_exclusion || null);
       document.title = model.activity.activityTitle + " — Excellence program";
     });
     init();
     return { state, model, select };
   },
-  data: () => ({ month: "this", months: MONTHS }),
+  // Opens on NEXT MONTH, like the overview (Melanie, 2026-11-20): the
+  // assessment is what "View details" promises; the promo is one click away.
+  data: () => ({ month: "next", months: MONTHS }),
   computed: {
     act() { return this.model.activity; },
     backHref() { return "index.html#" + (this.state.entry ? this.state.entry.id : ""); },

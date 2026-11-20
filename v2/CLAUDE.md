@@ -42,9 +42,9 @@ portal and must not be edited; round 2 simply renders its own breakdown, since
 a left-hand defect nav. Its recommended-action copy was lifted into the
 catalogue instead.
 
-**Not built, for want of data and design:** the supplier-level exclusion
-banner, and three of the four Trust & Safety failure states. No activity in the
-round-2 data fails T&S, so `Operations not met` never appears.
+**Not built, for want of data and design:** three of the four Trust & Safety
+failure states. No activity in the export fails T&S; `Operations not met`
+appears only through Party Deck's hand-written exclusion (below).
 
 ## Open threads (as of 2026-11-20)
 
@@ -460,7 +460,32 @@ three category fields, and none of them is renderable. They are provenance, like
 **No fixture is out of scope.** All seventeen are `crit_in_scope = true`, so the
 Ineligible activities table has nothing to render until a fixture is added.
 
-### Supplier-level exclusion banner — no data source
+### Supplier-level exclusion banner — built for Party Deck, hand-written data
+
+**Built 2026-11-20** from section 2553:99986 — overview 2241:42264, activity
+page 2553:99707 ("Bali"). Melanie: Party Deck is on the review-manipulation
+list. `data/supplier-406783-party-deck.json` carries a hand-written
+`supplier_exclusion: {reason, until: "2027-02-01", _note}`; nothing in the
+export backs it. What it drives:
+
+- **Overview:** a red banner (`critical-weak` #ffe8ed, ink text, no icon)
+  above "Badge status", so it shows on **both** month tabs — it is a fact
+  about the account, not an assessment result. Every in-scope activity chips
+  `Operations not met`, which beats the Review → Operations → Quality cascade
+  (two of Party Deck's three would otherwise read `Reviews not met`).
+  Ineligible activities are untouched.
+- **Activity page (Next month):** a red banner, "This activity does not meet
+  the operational standards to be eligible for the program". Operational
+  standards moves to the **top**, ahead of a failing review count, so the
+  page still leads with what the chip names. Its T&S row fails with the
+  design's text and a mailto link to supplierpartner.care@getyourguide.com.
+  The badge is never earned while excluded.
+- **Not taken from 2553:99707:** its row labels "Trust and safety" and
+  "24-hour free cancellation" (the page keeps "Trust and safety check" and
+  "24-hour cancellation policy"). Raise before changing — they'd change on
+  every activity, not only excluded ones.
+
+The original notes, kept for context:
 
 Design 2241:42264. A supplier-wide exclusion shows a red banner above the table
 ("Due to review manipulation, your activities are not eligible for the program
@@ -577,10 +602,11 @@ the failing banner from the earlier nodes.
   draws no banner for it: "This activity does not have enough reviews to be
   eligible for the program" / "This activity is not eligible for the badge
   because it doesn’t have 50 reviews in last 6 months."
-- **Not changed (outside the request):** this frame's review-count card in
-  its passing state shows no number and reads "50 reviews from this period"
-  (2519:10662), and the This month promo still summarises quality as "Rating
-  and complaint rate".
+- **Review count row** now follows 2423:106466 / 2423:106417 (Melanie asked,
+  2026-11-20): label "50 reviews from this period", no `Criteria: >50` line,
+  and the count shows only when failing. That ends the old `>50` vs "At least
+  50" clash. Still unchanged: the This month promo summarises quality as
+  "Rating and complaint rate".
 
 ### Charts are dropped; the disruption breakdown stays
 
@@ -771,8 +797,9 @@ Covered: `Excellence` ×3, `Reviews not met` ×10, `Quality not met` ×4, and �
 for the first time — **`Ineligible` ×2** (Liulian's Nara and Kawaguchiko
 activities, both `Other / Trip Enhancers`).
 
-**Not covered: `Operations not met` — zero activities fail any T&S rule or the
-cancellation policy across all nineteen.** So the whole Operational standards
+**Not covered by the export: `Operations not met` — zero activities fail any
+T&S rule or the cancellation policy across all nineteen.** (Party Deck now
+reaches it only through the hand-written exclusion above.) So the whole Operational standards
 failing path is unexercised, as is the supplier-level exclusion banner. That
 lines up with the component set, which draws only one of the four T&S failure
 variants — but it means neither can be built from this data.
