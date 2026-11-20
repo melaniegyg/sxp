@@ -44,6 +44,23 @@
    wrapping. "View details" in a table cell is the one that actually did. */
 .p-button-label { white-space: nowrap; }
 
+/* A Button rendered `as="a"` is still an <a>, and tokens.css sets
+   `a { color: var(--gyg-interactive-primary) }` OUTSIDE any layer. Unlayered
+   beats layered, so that one rule outranks every .p-button colour in the
+   primevue layer — which drew "View details" with a navy outline and blue
+   text, half of one variant and half of another.
+
+   `revert-layer` rolls this declaration back to the value from the previous
+   layer, so each variant supplies its own colour again (contrast outlined
+   -> #1a2b49, primary -> white) without naming any of them here.
+
+   The hover underline from the same block needs `none` spelled out rather
+   than a second `revert-layer`: PrimeVue sets no text-decoration on a button,
+   so reverting would fall through to the user agent's own underline for
+   links and reintroduce the problem. */
+a.p-button { color: revert-layer; }
+a.p-button:hover { text-decoration: none; }
+
 /* ---------- Page type ---------- */
 .sx-lede {
   font: var(--font-caption);

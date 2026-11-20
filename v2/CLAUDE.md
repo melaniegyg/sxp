@@ -133,6 +133,41 @@ specificity, so the bindings in `round2.css` need no `!important` and no
 selector arms race. Keep it that way: anything in that file that recolours
 rather than positions belongs in the preset instead.
 
+### …and the trap that comes with it
+
+That same rule cuts both ways. `tokens.css` carries an **unlayered** element
+selector:
+
+```css
+a { color: var(--gyg-interactive-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+```
+
+A Button rendered `as="a"` — which the overview's **View details** is, because
+it navigates — is still an `<a>`, so that one rule outranked every
+`.p-button` colour in the `primevue` layer. The result was a button with the
+navy outline of `severity="contrast"` and the blue label of a link: half of
+one variant, half of another, and not a component in the design system.
+Melanie caught it on sight, 2026-11-20.
+
+The fix is in `round2.css`:
+
+```css
+a.p-button { color: revert-layer; }
+a.p-button:hover { text-decoration: none; }
+```
+
+`revert-layer` rolls the declaration back to the previous layer's value, so
+every variant supplies its own colour without this file naming any of them.
+The underline needs `none` spelled out instead — PrimeVue sets no
+text-decoration on a button, so reverting would fall through to the user
+agent's underline for links and put the problem back.
+
+**Expect this for any PrimeVue component rendered as an anchor**, and for any
+other bare element selector in `tokens.css` or `styles.css`. Check the
+computed colour against the preset's token before assuming a variant is
+applied — the class list looked perfectly correct the whole time.
+
 ### Known divergence: the filter selects are 40px, the design draws 44px
 
 The preset's `formField` height wins. Overriding it would put back exactly the
