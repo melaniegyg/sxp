@@ -46,6 +46,44 @@ catalogue instead.
 banner, and three of the four Trust & Safety failure states. No activity in the
 round-2 data fails T&S, so `Operations not met` never appears.
 
+## Open threads (as of 2026-11-20)
+
+Four things a new session cannot infer from the code.
+
+**1. Is Body 16/22 too heavy?** The criteria rows were matched to the nodes on
+2026-11-20, which moved labels, descriptions, the breakdown list, the
+recommended action and the resource links from Caption 14/20 up to Body 16/22.
+That is what 2423:106763 and 2423:105747 specify, but it is a visible step up
+and Melanie had flagged the page as feeling big *before* the change — the
+culprit there was the metric number at a non-token 26px, now Title 2 24/30. If
+16/22 still reads heavy in the browser, the fix is in Figma, not here; record
+it as a deliberate divergence rather than quietly shrinking the CSS again.
+
+**2. Selects: 44 or 40?** `css/round2.css` forces 44px because that is the
+node's `min-height`. The ported preset's `formField` says 40. Figma and the
+code design system genuinely disagree. Settle it with the design-system
+owners rather than copying the override to other controls.
+
+**3. The activity page has had its type audited, not its spacing.** The
+overview was measured value-by-value against 2423:103412 and agrees on all 21.
+The activity page has only had its *fonts* matched (13 of 13 against the two
+criteria nodes); its paddings and gaps have not had the same pass. Likely
+nodes: 2423:106465 / 106499 / 106522 for the three gate cards.
+
+**4. Nothing is pushed.** Twelve commits sit on local `main`.
+`HOW-TO-BUILD-A-PROTOTYPE-LIKE-THIS.md` at the repo root is Melanie's and is
+deliberately untracked — leave it alone.
+
+### Working note: check the templates parse
+
+Components are Vue string templates in backticks, so a stray backtick in a
+comment inside one silently blanks the page — it has happened twice, both
+times from writing a prop name in backticks. After editing any template:
+
+```bash
+cd v2 && for f in js/*.js; do node --check "$f" || echo "FAIL $f"; done
+```
+
 ## Round 2 is built from PrimeVue components
 
 Settled 2026-11-20 by Melanie: *"you should be using primevue for everything."*
