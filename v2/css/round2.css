@@ -283,7 +283,12 @@ a.p-button:hover { text-decoration: none; }
   margin-bottom: 8px;
   background: #fff;
 }
-.sx-acc .p-accordionpanel-active { border-color: var(--gyg-interactive-primary); }
+/* The open panel keeps the same grey border as the closed ones. 2423:103908
+   draws it blue, and the page followed that until Melanie removed it
+   2026-11-20 — with one panel open at a time the blue outline was doing work
+   the expansion already does. The blue heading below is the other half of
+   that treatment and is still here; drop it too if the outline was the only
+   part worth keeping. */
 .sx-acc .p-accordionheader {
   align-items: flex-start;
   gap: 16px;
