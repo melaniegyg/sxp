@@ -63,5 +63,11 @@ export function createSxpApp(rootComponent, props) {
     else console.warn("[sxp] PrimeVue has no component named " + name);
   });
 
+  // v-tooltip — PrimeVue's Tooltip directive (the ineligible table's info
+  // icon). The ported preset has no tooltip config, so its colours are
+  // Lara's; css/round2.css restyles the one instance to the design.
+  if (PV.Tooltip) app.directive("tooltip", PV.Tooltip);
+  else console.warn("[sxp] PrimeVue has no Tooltip directive");
+
   return app;
 }

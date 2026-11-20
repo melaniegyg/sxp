@@ -60,6 +60,7 @@ const App = {
     icons: () => ICONS,
     preLaunch() { return this.month === "this"; },
     sup() { return this.model.sup; },
+    tip: () => window.SXP.INELIGIBLE_TIP,
     period() {
       // "Period checked: …", the same wording as the activity page's section
       // cards (Melanie, 2026-11-20) — was "Assessment period: …".
@@ -202,14 +203,25 @@ const App = {
         <!-- Ineligible activities are a separate table with a Reason, not a
              status — they are never assessed, so they have no criteria to meet.
              No "View details" and so no third column: the link would open a
-             criteria page with nothing on it. The reason stays the generic
-             "Activity type"; the warehouse category names (Ticketed /
-             Transfers / Trip Enhancers) are internal and never shown. -->
+             criteria page with nothing on it. The reason is one generic
+             sentence; the warehouse category names (Ticketed / Transfers /
+             Trip Enhancers) are internal and never shown. Heading, reason and
+             tooltip copy: Melanie, 2026-11-20. -->
         <template v-if="sup.ineligible.length">
-          <h2 class="sx-h2 sx-h2--section">Ineligible activities</h2>
+          <h2 class="sx-h2 sx-h2--section">Not in the program</h2>
           <DataTable :value="sup.ineligible" dataKey="tourId" class="sx-t">
             <Column field="title" header="Product" />
-            <Column field="reason" header="Reason" style="width:220px" />
+            <Column header="Reason" style="width:55%">
+              <template #body="{ data }">
+                <span class="sx-reason">
+                  {{ data.reason }}
+                  <!-- A button, not a bare icon, so the tooltip opens on
+                       keyboard focus as well as hover. -->
+                  <button type="button" class="sx-reason__info" aria-label="Why is this activity not in the program?"
+                          v-tooltip.bottom="{ value: tip, class: 'sx-tip' }" v-html="icons.info"></button>
+                </span>
+              </template>
+            </Column>
           </DataTable>
         </template>
       </template>

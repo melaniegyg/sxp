@@ -207,6 +207,27 @@ a.p-button:hover { text-decoration: none; }
 .sx-brandbadge__icon, .sx-tag__icon { display: inline-flex; line-height: 0; }
 .sx-tag--earned { gap: 4px; }
 
+/* "Not in the program": reason text with an info icon beside it, whose
+   tooltip is drawn light — gyg separator grey with ink text and a soft
+   shadow — rather than Lara's dark default. PrimeVue appends the tooltip to
+   <body>, so it is styled by the class passed to v-tooltip. */
+.sx-reason { display: inline-flex; align-items: center; gap: 12px; }
+.sx-reason__info {
+  display: inline-flex; flex: none; padding: 0; border: 0; background: none;
+  color: var(--sx-ink); line-height: 0; cursor: help; border-radius: 50%;
+}
+.sx-reason__info:focus-visible { outline: 2px solid var(--gyg-interactive-primary); outline-offset: 2px; }
+.sx-tip.p-tooltip { max-width: 260px; }
+.sx-tip .p-tooltip-text {
+  background: var(--gyg-separator-primary);
+  color: var(--sx-ink);
+  font: 500 14px/20px var(--font-family);
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(26, 43, 73, 0.15);
+}
+.sx-tip .p-tooltip-arrow { display: none; }
+
 .sx-lede {
   font: var(--font-body);          /* Body 16/22, not Caption */
   color: var(--sx-ink);

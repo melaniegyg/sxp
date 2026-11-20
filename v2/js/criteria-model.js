@@ -162,9 +162,11 @@
   // Access are all in scope).
   //
   // The category names are warehouse taxonomy and NEVER reach the supplier —
-  // the Reason column stays the generic "Activity type" even though the three
-  // groups are distinguishable. Settled 2026-11-19.
-  const INELIGIBLE_REASON = "Activity type";
+  // the Reason stays one generic sentence even though the three groups are
+  // distinguishable. Settled 2026-11-19; copy updated by Melanie 2026-11-20
+  // (was "Activity type"). The overview adds an info tooltip beside it.
+  const INELIGIBLE_REASON = "Only guided tours and experiences are eligible for the program at this time";
+  const INELIGIBLE_TIP = "Think this activity should qualify? Contact Customer Care and we’ll check it for you";
 
   // --- Disruption breakdown -----------------------------------
   // `quality_breakdown` / `pickup_breakdown` are {tag: distinctBookings},
@@ -466,6 +468,7 @@
     buildSupplier,
     chipFor,
     MIN_REVIEWS,
+    INELIGIBLE_TIP,
     PERIOD_TEXT,
     periodRange:
       fmtDate(PERIOD_START, { month: "long", year: "numeric" }) + " – " + fmtShort(PERIOD_END),

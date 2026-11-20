@@ -26,6 +26,9 @@ import { LOCKED, activityCount } from "./supplier-data.js";
 // Pass is a checkbox, fail an X in the same dark square. Neither is red or
 // green: colour lives in the section card's top bar. (2423:103908)
 export const ICONS = {
+  // Circled "i", 24px, currentColor — the ineligible table's tooltip trigger.
+  info:
+    '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="9.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 10.5v6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><circle cx="12" cy="7.6" r="1.1" fill="currentColor"/></svg>',
   // features / certifications / compact-badge (Figma 12:12314), inlined with
   // currentColor: the export is white, and it sits on the navy Excellence
   // chip both in the page header (2423:103415) and in the table.

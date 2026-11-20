@@ -379,6 +379,15 @@ status per row, and `View details` opens the round-1 criteria page for one of
 them. Below it a second table, **Ineligible activities**, lists activities with
 a `Reason` instead of a status ("Activity type not eligible").
 
+**Renamed and reworded 2026-11-20 (Melanie):** the section heading is
+**Not in the program** (was "Ineligible activities"), the reason reads "Only
+guided tours and experiences are eligible for the program at this time" (was
+"Activity type"), and an info icon beside it opens a PrimeVue tooltip: "Think
+this activity should qualify? Contact Customer Care and we’ll check it for
+you". The tooltip is restyled light in `round2.css` (`.sx-tip`) — the ported
+preset has no tooltip config, so Lara's dark default would otherwise apply.
+Notes below that say "Ineligible activities" or "Activity type" predate this.
+
 **Ineligible rows carry no `View details`**, and so have no third column —
 settled by Melanie 2026-11-20. These activities are never assessed, so the
 link would open a criteria page with nothing on it. The two tables therefore
