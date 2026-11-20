@@ -4,6 +4,30 @@
 import { createSxpApp } from "./primevue-setup.js";
 import { AppShell, SectionCard, BadgeBanner, ICONS } from "./components.js";
 import { createSupplierState, pageHref, initialMonth } from "./supplier-data.js";
+import { confettiRain } from "./confetti.js";
+
+// ---------------------------------------------------------------
+// Earned-badge celebration
+// ---------------------------------------------------------------
+// From Melanie's "badge criteria cascade" concept (2026-11-20), motion only:
+// the success banner bounces in, each section card pops (lift + soft green
+// glow, then settles — its bar stays the design's soft green), its ticks pop
+// and draw, and confetti falls. CSS lives under .sx-celebrate in round2.css.
+//
+// Only for activities that EARN the badge, and once per visit per activity:
+// the first time its Next month view shows in this browser session. Skipped
+// entirely under prefers-reduced-motion. sessionStorage can throw (private
+// windows, blocked site data); then it simply plays each time.
+const CELEBRATE_MS = 5000; // longest card + tick animation, with margin
+const reducedMotion = () =>
+  !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+function firstTimeThisVisit(key) {
+  try {
+    if (sessionStorage.getItem(key) === "1") return false;
+    sessionStorage.setItem(key, "1");
+  } catch (e) { /* storage unavailable: treat as first time */ }
+  return true;
+}
 
 const { reactive } = window.Vue;
 
@@ -132,9 +156,15 @@ const App = {
   // Opens on NEXT MONTH, like the overview (Melanie, 2026-11-20): the
   // assessment is what "View details" promises; the promo is one click away.
   // …unless "View details" was clicked on This month, which carries over.
-  data: () => ({ month: initialMonth() }),
+  data: () => ({ month: initialMonth(), celebrating: false }),
   computed: {
     act() { return this.model.activity; },
+    // Non-null only when this view should celebrate: earned badge, Next month.
+    celebrationKey() {
+      return this.act && this.act.badge.earned && this.month === "next"
+        ? "sxp-celebrated-" + this.act.tourId
+        : null;
+    },
     months() {
       return [
         { label: this.t("months.this"), value: "this" },
@@ -164,6 +194,20 @@ const App = {
         (s) => s.id === "operational" &&
                s.rows.some((r) => r.id === "trust-safety" && r.status === "not-met")
       ));
+    },
+  },
+  watch: {
+    celebrationKey: {
+      immediate: true,
+      handler(key) {
+        if (!key || reducedMotion() || !firstTimeThisVisit(key)) return;
+        this.celebrating = false;
+        this.$nextTick(() => {
+          this.celebrating = true;
+          setTimeout(() => confettiRain(), 200);
+          setTimeout(() => { this.celebrating = false; }, CELEBRATE_MS);
+        });
+      },
     },
   },
   methods: {
@@ -217,9 +261,14 @@ const App = {
       <PromoPanel v-if="month === 'this'" @check="checkStatus" />
 
       <template v-else-if="act">
-        <BadgeBanner :badge="act.badge" :ts-exclusion="tsExclusion" />
-        <SectionCard v-for="s in act.sections" :key="s.id" :section="s"
-                     :period="act.period.text" :catalogue="catalogue" />
+        <!-- display: contents, so the page column's 24px gap still spaces
+             the banner and cards; the class only scopes the animations. -->
+        <div class="sx-celebrate-scope" :class="{ 'sx-celebrate': celebrating }">
+          <BadgeBanner :badge="act.badge" :ts-exclusion="tsExclusion" />
+          <SectionCard v-for="(s, i) in act.sections" :key="s.id" :section="s"
+                       :period="act.period.text" :catalogue="catalogue"
+                       :style="{ '--card-i': i }" />
+        </div>
       </template>
     </AppShell>
   `,

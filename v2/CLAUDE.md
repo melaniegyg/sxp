@@ -105,6 +105,22 @@ by hand, dropped `?supplier`, and brought the switcher back after one click.
 Still not access control: `suppliers.json` names all five suppliers, every
 fixture is readable at `data/*.json`, and editing the hash switches company.
 
+## Earned-badge celebration
+
+Added 2026-11-20 from Melanie's "badge criteria cascade" concept — **motion
+only**; none of the concept's fonts, colours, layout or copy. On an activity
+that earns the badge, the first time its Next month view shows in a browser
+session: the green banner bounces in, each section card pops (lift + soft
+green glow, then settles), its ticks pop and draw, and confetti falls for
+~3s. Card bars stay the design's soft green throughout (Melanie).
+
+- CSS under `.sx-celebrate` in `round2.css`; confetti in `js/confetti.js`;
+  trigger in `app-activity.js` (`celebrationKey`).
+- Once per visit per activity, via `sessionStorage` key
+  `sxp-celebrated-<tourId>`. **To replay in a demo, open the link in a new
+  tab** (sessionStorage is per tab), or clear that key.
+- Never for failing activities; skipped entirely under reduced motion.
+
 ## Spanish (Taller Andaluz de Cocina only)
 
 Added 2026-11-20 at Melanie's request. A supplier whose entry in
