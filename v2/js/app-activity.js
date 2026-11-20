@@ -168,11 +168,19 @@ const App = {
 
       <h1 class="page-title">{{ act ? act.activityTitle : '\\u00a0' }}</h1>
 
+      <!-- Performance overview and Competitor report are page chrome: they
+           exist in the real portal but there is nothing behind them here, so
+           they are inert (Melanie, 2026-11-20). Deliberately NOT the disabled
+           prop — that greys them to 60% and would tell a supplier the tabs
+           are unavailable to them, which is false. They keep their normal
+           look and simply do not respond, like the sidebar icons on every
+           page of this prototype. See .is-inert in round2.css.
+           (No backticks in this comment: the template is a backtick string.) -->
       <Tabs value="excellence" class="sx-perf-tabs">
         <TabList>
-          <Tab value="overview">Performance overview</Tab>
+          <Tab value="overview" class="is-inert" tabindex="-1" aria-disabled="true">Performance overview</Tab>
           <Tab value="excellence">Excellence program</Tab>
-          <Tab value="competitor">Competitor report</Tab>
+          <Tab value="competitor" class="is-inert" tabindex="-1" aria-disabled="true">Competitor report</Tab>
         </TabList>
       </Tabs>
 

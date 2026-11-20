@@ -120,6 +120,15 @@ a.p-button:hover { text-decoration: none; }
 
 /* The page-level Performance tabs ARE an underlined bar, which is Tabs. */
 .sx-perf-tabs { margin-bottom: 4px; }
+/* Two of the three go nowhere in this prototype. They keep the look of a real
+   tab and lose only the interaction: no pointer, no hover colour, no focus
+   ring. Deliberately not `disabled`, which would grey them to 60% and imply
+   the supplier is barred from them. */
+.sx-perf-tabs .p-tab.is-inert {
+  pointer-events: none;
+  cursor: default;
+}
+.sx-perf-tabs .p-tab.is-inert:focus-visible { outline: none; box-shadow: none; }
 
 /* ---------- Filter row (1970:173343) ----------
    Two selects on the left, the assessment period on the RIGHT OF THE SAME
@@ -269,6 +278,16 @@ a.p-button:hover { text-decoration: none; }
   gap: 4px;
   overflow: visible;
 }
+/* A text Button still takes the preset's 9999px radius and a tinted hover
+   background. With no padding that background became a pill clamped tight
+   around the label — #e1f0ff in a 109x24 lozenge. 2423:103908 draws this as
+   plain blue text with a chevron, so it hovers like the link it is. */
+.sx-see.p-button:hover,
+.sx-see.p-button:focus-visible {
+  background: transparent;
+  border-color: transparent;
+}
+.sx-see.p-button:hover .p-button-label { text-decoration: underline; }
 .sx-see__chev { transition: transform .15s ease; }
 .sx-see__chev.is-open { transform: rotate(180deg); }
 .sx-details { margin-top: 12px; }
