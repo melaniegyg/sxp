@@ -171,7 +171,10 @@ const App = {
                       optionValue="value" placeholder="All products" showClear fluid />
             </label>
           </div>
-          <p class="sx-period">Assessment period: {{ period }}</p>
+          <!-- Next month only (Melanie, 2026-11-20). This month is the
+               pre-launch state with nothing assessed, so a period there
+               reads as if it had been. -->
+          <p v-if="!preLaunch" class="sx-period">Assessment period: {{ period }}</p>
         </div>
 
         <DataTable v-if="rows.length" :value="rows" dataKey="tourId" class="sx-t">
