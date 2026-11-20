@@ -122,7 +122,10 @@ const App = {
                  and the arrow lands to the left of the text. The arrow is
                  inline SVG so it takes this button's navy from currentColor,
                  and the promo's white on its filled blue twin. -->
-            <Button severity="contrast" outlined rounded>
+            <!-- Primary outlined: 2423:103426 gives border AND label as
+                 #0071eb. Not the contrast severity, which is the navy pair.
+                 (No backticks in here: the template is a backtick string.) -->
+            <Button outlined rounded>
               <span class="p-button-label">Learn more</span>
               <span class="sx-btn-icon" v-html="icons.arrowRight"></span>
             </Button>
@@ -172,8 +175,8 @@ const App = {
           </Column>
           <Column style="width:180px" bodyClass="sx-t__act">
             <template #body="{ data }">
-              <Button label="View details" severity="contrast" outlined rounded as="a"
-                      :href="href(data)" />
+              <!-- Primary outlined, per 2423:103531 — #0071eb border and label. -->
+              <Button label="View details" outlined rounded as="a" :href="href(data)" />
             </template>
           </Column>
         </DataTable>

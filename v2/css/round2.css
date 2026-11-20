@@ -312,48 +312,71 @@ a.p-button:hover { text-decoration: none; }
 .sx-banner__b { font: var(--font-caption); color: var(--sx-ink); margin: 8px 0 0; }
 
 /* ---------- Section cards ---------- */
+/* 2423:106763 — radius 8, pt 24 / pb 16 / px 16. */
 .sx-card {
   border: 1px solid var(--sx-line);
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: none;
 }
 .sx-card > .p-card-body { padding: 0; gap: 0; }
+.sx-card .p-card-content { padding: 0 16px 16px; }
 /* The rail is a bar across the TOP of each card (2423:103908), not round 1's
    per-row left-rail segments. Per section, so a mixed card takes the amber of
    its failing row — which is always its first row, since rows sort failing
    first. */
-.sx-card__bar { height: 8px; background: var(--sx-green-bar); }
+/* 15px, per the absolutely-positioned bar in 2423:106771 — not 8. */
+.sx-card__bar { height: 15px; background: var(--sx-green-bar); }
 .sx-card.is-failing .sx-card__bar { background: var(--sx-amber-bar); }
 .sx-card__head {
   display: flex;
-  align-items: baseline;
+  align-items: center;            /* the node's header row is h-24, centred */
   justify-content: space-between;
   gap: 16px;
-  padding: 20px 20px 4px;
+  height: 24px;
+  padding: 24px 16px 0;
+  box-sizing: content-box;
 }
-.sx-card__head h3 { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 0; }
-.sx-card__period { font: var(--font-label); color: var(--sx-muted); }
-.sx-card__rows { padding: 8px 20px 4px; }
+/* Title 3 20/24, not 16/24. */
+.sx-card__head h3 { font: var(--font-title-3); color: var(--sx-ink); margin: 0; }
+/* Caption 14/20, not Label 12/16. */
+.sx-card__period { font: var(--font-caption); color: var(--sx-muted); }
+.sx-card__rows { display: flex; flex-direction: column; gap: 16px; padding: 16px 0 0; }
 
 /* ---------- Criterion rows ----------
    The metric column — status glyph, big number, "Criteria:" line — has no
    PrimeVue equivalent; it is a bespoke composition from 516:50363. */
+/* Rows carry a bottom rule and 16 of padding either side (2423:104750). */
 .sx-row {
   position: relative;
   display: flex;
-  gap: 20px;
   padding: 16px 0;
-  border-top: 1px solid var(--sx-line);
+  border-bottom: 1px solid var(--sx-line);
 }
-.sx-card__rows > .sx-row:first-child { border-top: 0; }
-.sx-row__left { flex: none; width: 76px; }
+.sx-card__rows > .sx-row:last-child { border-bottom: 0; }
+/* The metric column is 80 wide with a 10px stack (2423:103964). */
+.sx-row__left {
+  flex: none;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 .sx-row__icon { display: block; color: var(--sx-ink); line-height: 0; }
-.sx-row__value { display: block; font: 700 26px/32px var(--font-family); color: var(--sx-ink); margin-top: 10px; }
-.sx-row__criteria { display: block; font: var(--font-label); color: var(--sx-muted); margin-top: 8px; }
-.sx-row__main { flex: 1 1 auto; min-width: 0; }
-.sx-row__label { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
-.sx-row__desc { font: var(--font-caption); color: var(--sx-muted); margin: 4px 0 0; }
+/* Title 2 24/30. The old 26/32 was not a token at all, and being the largest
+   thing in the card it is what made these rows read heavy. */
+.sx-row__value { display: block; font: var(--font-title-2); color: var(--sx-ink); margin: 0; }
+.sx-row__criteria { display: block; font: var(--font-label); color: var(--sx-muted); margin: 0; }
+.sx-row__main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+/* Body Highlight 16/22 Bold with 0.16 tracking, and Body 16/22 for the
+   description — both a step up from the Caption 14/20 this used to use. */
+.sx-row__label {
+  font: 700 16px/22px var(--font-family);
+  letter-spacing: 0.16px;
+  color: var(--sx-ink);
+  margin: 0;
+}
+.sx-row__desc { font: var(--font-body); color: var(--sx-muted); margin: 0; }
 /* The per-row CTA sits top-right of its row, not under the description
    (2423:106343 "Collect more reviews", 2423:106219 "Contact us"). */
 .sx-row__cta { position: absolute; top: 16px; right: 0; margin: 0; }
@@ -383,10 +406,15 @@ a.p-button:hover { text-decoration: none; }
    `overflow: hidden` box and the label looked shaved off. That overflow is
    there to clip the ripple, and ripple is off (js/primevue-setup.js), so it
    has nothing to clip here. */
+/* 2423:105812: px 2, py 10, gap 8, Body Strong 16/24 in interactive primary,
+   with a 24px chevron. The row's own 12px gap supplies the space above it,
+   so no margin here. */
 .sx-see.p-button {
-  padding: 0;
-  margin-top: 10px;
-  gap: 4px;
+  padding: 10px 2px;
+  margin: 0;
+  gap: 8px;
+  align-self: flex-start;
+  font: 500 16px/24px var(--font-family);
   overflow: visible;
 }
 /* A text Button still takes the preset's 9999px radius and a tinted hover
@@ -401,16 +429,26 @@ a.p-button:hover { text-decoration: none; }
 .sx-see.p-button:hover .p-button-label { text-decoration: underline; }
 .sx-see__chev { transition: transform .15s ease; }
 .sx-see__chev.is-open { transform: rotate(180deg); }
-.sx-details { margin-top: 12px; }
-.sx-details__h { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0 0 10px; }
+/* 2423:105813 — the breakdown block is a 16px stack under the toggle, and
+   its heading is Body Highlight 16/22, not Caption. */
+.sx-details { margin: 0; }
+.sx-details__h {
+  font: 700 16px/22px var(--font-family);
+  letter-spacing: 0.16px;
+  color: var(--sx-ink);
+  margin: 0 0 16px;
+}
 
 /* ---------- Disruption breakdown ----------
    An Accordion drawn as a stack of separate cards rather than one panel, so
    each tag reads as its own object (2423:103908). */
+/* Panels are separate 8px cards 10 apart, each with a 1px non-interactive
+   border — that border IS in 2423:105848, so it stays. */
+.sx-acc { display: flex; flex-direction: column; gap: 10px; }
 .sx-acc .p-accordionpanel {
   border: 1px solid var(--sx-line);
-  border-radius: 10px;
-  margin-bottom: 8px;
+  border-radius: 8px;
+  margin: 0;
   background: #fff;
 }
 /* The open panel keeps the same grey border as the closed ones. 2423:103908
@@ -420,44 +458,55 @@ a.p-button:hover { text-decoration: none; }
    that treatment and is still here; drop it too if the outline was the only
    part worth keeping. */
 .sx-acc .p-accordionheader {
-  align-items: flex-start;
+  align-items: center;             /* 2423:105848 centres the row */
   gap: 16px;
   padding: 14px 16px;
   background: transparent;
-  border-radius: 10px;
+  border-radius: 8px;
 }
-.sx-acc .p-accordionpanel-active > .p-accordionheader { border-radius: 10px 10px 0 0; }
+.sx-acc .p-accordionpanel-active > .p-accordionheader { border-radius: 8px 8px 0 0; padding: 12px 16px; }
 .sx-acc .p-accordioncontent-content { background: transparent; border: 0; padding: 0 16px 16px; }
 .sx-dc__text { display: block; min-width: 0; flex: 1 1 auto; }
-.sx-dc__name { display: block; font: 700 14px/20px var(--font-family); color: var(--sx-ink); }
+/* Body Highlight 16/22, with the description at Caption 14/20 — both were a
+   size too small (14/20 and 13/18). */
+.sx-dc__name {
+  display: block;
+  font: 700 16px/22px var(--font-family);
+  letter-spacing: 0.16px;
+  color: var(--sx-ink);
+}
 .p-accordionpanel-active .sx-dc__name { color: var(--gyg-interactive-primary); }
-.sx-dc__desc { display: block; font: 400 13px/18px var(--font-family); color: var(--sx-muted); margin-top: 2px; }
+.sx-dc__desc { display: block; font: var(--font-caption); color: var(--sx-muted); margin-top: 3px; }
 /* Booking counts ARE shown in round 2 (reversing round 1's strip). They will
    not always sum to the rate above them — 4 of the 19 activities do not
    reconcile, in both directions. See CLAUDE.md. */
 .sx-dc__count { margin-left: auto; white-space: nowrap; }
-.sx-dc__h { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 6px 0 8px; }
-.sx-dc__list { margin: 0 0 16px; padding-left: 18px; }
-.sx-dc__list li { font: var(--font-caption); color: var(--sx-ink); margin-bottom: 6px; }
+/* "What you can do" and "Resources" are Body Strong 16/22 Medium — not Bold
+   14/20 — and their contents are Body 16/22 (2423:105826, 2423:105840). */
+.sx-dc__h { font: var(--font-body-strong); color: var(--sx-ink); margin: 16px 0 14px; }
+.sx-dc__list { margin: 0 0 24px; padding-left: 18px; }
+.sx-dc__list li { font: var(--font-body); color: var(--sx-ink); margin-bottom: 10px; }
 .sx-dc__links { list-style: none; margin: 0; padding: 0; }
-.sx-dc__links li { margin-bottom: 6px; }
+.sx-dc__links li { margin-bottom: 10px; }
 .sx-dc__links a, .sx-dc__link--flat {
-  display: inline-flex; align-items: center; gap: 6px;
-  font: 500 14px/20px var(--font-family);
+  display: inline-flex; align-items: center; gap: 4px;
+  font: var(--font-body-strong);
   color: var(--gyg-interactive-primary); text-decoration: none;
 }
 .sx-dc__links a:hover { text-decoration: underline; }
 
 /* ---------- Recommended action ---------- */
+/* Recommended Action Card 2423:105838 — 20 padding, 32 gap, 8 radius, with
+   a Title 4 18/24 heading over Body 16/22 in label primary. */
 .sx-ra {
-  display: flex; align-items: center; justify-content: space-between; gap: 16px;
-  border: 1px solid var(--sx-line); border-radius: 10px;
-  padding: 16px; margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 32px;
+  border: 1px solid var(--gyg-background-secondary); border-radius: 8px;
+  padding: 20px; margin: 0 0 24px;
 }
-.sx-ra__main { display: flex; gap: 12px; align-items: flex-start; min-width: 0; }
+.sx-ra__main { display: flex; gap: 8px; align-items: flex-start; min-width: 0; }
 .sx-ra__icon { color: var(--sx-ink); flex: none; line-height: 0; margin-top: 2px; }
-.sx-ra__title { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
-.sx-ra__desc { font: var(--font-caption); color: var(--sx-muted); margin: 4px 0 0; }
+.sx-ra__title { font: var(--font-title-4); color: var(--sx-ink); margin: 0; }
+.sx-ra__desc { font: var(--font-body); color: var(--sx-ink); margin: 4px 0 0; }
 
 /* ---------- This-month promo panel ---------- */
 .sx-promo { border: 1px solid var(--sx-line); border-radius: 12px; box-shadow: none; }
