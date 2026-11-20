@@ -547,6 +547,41 @@ quality defect rate under the name of a different metric that the adjacent tab
 reports with a different number. The Figma component is still called
 `criteira_dbr`, but the supplier-facing label is now Complaint rate.
 
+### Quality rows and the failing banner follow 2519:10642 ("Marrakesh")
+
+Matched 2026-11-20 at Melanie's request. Supersedes the quality-row copy and
+the failing banner from the earlier nodes.
+
+- **The criteria moved into the description.** Rating, Complaints and Pickup
+  issues no longer have a `Criteria:` line under the number; the bar ends the
+  sentence instead — "…must be 4.6 or higher", "…must be 2% or lower". That
+  wording is **inclusive**, which settles the `> 4.6` / `< 2.0%` boundary
+  clash for these three rows. The review-count row still has its `>50`
+  criteria line and still clashes with "At least 50".
+- **Bars still bind per activity.** The node hardcodes 4.6 and 2%; the page
+  prints each activity's own (4.7 / 4.8, 0.5% / 0.75% / 1%). Bars drop
+  trailing zeros: "0.5%", not "0.50%".
+- **Labels renamed:** `Complaint rate` → **Complaints**, `Pickup problem rate`
+  → **Pickup issues**. Complaints has its own description now ("at least one
+  general complaint…"), which closes the bug where it repeated the pickup
+  row's text.
+- **The failing banner** has a 24px warning triangle (`#a65200`, from Figma)
+  beside a Title 3 headline, Body text below, padding 24, radius 12. It no
+  longer mentions the award date. The node draws one case, a quality failure
+  on complaints. `criteria-model.js` generalises it as `badge.failBanner`:
+  the headline names the **topmost failing section** ("…does not meet the
+  quality standards…", the section the overview chip also names), and the body
+  lists every failing row's reason ("due to its rating, complaints and pickup
+  issues"), saying "those sections" when more than one section fails. Below
+  the review gate the copy is Melanie's own (2026-11-20), since the design
+  draws no banner for it: "This activity does not have enough reviews to be
+  eligible for the program" / "This activity is not eligible for the badge
+  because it doesn’t have 50 reviews in last 6 months."
+- **Not changed (outside the request):** this frame's review-count card in
+  its passing state shows no number and reads "50 reviews from this period"
+  (2519:10662), and the This month promo still summarises quality as "Rating
+  and complaint rate".
+
 ### Charts are dropped; the disruption breakdown stays
 
 Settled by Melanie 2026-11-19. The happy-path frames show no `See details`
@@ -574,7 +609,7 @@ sheet's supplier-facing names and its corrected link titles.
 
 - **Complaint rate and Pickup problem rate carry the identical description**,
   both reading "The percentage of bookings with at least one **pickup** issue
-  flagged in a review or customer care contact". Complaint rate's is wrong.
+  flagged in a review or customer care contact". Complaint rate's is wrong. *(Resolved by 2519:10642 — "general complaint".)*
 - **The thresholds are the global bars, on an activity that does not use them.**
   The frame is Porto (tour 516233, `porto-pass`), `destination_step` 8 — so its
   real bars are **4.8** and **0.5%**, not the drawn `> 4.6` and `< 2.0%`. The
@@ -626,40 +661,26 @@ neither `0%` nor expandable — a fourth state, non-zero rate with nothing behin
 it, which the component set does not draw. Needs a design before any real
 fixture renders.
 
-### Booking counts ARE shown in round 2 — reversing round 1
+### Booking counts are not shown — a "Most common complaint" Tag instead
 
-Cards carry count chips: `6 bookings`, `2 bookings`, `2 bookings`. **Settled by
-Melanie 2026-11-19: show them.**
+Settled by Melanie 2026-11-20, reversing her 2026-11-19 call to show the
+`6 bookings` chips the design draws. The list is still ranked by count; the
+first card carries a `Most common complaint` Tag (`severity="contrast"`) and no
+card prints a number. `count` stays in the data for sort order only — the same
+reasoning as round 1's strip: a bare number invites arguing with it, and these
+counts don't always sum to the rate above them (4 of the 19 round-2 activities
+don't reconcile, in both directions).
 
-This is the one place where "everything in `../CLAUDE.md` still applies" does
-not hold. That file's rule — "Tag counts are never shown to the supplier" — is
-round-1 behaviour and stays true of round 1. Round 2 reverses it. Remove the
-strip in `mountDisruptions()` rather than preserving it; it is no longer a
-safeguard here.
+The Tag only goes on when it is true: **not when the top two are tied**, and
+**not when there is a single complaint**, where "most common" is vacuous. That
+is looser than round 1's `dominantTag()` (≥3 bookings and double the
+runner-up) — deliberately, since Melanie asked for the top one; tighten it to
+round 1's guard if a narrow lead starts reading as an overclaim.
 
-**The consequence is now supplier-visible.** `sxp_booking_defect` undercounts
-the aggregate printed directly above the cards — on `pass`, 27 tagged bookings
-against a `quality_defect_bookings` of 61 — so the chips will not sum to the
-rate. Round 1 hid that; round 2 puts it on the page. It moves the reconciliation
-gap from an internal caveat to something a supplier can query, which raises the
-priority of fixing it at source. Say so when raising it.
-
-**The shared module does not draw the chip.** `defect-cards.js` reads
-`defect.count` in exactly one place — `fillCount()`, filling `{count}` in a
-recommended-action title. There is no count badge in it. So un-stripping alone
-gets the recommended actions right but renders no `6 bookings` chip, and
-`defect-cards.js` is marked do-not-edit (it is lifted from the DBR portal and
-shared). The chip needs either a wrapper in `criteria-render.js`, a v2 fork of
-the module, or an upstream change — decide which before building.
-
-Round 1's recAction catalogue already contains the design's exact string:
-`"Address {count} reviews mentioning the activity was not as advertised"`
-(`defect-cards.js:73`). The drawn `X` is that `{count}`.
-
-**`dominantTag()` retires.** The "Most common" chip existed to rank the list
-*without* printing a number — "Order already ranks the list; the chip makes that
-explicit without printing a number". With counts on every card the chip has no
-job, and the design draws none. Drop it and its four-part guard.
+The recommended-action title's `{count}` is filled with "recent", as round 1's
+`fillCount()` does when there is no count — "Address recent reviews mentioning
+the activity was not as advertised". One catalogue title already reads
+"{count} recent reviews", so the fill collapses that to a single "recent".
 
 ### Recommended actions become mandatory
 
@@ -774,10 +795,11 @@ Tags now come from `production.on_trip.dim_booking_defect` joined to
 `pickup_match` boolean. Result: **15/19 quality and 16/19 pickup reconcile
 exactly**, against round 1's 94.3% of activities having no rows at all.
 
-That matters now that counts are displayed. The four that still differ do so in
+Counts are no longer displayed (2026-11-20), but they still set the order and
+which card is "Most common". The four that still differ do so in
 **both** directions — Party Deck's pub crawl has 33 in criteria against 30 in
 dim, Liulian's Kyoto 4 against 8 — where round 1's gap only ever undercounted.
-Show the chips, but expect these four not to add up.
+For these four the ranking may not match the aggregate.
 
 ### Trap: `applicable_records` is category-filtered, not tag-filtered
 

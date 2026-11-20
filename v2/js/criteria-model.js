@@ -47,8 +47,8 @@
     const v = n * 100;
     return v.toFixed(v < 1 ? 2 : 1) + "%";
   };
-  // The criteria line drops a trailing ".0" — "< 1%", not "< 1.0%".
-  const barPct = (n) => pct(n).replace(/\.0%$/, "%");
+  // A bar drops trailing zeros — "2%" not "2.0%", "0.5%" not "0.50%".
+  const barPct = (n) => pct(n).replace(/(\.\d*?)0+%$/, "$1%").replace(/\.%$/, "%");
   const ratingText = (n) => (n == null ? "—" : n.toFixed(2).replace(/0$/, ""));
   const status = (ok) => (ok ? "met" : "not-met");
 
@@ -71,14 +71,23 @@
     fmtShort(PERIOD_END);
 
   // --- Criteria lines -----------------------------------------
-  // NOTE(copy): the components draw EXCLUSIVE operators — `>50`, `> 4.6`,
-  // `< 2.0%` — while the row labels above them say "At least 50 reviews",
-  // which is inclusive. They disagree at exactly the boundary. Drawn form is
-  // reproduced here deliberately; see "More threshold and copy
-  // contradictions" in CLAUDE.md. Do not quietly switch these to ≥ / ≤.
+  // NOTE(copy): the review-count component draws an EXCLUSIVE operator,
+  // `>50`, under a label that says "At least 50" — inclusive. They disagree
+  // at exactly the boundary. Drawn form reproduced deliberately; see "More
+  // threshold and copy contradictions" in CLAUDE.md.
   const reviewsCriteria = `>${MIN_REVIEWS}`;
-  const ratingCriteria = (a) => `> ${a.rating_bar}`;
-  const rateCriteria = (bar) => `< ${barPct(bar)}`;
+
+  // The quality rows no longer carry a "Criteria:" line under the number —
+  // 2519:10642 folds the bar into the description sentence instead, and with
+  // INCLUSIVE wording ("4.6 or higher", "2% or lower"), so the old `> 4.6` /
+  // `< 2.0%` boundary clash is gone for these rows.
+  //
+  // The node hardcodes 4.6 and 2%. These bind to the activity's own bars, as
+  // every threshold here does — Porto's are 4.8 and 0.5%.
+  const ratingSentence = (a) =>
+    `The average star rating from customer reviews for this activity in this period must be ${a.rating_bar} or higher`;
+  const rateSentence = (kind, bar) =>
+    `The percentage of bookings with at least one ${kind} flagged in a review or customer care contact must be ${barPct(bar)} or lower`;
 
   // --- Badge outcome ------------------------------------------
   // Recomputed rather than read from `has_badge`, with pickup ignored when the
@@ -183,6 +192,7 @@
         rows: [
           {
             id: "min-reviews",
+            bannerReason: "too few reviews",
             label: `At least ${MIN_REVIEWS} reviews`,
             description:
               "This minimum gives us enough evidence to understand the quality of your activity",
@@ -208,6 +218,7 @@
             // Copy follows 720:66225, which 2423:106930 now draws — settling
             // round 1's four-string disagreement in its favour.
             id: "cancellation",
+            bannerReason: "its cancellation policy",
             label: `${CANCELLATION_HOURS}-hour cancellation policy`,
             description: "Our standard policy ensures the most flexibility for travelers.",
             status: status(a.crit_flexible_cancellation),
@@ -217,6 +228,7 @@
           },
           {
             id: "trust-safety",
+            bannerReason: "a trust and safety issue",
             label: "Trust and safety check",
             description:
               "We track complaints and reviews related to serious issues across all your activities.",
@@ -251,10 +263,10 @@
           {
             id: "rating",
             label: "Rating",
-            description:
-              "The average star rating from customer reviews for this activity in the previous 6 months.",
+            description: ratingSentence(a),
             status: status(a.crit_rating),
-            metric: { value: ratingText(a.rating_in_window), criteria: ratingCriteria(a) },
+            metric: { value: ratingText(a.rating_in_window) },
+            bannerReason: "its rating",
             // TODO(data): the failing variant carries a "Review summary" AI
             // block ("AI summary based on N reviews … Updated weekly").
             // Nothing in the export backs it, so it renders only when a
@@ -267,15 +279,14 @@
             // 9 quality tags + non-FM cancellation. For Edinburgh:
             // platform_dbr 1.00% vs quality_defect_rate 0.48%.
             id: "quality-rate",
-            label: "Complaint rate",
-            // NOTE(copy): the component gives this row the PICKUP row's
-            // description verbatim ("...at least one pickup issue..."), which
-            // is wrong for a complaint rate. Corrected here; flagged in
-            // CLAUDE.md rather than reproduced.
-            description:
-              "The percentage of bookings with at least one complaint flagged in a review or customer care contact",
+            // "Complaints", per 2519:10642 — was "Complaint rate". Its
+            // description now has its own wording ("general complaint"),
+            // closing the copy bug where it repeated the pickup row's.
+            label: "Complaints",
+            description: rateSentence("general complaint", a.defect_rate_bar),
             status: status(a.crit_defect_rate),
-            metric: { value: pct(a.quality_defect_rate), criteria: rateCriteria(a.defect_rate_bar) },
+            metric: { value: pct(a.quality_defect_rate) },
+            bannerReason: "complaints",
             // `0%` is its own component variant, and `Passing` (drawn at 1.2%,
             // under the bar) still expands. So expandability tracks "are there
             // tagged bookings", not "is the rate failing" — which is the only
@@ -291,14 +302,11 @@
             ? [
                 {
                   id: "pickup-rate",
-                  label: "Pickup problem rate",
-                  description:
-                    "The percentage of bookings with at least one pickup issue flagged in a review or customer care contact",
+                  label: "Pickup issues",   // was "Pickup problem rate"; 2519:10642
+                  description: rateSentence("pickup issue", pickupBar(a)),
                   status: status(a.crit_pickup_rate),
-                  metric: {
-                    value: pct(a.pickup_defect_rate),
-                    criteria: rateCriteria(pickupBar(a)),
-                  },
+                  metric: { value: pct(a.pickup_defect_rate) },
+                  bannerReason: "pickup issues",
                   disruptions: pickupTags,
                   disruptionsTitle: "Top pickup problems for this activity",
                 },
@@ -312,6 +320,10 @@
     // visible rather than being dropped so the supplier can see the criterion
     // exists and why it is withheld.
     //
+    // Copy from 2535:45722 (Gate Card - Quality, "Not enough reviews"),
+    // which replaced "We can only show your performance in customer
+    // experience metrics once you have 50 new reviews".
+    //
     // NOTE(copy): the collapsed line keeps "50 new reviews" while the review
     // row above says "At least 50 reviews" — the same design, two phrasings,
     // in the one state where both are on screen. Drawn form reproduced.
@@ -320,7 +332,7 @@
       byId("quality").rows = [
         {
           id: "quality-blocked",
-          label: `We can only show your performance in customer experience metrics once you have ${MIN_REVIEWS} new reviews`,
+          label: `We can only show this activity’s quality metrics once there are ${MIN_REVIEWS} new reviews`,
           status: "not-met",
         },
       ];
@@ -339,6 +351,42 @@
       ...ordered.filter((sec) => !sectionFailed(sec)),
     ];
 
+    // The failing banner, from 2519:10642: "This activity does not meet the
+    // quality standards to be awarded the badge" / "This activity doesn't
+    // meet the criteria due to complaints. See that section below to find out
+    // how to improve."
+    //
+    // The node draws one case — Quality failing on complaints. Generalised:
+    // the headline names the TOPMOST failing section (the one the overview
+    // chip names, and the first card on the page), and the body lists every
+    // failing row's reason across all sections. "that section" becomes
+    // "those sections" when more than one has a real failure. The collapsed
+    // below-the-gate quality line is not a failure of its own and adds no
+    // reason — it is explained by "too few reviews".
+    const failingRows = sections
+      .flatMap((sec) => sec.rows.filter((r) => rowFailed(r) && r.bannerReason).map((r) => ({ sec: sec.id, r })));
+    const reasons = failingRows.map((x) => x.r.bannerReason);
+    const joinList = (xs) =>
+      xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1];
+    const failingSectionCount = new Set(failingRows.map((x) => x.sec)).size;
+    const topFailing = sections.find(sectionFailed);
+    // Below the review gate the copy is Melanie's own (2026-11-20) — the
+    // design draws no banner for this state. It replaces the generic
+    // "does not meet the review count…" / "due to too few reviews".
+    const failBanner = belowReviewGate
+      ? {
+          headline: "This activity does not have enough reviews to be eligible for the program",
+          body: `This activity is not eligible for the badge because it doesn’t have ${MIN_REVIEWS} reviews in last 6 months.`,
+        }
+      : topFailing
+      ? {
+          headline: `This activity does not meet the ${topFailing.title.toLowerCase()} to be awarded the badge`,
+          body:
+            `This activity doesn't meet the criteria due to ${joinList(reasons)}. ` +
+            `See ${failingSectionCount > 1 ? "those sections" : "that section"} below to find out how to improve.`,
+        }
+      : null;
+
     return {
       tourId: a.tour_id,
       activityTitle: a.activity_title,
@@ -353,6 +401,7 @@
         cityStep: a.destination_step,
         awardDate: fmtLong(AWARD_DATE),
         awardMonth: fmtMonth(AWARD_DATE),
+        failBanner,
       },
       period: { text: PERIOD_TEXT, start: PERIOD_START, end: PERIOD_END },
       sections,

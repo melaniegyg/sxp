@@ -25,8 +25,13 @@
    ============================================================ */
 
 :root {
-  --sx-amber-bar: #ffc94d;
-  --sx-green-bar: #b8e6cc;
+  /* The gate cards' top bars, from 2423:106771 / 2423:103388 / 2535:45722:
+     gyg/surface/warning-weak and gyg/surface/success-weak. They were
+     eyeballed at #ffc94d / #b8e6cc, both far stronger than the design.
+     success-weak is spelled out because tokens.css has an older #e8f8ef for
+     it; the Figma variable resolves to #d1f6e2. */
+  --sx-amber-bar: var(--gyg-surface-warning-weak);   /* #ffecc1 */
+  --sx-green-bar: #d1f6e2;
   --sx-ink: var(--gyg-label-primary);
   --sx-muted: var(--gyg-label-secondary);
   --sx-line: var(--gyg-separator-primary);
@@ -336,6 +341,17 @@ a.p-button:hover { text-decoration: none; }
 .sx-banner .p-message-icon { display: none; }
 .sx-banner__h { font: 700 16px/24px var(--font-family); color: var(--sx-ink); margin: 0; }
 .sx-banner__b { font: var(--font-caption); color: var(--sx-ink); margin: 8px 0 0; }
+/* The failing banner, 2519:10642: padding 24, radius 12, 16 between headline
+   and body; a 24px warning icon 12 left of a Title 3 20/24 headline; Body
+   16/22 underneath. The success banner is not in that node and keeps its
+   own sizes above. The triangle is #a65200 baked in — it only ever sits on
+   warning-weak, so an <img> is fine. */
+.sx-banner--fail { border-radius: 12px; }
+.sx-banner--fail .p-message-content { padding: 24px; }
+.sx-banner__row { display: flex; align-items: center; gap: 12px; }
+.sx-banner__row img { flex: none; display: block; }
+.sx-banner--fail .sx-banner__h { font: var(--font-title-3); }
+.sx-banner--fail .sx-banner__b { font: var(--font-body); margin-top: 16px; }
 
 /* ---------- Section cards ---------- */
 /* 2423:106763 — radius 8, pt 24 / pb 16 / px 16. */
@@ -352,7 +368,11 @@ a.p-button:hover { text-decoration: none; }
    its failing row — which is always its first row, since rows sort failing
    first. */
 /* 15px, per the absolutely-positioned bar in 2423:106771 — not 8. */
-.sx-card__bar { height: 15px; background: var(--sx-green-bar); }
+/* Absolutely positioned, as in the node: it overlays the card's 24px top
+   padding rather than adding 15px above it. In flow it pushed every card's
+   heading down to 39px from the top edge against the design's 24. */
+.sx-card { position: relative; }
+.sx-card__bar { position: absolute; top: 0; left: 0; right: 0; height: 15px; background: var(--sx-green-bar); }
 .sx-card.is-failing .sx-card__bar { background: var(--sx-amber-bar); }
 .sx-card__head {
   display: flex;
@@ -407,8 +427,19 @@ a.p-button:hover { text-decoration: none; }
    (2423:106343 "Collect more reviews", 2423:106219 "Contact us"). */
 .sx-row__cta { position: absolute; top: 16px; right: 0; margin: 0; }
 .sx-row:has(.sx-row__cta) .sx-row__main { padding-right: 200px; }
-.sx-row--blocked { align-items: center; }
-.sx-row__blocked { font: 700 14px/20px var(--font-family); color: var(--sx-ink); margin: 0; }
+/* The collapsed below-the-gate line, 2535:45722 ("no-reviews"): the 24px
+   x-square sits in the same 80px column as every row's metric, so the
+   sentence lines up with the criteria labels above and below it, top-aligned.
+   Body Highlight 16/22 Bold with 0.16 tracking — the row label's style. */
+.sx-row--blocked { align-items: flex-start; }
+.sx-row--blocked .sx-row__icon { flex: none; width: 80px; }
+.sx-row--blocked .sx-row__icon svg { width: 24px; height: 24px; }
+.sx-row__blocked {
+  font: 700 16px/22px var(--font-family);
+  letter-spacing: 0.16px;
+  color: var(--sx-ink);
+  margin: 0;
+}
 
 /* Review summary — the AI block on a failing rating. No data source exists;
    it renders only when a fixture supplies one. */
@@ -468,40 +499,32 @@ a.p-button:hover { text-decoration: none; }
 /* ---------- Disruption breakdown ----------
    An Accordion drawn as a stack of separate cards rather than one panel, so
    each tag reads as its own object (2423:103908). */
-/* No border on the panels. 2423:105848 draws one (1px #ebeef1, and 2px
-   #0071eb when open) and the page followed it, but Melanie removed the blue
-   on 2026-11-20 and the rest of it straight after — the tag list sits inside
-   a bordered criteria card already, so outlining each row boxed a box.
-
-   What carries the structure instead is the design system's own accordion:
-   accordion.config.js sets header.borderWidth "1px 0 0" with the first at 0,
-   so the panels are separated by a top rule — a divider list, which is how
-   the portal's accordion looks everywhere else. The 10px gap goes with the
-   border: it was spacing bordered cards apart, and left to itself it would
-   strand each divider in the middle of a gap. */
-.sx-acc { display: flex; flex-direction: column; gap: 0; }
+/* Each panel is its own card: a full 1px grey border, 8px radius, 10px apart
+   — 2423:105848's 1px #ebeef1, without its 2px blue open state. History, all
+   2026-11-20 and all Melanie: the blue went first (one panel open at a time,
+   so the outline duplicated the expansion); then the whole border, leaving
+   the preset's top-rule divider list; then she asked for the full grey
+   border back — the divider read as a line, not as one object per tag.
+   So the open panel looks like the closed ones, and the header carries no
+   rule of its own. */
+.sx-acc { display: flex; flex-direction: column; gap: 10px; }
 .sx-acc .p-accordionpanel {
-  border: 0;
+  border: 1px solid var(--sx-line);
   border-radius: 8px;
   margin: 0;
   background: transparent;
 }
-/* The open panel keeps the same grey border as the closed ones. 2423:103908
-   draws it blue, and the page followed that until Melanie removed it
-   2026-11-20 — with one panel open at a time the blue outline was doing work
-   the expansion already does. The blue heading below is the other half of
-   that treatment and is still here; drop it too if the outline was the only
-   part worth keeping. */
 .sx-acc .p-accordionheader {
   align-items: center;             /* 2423:105848 centres the row */
   gap: 16px;
   padding: 14px 16px;
   background: transparent;
+  border: 0;                       /* the panel draws the border, not the preset's top rule */
   border-radius: 8px;
 }
 /* No hover background, deliberately: accordion.config.js sets
    hoverBackground to {surface.0}, i.e. white on white. The portal's accordion
-   leans on the divider, the chevron and the pointer cursor instead, and this
+   leans on the border, the chevron and the pointer cursor instead, and this
    follows it rather than inventing a tint. */
 .sx-acc .p-accordionpanel-active > .p-accordionheader { border-radius: 8px 8px 0 0; padding: 12px 16px; }
 .sx-acc .p-accordioncontent-content { background: transparent; border: 0; padding: 0 16px 16px; }

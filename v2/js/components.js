@@ -274,10 +274,16 @@ export const AppShell = {
 // sibling panel and a click handler that toggled a class. The component brings
 // the roles, the keyboard handling and the chevron with it.
 //
-// Booking counts ARE shown in round 2 (settled 2026-11-19), reversing round 1's
-// strip. They will not always sum to the rate printed above them — the export's
-// booking-level rows and its aggregate disagree for 4 of these 19 activities,
-// in both directions. See CLAUDE.md.
+// Booking counts are NOT shown (Melanie, 2026-11-20 — reversing her own
+// 2026-11-19 call to show them). The list is already ranked by count; the top
+// card instead carries a "Most common complaint" Tag, so the order is explicit
+// without printing a number a supplier can argue with, or one that fails to
+// sum to the rate above it (4 of the 19 activities don't reconcile). count
+// stays in the data for sorting only.
+//
+// The Tag goes on the first card only when it really is the most common: not
+// when the top two are tied, and not when there is only one complaint, where
+// "most common" would be vacuous.
 export const DisruptionList = {
   props: { title: String, items: Array, catalogue: Object },
   // Single-open, not `multiple`: opening one closes the rest (Melanie,
@@ -300,9 +306,18 @@ export const DisruptionList = {
     // fillCount: the drawn "Address X reviews…" is this {count} placeholder.
     recTitle(entry) {
       const ra = this.rec(entry);
-      return ra ? String(ra.title).replace(/\{count\}/g, entry.count) : "";
+      // No count on the page, so none here either: round 1's fillCount()
+      // fallback, "Address recent reviews…". One title already says
+      // "{count} recent reviews", so collapse that first or it reads
+      // "recent recent".
+      return ra
+        ? String(ra.title).replace(/\{count\}\s+recent\b/g, "recent").replace(/\{count\}/g, "recent")
+        : "";
     },
-    bookings(entry) { return entry.count === 1 ? "1 booking" : entry.count + " bookings"; },
+    isMostCommon(i) {
+      const it = this.items || [];
+      return i === 0 && it.length > 1 && it[0].count > it[1].count;
+    },
   },
   template: `
     <div class="sx-details">
@@ -314,7 +329,7 @@ export const DisruptionList = {
               <span class="sx-dc__name">{{ name(entry) }}</span>
               <span v-if="desc(entry)" class="sx-dc__desc">{{ desc(entry) }}</span>
             </span>
-            <Tag :value="bookings(entry)" severity="contrast" rounded class="sx-dc__count" />
+            <Tag v-if="isMostCommon(i)" value="Most common complaint" severity="contrast" rounded class="sx-dc__count" />
           </AccordionHeader>
           <AccordionContent>
             <template v-if="doList(entry).length">
@@ -477,18 +492,22 @@ export const BadgeBanner = {
         <strong>{{ badge.awardDate }}</strong>
       </p>
     </Message>
-    <Message v-else severity="warn" :closable="false" class="sx-banner">
-      <p class="sx-banner__h">
-        This activity does not yet meet the criteria for the Excellent Experience badge
-      </p>
+    <!-- 2519:10642: warning icon beside a Title 3 headline, Body below it.
+         The copy is built in criteria-model.js (badge.failBanner) — the node
+         draws one case, the model generalises it. The award date it used to
+         carry is gone, as in the design. -->
+    <Message v-else severity="warn" :closable="false" class="sx-banner sx-banner--fail">
+      <div class="sx-banner__row">
+        <img src="assets/icons/triangle-exclamation-24.svg" alt="" width="24" height="24">
+        <p class="sx-banner__h">{{ badge.failBanner.headline }}</p>
+      </div>
       <!-- Only say "keep working on it" where work on THIS activity can change
            the outcome. A supplier-level Trust & Safety ban cannot — round 1's
            documented copy bug. No round-2 activity fails T&S, so the second
-           clause is currently unreachable. -->
+           sentence is currently unreachable. -->
       <p class="sx-banner__b">
-        Review what is not met below. Criteria are reassessed every month, and the next badges
-        are awarded on <strong>{{ badge.awardDate }}</strong><template v-if="tsExclusion">. This is a
-        Trust &amp; Safety exclusion and applies across your activities</template>
+        {{ badge.failBanner.body }}<template v-if="tsExclusion"> This is a
+        Trust &amp; Safety exclusion and applies across your activities.</template>
       </p>
     </Message>
   `,
