@@ -19,7 +19,7 @@
     },
     "Supplier Not Responsive": {
       "name": "El proveedor no respondió al cliente",
-      "description": "El proveedor no respondió cuando el cliente intentó contactar con él.",
+      "description": "El proveedor de la actividad no respondió cuando el cliente intentó contactar con él.",
       "whatYouCanDo": [
         "Asegúrate de que tu correo de contacto en Gestión de cuenta es correcto y de que lo revisas a diario",
         "Responde a los mensajes de los clientes desde la pestaña Mensajes en un plazo de un día laborable y asegúrate de que los guías llevan un teléfono operativo durante la actividad"

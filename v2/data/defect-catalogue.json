@@ -1,5 +1,5 @@
 {
-  "_source": "Google Sheets \"Defect → Action Mapping\", tab \"SupEx Defects\", read 2026-11-19",
+  "_source": "Google Sheets \"Defect → Action Mapping\", tab \"SupEx Defects\", read 2026-11-19; re-checked 2026-11-20 (only change: the Supplier Not Responsive description)",
   "_columns_used": {
     "name": "DEFECT NAME [Supplier]",
     "description": "DESCRIPTION",
@@ -49,7 +49,7 @@
     "Supplier Not Responsive": {
       "sxpCategory": "Quality",
       "name": "Activity provider did not respond to customer",
-      "description": "The supplier was unresponsive to customer contact.",
+      "description": "The activity provider was unresponsive when the customer contacted them.",
       "whatYouCanDo": [
         "Ensure your contact email in Account Management is correct and monitored daily",
         "Reply to customer messages via the Messages tab within one business day and ensure guides carry a reachable phone during the activity"
