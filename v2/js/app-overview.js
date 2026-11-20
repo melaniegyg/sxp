@@ -2,7 +2,7 @@
 // OVERVIEW PAGE — index.html
 // ============================================================
 import { createSxpApp } from "./primevue-setup.js";
-import { AppShell, StatusTag } from "./components.js";
+import { AppShell, StatusTag, ICONS } from "./components.js";
 import { createSupplierState } from "./supplier-data.js";
 
 const { reactive } = window.Vue;
@@ -55,6 +55,7 @@ const App = {
     filterProduct: null,
   }),
   computed: {
+    icons: () => ICONS,
     preLaunch() { return this.month === "this"; },
     sup() { return this.model.sup; },
     period() {
@@ -118,10 +119,12 @@ const App = {
             </div>
             <!-- Label and icon go in the default slot rather than the label/
                  icon props: with a custom #icon slot PrimeVue ignores iconPos
-                 and the arrow lands to the left of the text. -->
+                 and the arrow lands to the left of the text. The arrow is
+                 inline SVG so it takes this button's navy from currentColor,
+                 and the promo's white on its filled blue twin. -->
             <Button severity="contrast" outlined rounded>
               <span class="p-button-label">Learn more</span>
-              <img src="assets/icons/arrow-right-24.svg" alt="" width="20" height="20">
+              <span class="sx-btn-icon" v-html="icons.arrowRight"></span>
             </Button>
           </div>
           <div class="sx-crit__cards">

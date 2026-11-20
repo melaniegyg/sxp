@@ -34,6 +34,14 @@ export const ICONS = {
     '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M6 2h8v8M14 2L6.5 9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M11 10.5V14H2V5h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   sparkle:
     '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3l1.8 4.9L18.7 9.7l-4.9 1.8L12 16.4l-1.8-4.9L5.3 9.7l4.9-1.8z" fill="currentColor"/><path d="M18.5 14l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z" fill="currentColor"/></svg>',
+  // The same path as assets/icons/arrow-right-24.svg, but `currentColor`
+  // instead of that file's baked-in #0071EB. It has to be inline: this arrow
+  // rides on two different buttons — white on the filled primary "Check your
+  // status", navy on the outlined "Learn more" — and CSS cannot recolour an
+  // <img>, so the exported file was drawing blue on blue and vanishing.
+  // Any icon that appears on more than one background needs this treatment.
+  arrowRight:
+    '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20.3682 12L12.7314 20.1826L11.2686 18.8184L16.6992 13H3V11H16.6992L11.2686 5.18262L12.7314 3.81738L20.3682 12Z" fill="currentColor"/></svg>',
   recAction:
     '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M16 13H8v-2h8zm-8 4h8v-2H8z" fill="currentColor"/><path fill="currentColor" fill-rule="evenodd" d="M4 2v16a4 4 0 004 4h8a4 4 0 004-4V6.586L15.414 2zm2 16V4h8v4h4v10a2 2 0 01-2 2H8a2 2 0 01-2-2" clip-rule="evenodd"/></svg>',
 };

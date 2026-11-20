@@ -61,6 +61,10 @@
 a.p-button { color: revert-layer; }
 a.p-button:hover { text-decoration: none; }
 
+/* Inline-SVG icon inside a Button. line-height 0 stops the svg's inline
+   baseline gap pushing the button taller than its label. */
+.sx-btn-icon { display: inline-flex; line-height: 0; }
+
 /* ---------- Page type ---------- */
 .sx-lede {
   font: var(--font-caption);

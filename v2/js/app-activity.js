@@ -2,7 +2,7 @@
 // ACTIVITY PAGE — activity.html
 // ============================================================
 import { createSxpApp } from "./primevue-setup.js";
-import { AppShell, SectionCard, BadgeBanner } from "./components.js";
+import { AppShell, SectionCard, BadgeBanner, ICONS } from "./components.js";
 import { createSupplierState } from "./supplier-data.js";
 
 const { reactive } = window.Vue;
@@ -18,6 +18,7 @@ const { reactive } = window.Vue;
 // six-month ruler, not a ProgressBar or a Timeline, so it stays CSS.
 const PromoPanel = {
   emits: ["check"],
+  computed: { icons: () => ICONS },
   data: () => ({
     months: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
     current: "DEC",
@@ -48,10 +49,12 @@ const PromoPanel = {
             </p>
           </div>
           <!-- Default slot, not label + #icon: with a custom icon slot
-               PrimeVue ignores iconPos and puts the arrow before the text. -->
+               PrimeVue ignores iconPos and puts the arrow before the text.
+               The arrow is inline SVG so it inherits the button's white — the
+               exported file is #0071EB and vanished against the blue fill. -->
           <Button class="sx-promo__cta" rounded @click="$emit('check')">
             <span class="p-button-label">Check your status</span>
-            <img src="assets/icons/arrow-right-24.svg" alt="" width="20" height="20">
+            <span class="sx-btn-icon" v-html="icons.arrowRight"></span>
           </Button>
         </div>
 

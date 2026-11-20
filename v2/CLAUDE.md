@@ -125,6 +125,17 @@ with PrimeVue and are not to be used for app icons. Every icon here is a Figma
 export or an inline SVG, and the preset carries no font-family, so
 `css/round2.css` sets Compass on `.p-component` once.
 
+**An icon on more than one background must be inlined, not `<img>`-ed.** The
+Figma exports carry their fill baked in and CSS cannot recolour an `<img>`.
+`arrow-right-24.svg` is `#0071EB`, which is also the fill of the primary
+Button — so "Check your status" was drawing a blue arrow on a blue button and
+losing it entirely, while the same file was fine on the outlined "Learn more".
+Melanie caught it 2026-11-20. It now lives in `ICONS.arrowRight` in
+`js/components.js` with the identical path data and `fill="currentColor"`, so
+it takes white on the filled button and navy on the outlined one. Any icon
+that has to sit on two backgrounds needs the same treatment; one that only
+ever sits on white can stay an `<img>`.
+
 ### Why `css/round2.css` can still win
 
 PrimeVue's generated CSS goes into a cascade layer (`cssLayer` in
