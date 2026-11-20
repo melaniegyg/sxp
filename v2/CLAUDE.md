@@ -712,7 +712,7 @@ fixture renders.
 
 Settled by Melanie 2026-11-20, reversing her 2026-11-19 call to show the
 `6 bookings` chips the design draws. The list is still ranked by count; the
-first card carries a `Most common complaint` Tag (`severity="contrast"`) and no
+first card carries a `Most common complaint` Tag (`severity="secondary"`, grey) and no
 card prints a number. `count` stays in the data for sort order only — the same
 reasoning as round 1's strip: a bare number invites arguing with it, and these
 counts don't always sum to the rate above them (4 of the 19 round-2 activities

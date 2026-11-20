@@ -26,6 +26,11 @@ import { LOCKED, activityCount } from "./supplier-data.js";
 // Pass is a checkbox, fail an X in the same dark square. Neither is red or
 // green: colour lives in the section card's top bar. (2423:103908)
 export const ICONS = {
+  // features / certifications / compact-badge (Figma 12:12314), inlined with
+  // currentColor: the export is white, and it sits on the navy Excellence
+  // chip both in the page header (2423:103415) and in the table.
+  compactBadge:
+    '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10.8474 6.90216L7.4822 10.492L5.21267 8.55548L6.1863 7.41388L7.36696 8.42169L9.75271 5.87677L10.8474 6.90216Z" fill="currentColor"/><path d="M6.33474 1.65313C7.24797 0.717939 8.75258 0.717902 9.66579 1.65313L10.072 2.07012C10.2301 2.2318 10.4475 2.32177 10.6736 2.31915L11.2556 2.31231C12.5626 2.29674 13.6265 3.35988 13.6111 4.6668L13.6043 5.24884C13.6016 5.47513 13.6914 5.69326 13.8533 5.85138L14.2693 6.25763C15.2046 7.17086 15.2046 8.67545 14.2693 9.58868L13.8533 9.99493C13.6915 10.153 13.6017 10.3703 13.6043 10.5965L13.6111 11.1785C13.6267 12.4856 12.5627 13.5496 11.2556 13.534L10.6736 13.5272C10.4475 13.5245 10.2301 13.6144 10.072 13.7762L9.66579 14.1932C8.75263 15.1283 7.24799 15.1282 6.33474 14.1932L5.92849 13.7762C5.77038 13.6143 5.55225 13.5245 5.32595 13.5272L4.74392 13.534C3.43696 13.5494 2.37386 12.4855 2.38942 11.1785L2.39626 10.5965C2.39886 10.3703 2.3081 10.153 2.14626 9.99493L1.73024 9.58868C0.794995 8.67545 0.794995 7.17086 1.73024 6.25763L2.14626 5.85138C2.30818 5.69326 2.39896 5.47513 2.39626 5.24884L2.38942 4.6668C2.37404 3.35996 3.43706 2.29688 4.74392 2.31231L5.32595 2.31915C5.55223 2.32184 5.77038 2.23202 5.92849 2.07012L6.33474 1.65313ZM8.59255 2.70098C8.2679 2.36851 7.73268 2.36859 7.40798 2.70098L7.00173 3.11798C6.55704 3.57338 5.94483 3.82671 5.30837 3.81915L4.72634 3.81231C4.26163 3.80678 3.88391 4.18453 3.88942 4.64923L3.89626 5.23126C3.90384 5.86772 3.65047 6.47992 3.19509 6.92462L2.7781 7.33087C2.44561 7.65556 2.44559 8.19076 2.7781 8.51544L3.19509 8.92169C3.65037 9.36637 3.90384 9.97866 3.89626 10.615L3.88942 11.1971C3.88409 11.6616 4.26175 12.0395 4.72634 12.034L5.30837 12.0272C5.94483 12.0196 6.55704 12.2729 7.00173 12.7283L7.40798 13.1443C7.73267 13.4769 8.26786 13.4769 8.59255 13.1443L8.9988 12.7283C9.4435 12.2729 10.0557 12.0196 10.6922 12.0272L11.2742 12.034C11.7386 12.0393 12.1164 11.6615 12.1111 11.1971L12.1043 10.615C12.0967 9.97856 12.35 9.36639 12.8054 8.92169L13.2215 8.51544C13.554 8.19075 13.554 7.65556 13.2215 7.33087L12.8054 6.92462C12.35 6.47991 12.0967 5.86775 12.1043 5.23126L12.1111 4.64923C12.1166 4.18468 11.7387 3.80703 11.2742 3.81231L10.6922 3.81915C10.0558 3.82673 9.44349 3.57326 8.9988 3.11798L8.59255 2.70098Z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"/></svg>',
   met:
     '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6.5 12.2l3.6 3.6 7.2-7.6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   notMet:
@@ -72,11 +77,18 @@ export const StatusTag = {
   props: { chip: Object, preLaunch: Boolean },
   computed: {
     severity() { return SEVERITY[this.chip && this.chip.id] || "secondary"; },
+    icons: () => ICONS,
   },
   // Pre-launch nothing has been assessed, so every row shows an em dash.
   // Confirmed 2026-11-19: the dash means "not yet assessed", never "no badge".
   template: `
     <span v-if="preLaunch" class="sx-dash">&mdash;</span>
+    <!-- The earned chip carries the compact-badge icon (Melanie, 2026-11-20),
+         matching the header badge; the "not met" chips stay text-only. -->
+    <Tag v-else-if="chip && chip.id === 'excellence'" :value="chip.label" :severity="severity"
+         class="sx-tag--earned">
+      <template #icon><span class="sx-tag__icon" v-html="icons.compactBadge"></span></template>
+    </Tag>
     <Tag v-else-if="chip" :value="chip.label" :severity="severity" />
   `,
 };
@@ -329,7 +341,9 @@ export const DisruptionList = {
               <span class="sx-dc__name">{{ name(entry) }}</span>
               <span v-if="desc(entry)" class="sx-dc__desc">{{ desc(entry) }}</span>
             </span>
-            <Tag v-if="isMostCommon(i)" value="Most common complaint" severity="contrast" rounded class="sx-dc__count" />
+            <!-- severity="secondary", the preset's grey (Melanie, 2026-11-20) —
+                 was contrast navy, which read as heavy as the earned badge. -->
+            <Tag v-if="isMostCommon(i)" value="Most common complaint" severity="secondary" rounded class="sx-dc__count" />
           </AccordionHeader>
           <AccordionContent>
             <template v-if="doList(entry).length">

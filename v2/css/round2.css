@@ -183,6 +183,30 @@ a.p-button:hover { text-decoration: none; }
    direct child carries NO margin of its own, and the two places the design
    differs from 24 are the only exceptions below. A margin here does not
    replace the gap, it adds to it. */
+/* The page header's Excellence badge, 2423:103415 (Badge 2562:100001).
+   Not a PrimeVue Tag: it is the traveller-facing brand badge — GYG Sans
+   Headline 12/1.3, radius 8, a hairline white border — which no Tag
+   severity draws. Navy is the same {GYG.label.primary} as the table's
+   contrast chip. Sits 8 above the title. */
+.sx-pagehead { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.sx-pagehead .page-title { margin: 0; }
+.sx-brandbadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  box-sizing: border-box;
+  padding: 4px 8px 4px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  background: var(--gyg-label-primary);
+  color: #fff;
+  font: 600 12px/1.3 "GYG Sans Headline", var(--font-family);
+  white-space: nowrap;
+}
+.sx-brandbadge__icon, .sx-tag__icon { display: inline-flex; line-height: 0; }
+.sx-tag--earned { gap: 4px; }
+
 .sx-lede {
   font: var(--font-body);          /* Body 16/22, not Caption */
   color: var(--sx-ink);

@@ -61,7 +61,9 @@ const App = {
     preLaunch() { return this.month === "this"; },
     sup() { return this.model.sup; },
     period() {
-      return this.sup ? this.sup.period.text.replace("Period checked: ", "") : "";
+      // "Period checked: …", the same wording as the activity page's section
+      // cards (Melanie, 2026-11-20) — was "Assessment period: …".
+      return this.sup ? this.sup.period.text : "";
     },
     // Status options are only the ones this supplier actually has, so the menu
     // never offers a filter that returns nothing.
@@ -105,7 +107,13 @@ const App = {
     <AppShell :suppliers="state.suppliers" :entry="state.entry"
               :supplier-name="state.supplierName" @select="select">
 
-      <h1 class="page-title">Excellence program</h1>
+      <!-- 2423:103415: the Excellence badge sits 8 above the title. -->
+      <div class="sx-pagehead">
+        <span class="sx-brandbadge">
+          <span class="sx-brandbadge__icon" v-html="icons.compactBadge"></span>Excellence
+        </span>
+        <h1 class="page-title">Excellence program</h1>
+      </div>
       <p class="sx-lede">
         The Excellent Experience badge celebrates the best activities on our marketplace where the
         activity provider has consistently delivered a professional, high-standard experience for
@@ -174,7 +182,7 @@ const App = {
           <!-- Next month only (Melanie, 2026-11-20). This month is the
                pre-launch state with nothing assessed, so a period there
                reads as if it had been. -->
-          <p v-if="!preLaunch" class="sx-period">Assessment period: {{ period }}</p>
+          <p v-if="!preLaunch" class="sx-period">{{ period }}</p>
         </div>
 
         <DataTable v-if="rows.length" :value="rows" dataKey="tourId" class="sx-t">
