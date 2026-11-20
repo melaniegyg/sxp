@@ -10,12 +10,13 @@ const { reactive } = window.Vue;
 // The three cards name the same three sections the criteria page shows and the
 // same three chips the table uses. Names agree across all three as of
 // 2423:105656 / 2423:106930.
+// [icon, title key, description key] — copy is in js/i18n.js.
 const CRITERIA = [
-  ["compass-badge", "Review count",
+  ["compass-badge", "sec.review-count",
    // NOTE(copy): this node keeps "new"; 2423:106930 and 2241:42264 drop it.
    // Unresolved — see CLAUDE.md.
-   "At least 50 new reviews in this period"],
-  ["compass-eye", "Operational standards", "24-hour cancellation and no safety issues"],
+   "ov.crit.reviews.d"],
+  ["compass-eye", "sec.operational", "ov.crit.operational.d"],
   // magnifier-bar-chart, not compass-magnifier: it is the sidebar's
   // Performance icon, which is where this criterion's numbers come from.
   // Settled by Melanie 2026-11-20.
@@ -25,24 +26,19 @@ const CRITERIA = [
   // the compass ring is 2 units of 24 and these bars are 1.333 of 16, so at
   // the 20px both render at each comes to 1.667px. Re-check that if either
   // icon is re-exported at a different size.
-  ["magnifier-bar-chart", "Quality standards", "High customer rating and few complaints"],
-];
-
-const MONTHS = [
-  { label: "This month", value: "this" },
-  { label: "Next month", value: "next" },
+  ["magnifier-bar-chart", "sec.quality", "ov.crit.quality.d"],
 ];
 
 const App = {
   components: { AppShell, StatusTag, ExclusionBanner },
   setup() {
     const model = reactive({ sup: null });
-    const { state, init, select } = createSupplierState(reactive, (file) => {
+    const { state, init, select, setLanguage } = createSupplierState(reactive, (file) => {
       model.sup = window.SXP.buildSupplier(file);
-      document.title = file.supplier_name + " — Excellence program";
+      document.title = window.SXP_I18N.t("doc.title", { name: file.supplier_name });
     });
     init();
-    return { state, model, select };
+    return { state, model, select, setLanguage };
   },
   data: () => ({
     // THIS MONTH is the pre-launch state: no badge has been awarded yet, so
@@ -51,7 +47,6 @@ const App = {
     // the assessment is what a supplier comes here for; the dashes are one
     // click away.
     month: initialMonth(),
-    months: MONTHS,
     criteria: CRITERIA,
     filterStatus: null,
     filterProduct: null,
@@ -60,7 +55,13 @@ const App = {
     icons: () => ICONS,
     preLaunch() { return this.month === "this"; },
     sup() { return this.model.sup; },
-    tip: () => window.SXP.INELIGIBLE_TIP,
+    months() {
+      return [
+        { label: this.t("months.this"), value: "this" },
+        { label: this.t("months.next"), value: "next" },
+      ];
+    },
+    tip() { return this.t("ineligible.tip"); },
     period() {
       // "Period checked: …", the same wording as the activity page's section
       // cards (Melanie, 2026-11-20) — was "Assessment period: …".
@@ -106,27 +107,23 @@ const App = {
   },
   template: `
     <AppShell :suppliers="state.suppliers" :entry="state.entry"
-              :supplier-name="state.supplierName" @select="select">
+              :supplier-name="state.supplierName" @select="select" @lang="setLanguage">
 
       <!-- 2423:103415: the Excellence badge sits 8 above the title. -->
       <div class="sx-pagehead">
         <span class="sx-brandbadge">
-          <span class="sx-brandbadge__icon" v-html="icons.compactBadge"></span>Excellence
+          <span class="sx-brandbadge__icon" v-html="icons.compactBadge"></span>{{ t('ov.badge') }}
         </span>
-        <h1 class="page-title">Excellence program</h1>
+        <h1 class="page-title">{{ t('ov.title') }}</h1>
       </div>
-      <p class="sx-lede">
-        The Excellent Experience badge celebrates the best activities on our marketplace where the
-        activity provider has consistently delivered a professional, high-standard experience for
-        our customers.
-      </p>
+      <p class="sx-lede">{{ t('ov.lede') }}</p>
 
       <Card class="sx-crit">
         <template #content>
           <div class="sx-crit__head">
             <div>
-              <h2 class="sx-crit__title">Program criteria</h2>
-              <p class="sx-crit__sub">Calculated every month based on the last 6 months</p>
+              <h2 class="sx-crit__title">{{ t('ov.crit.title') }}</h2>
+              <p class="sx-crit__sub">{{ t('ov.crit.sub') }}</p>
             </div>
             <!-- Label and icon go in the default slot rather than the label/
                  icon props: with a custom #icon slot PrimeVue ignores iconPos
@@ -137,7 +134,7 @@ const App = {
                  #0071eb. Not the contrast severity, which is the navy pair.
                  (No backticks in here: the template is a backtick string.) -->
             <Button outlined rounded>
-              <span class="p-button-label">Learn more</span>
+              <span class="p-button-label">{{ t('ov.learnMore') }}</span>
               <span class="sx-btn-icon" v-html="icons.arrowRight"></span>
             </Button>
           </div>
@@ -146,8 +143,8 @@ const App = {
               <template #content>
                 <img :src="'assets/icons/' + icon + '.svg'" alt="" width="20" height="20">
                 <div>
-                  <p class="sx-crit__card-t">{{ title }}</p>
-                  <p class="sx-crit__card-d">{{ desc }}</p>
+                  <p class="sx-crit__card-t">{{ t(title) }}</p>
+                  <p class="sx-crit__card-d">{{ t(desc) }}</p>
                 </div>
               </template>
             </Card>
@@ -162,22 +159,22 @@ const App = {
              and the month toggle, so it shows on both tabs: the exclusion is
              a standing fact about the account, not an assessment result. -->
         <ExclusionBanner v-if="sup.exclusion" :exclusion="sup.exclusion" />
-        <h2 class="sx-h2">Badge status</h2>
+        <h2 class="sx-h2">{{ t('ov.badgeStatus') }}</h2>
         <SelectButton v-model="month" :options="months" optionLabel="label" optionValue="value"
                       :allowEmpty="false" class="sx-months" />
 
         <div class="sx-filters">
           <div class="sx-filters__controls">
             <label class="sx-select">
-              <span class="sx-select__label">Filter by badge status</span>
+              <span class="sx-select__label">{{ t('ov.filter.status') }}</span>
               <Select v-model="filterStatus" :options="statusOptions" optionLabel="label"
-                      optionValue="value" placeholder="Select status" showClear
+                      optionValue="value" :placeholder="t('ov.filter.statusPh')" showClear
                       :disabled="preLaunch || !statusOptions.length" fluid />
             </label>
             <label class="sx-select">
-              <span class="sx-select__label">Filter by product</span>
+              <span class="sx-select__label">{{ t('ov.filter.product') }}</span>
               <Select v-model="filterProduct" :options="productOptions" optionLabel="label"
-                      optionValue="value" placeholder="All products" showClear fluid />
+                      optionValue="value" :placeholder="t('ov.filter.productPh')" showClear fluid />
             </label>
           </div>
           <!-- Next month only (Melanie, 2026-11-20). This month is the
@@ -187,18 +184,18 @@ const App = {
         </div>
 
         <DataTable v-if="rows.length" :value="rows" dataKey="tourId" class="sx-t">
-          <Column field="title" header="Product" />
-          <Column header="Badge status" style="width:220px">
+          <Column field="title" :header="t('ov.col.product')" />
+          <Column :header="t('ov.col.status')" style="width:220px">
             <template #body="{ data }"><StatusTag :chip="data.chip" :pre-launch="preLaunch" /></template>
           </Column>
           <Column style="width:180px" bodyClass="sx-t__act">
             <template #body="{ data }">
               <!-- Primary outlined, per 2423:103531 — #0071eb border and label. -->
-              <Button label="View details" outlined rounded as="a" :href="href(data)" />
+              <Button :label="t('ov.viewDetails')" outlined rounded as="a" :href="href(data)" />
             </template>
           </Column>
         </DataTable>
-        <p v-else class="sx-empty">No activities match these filters.</p>
+        <p v-else class="sx-empty">{{ t('ov.empty') }}</p>
 
         <!-- Ineligible activities are a separate table with a Reason, not a
              status — they are never assessed, so they have no criteria to meet.
@@ -208,16 +205,16 @@ const App = {
              Trip Enhancers) are internal and never shown. Heading, reason and
              tooltip copy: Melanie, 2026-11-20. -->
         <template v-if="sup.ineligible.length">
-          <h2 class="sx-h2 sx-h2--section">Not in the program</h2>
+          <h2 class="sx-h2 sx-h2--section">{{ t('ov.notInProgram') }}</h2>
           <DataTable :value="sup.ineligible" dataKey="tourId" class="sx-t">
-            <Column field="title" header="Product" />
-            <Column header="Reason" style="width:55%">
+            <Column field="title" :header="t('ov.col.product')" />
+            <Column :header="t('ov.col.reason')" style="width:55%">
               <template #body="{ data }">
                 <span class="sx-reason">
                   {{ data.reason }}
                   <!-- A button, not a bare icon, so the tooltip opens on
                        keyboard focus as well as hover. -->
-                  <button type="button" class="sx-reason__info" aria-label="Why is this activity not in the program?"
+                  <button type="button" class="sx-reason__info" :aria-label="t('ov.reasonAria')"
                           v-tooltip.bottom="{ value: tip, class: 'sx-tip' }" v-html="icons.info"></button>
                 </span>
               </template>

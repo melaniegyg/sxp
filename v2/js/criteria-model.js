@@ -17,6 +17,12 @@
 (function (global) {
   "use strict";
 
+  // Every supplier-facing string comes from js/i18n.js. Strings are resolved
+  // when build() / buildSupplier() run, so a page rebuilds the model after
+  // switching language.
+  const I18N = global.SXP_I18N;
+  const t = (key, vars) => I18N.t(key, vars);
+
   // --- Thresholds not present in the export -------------------
   // TODO(data): hardcoded from the criteria deck (v3, 15 Oct). `rating_bar`
   // and `defect_rate_bar` DO come from the row and already account for city
@@ -42,33 +48,36 @@
 
   // --- Formatting ---------------------------------------------
   // Metric VALUES: one decimal ("2.2%"), two below 1% ("0.59%"), bare "0%".
+  // Localised: "2.2%" in English, "2,2 %" in Spanish.
   const pct = (n) => {
-    if (!n) return "0%";
+    if (!n) return "0" + I18N.pctSuffix();
     const v = n * 100;
-    return v.toFixed(v < 1 ? 2 : 1) + "%";
+    const d = v < 1 ? 2 : 1;
+    return I18N.num(v, d, d) + I18N.pctSuffix();
   };
   // A bar drops trailing zeros — "2%" not "2.0%", "0.5%" not "0.50%".
-  const barPct = (n) => pct(n).replace(/(\.\d*?)0+%$/, "$1%").replace(/\.%$/, "%");
-  const ratingText = (n) => (n == null ? "—" : n.toFixed(2).replace(/0$/, ""));
+  const barPct = (n) => I18N.num((n || 0) * 100, 0, 2) + I18N.pctSuffix();
+  const barNum = (n) => I18N.num(n, 0, 2);
+  // Ratings keep two decimals but drop a trailing zero: "4.82", "4.9".
+  const ratingText = (n) => (n == null ? "—" : I18N.num(Number(n.toFixed(2)), 1, 2));
   const status = (ok) => (ok ? "met" : "not-met");
 
   const fmtDate = (iso, opts) =>
-    new Date(iso + "T00:00:00Z").toLocaleDateString("en-US", {
+    new Date(iso + "T00:00:00Z").toLocaleDateString(I18N.locale(), {
       day: "numeric",
       timeZone: "UTC",
       ...opts,
     });
   const fmtShort = (iso) => fmtDate(iso, { month: "short", year: "numeric" });
   const fmtLong = (iso) => fmtDate(iso, { month: "long", year: "numeric" });
-  const fmtMonth = (iso) => fmtDate(iso, { month: "long" }).replace(/\s\d+$/, "");
+  const fmtMonth = (iso) =>
+    new Date(iso + "T00:00:00Z").toLocaleDateString(I18N.locale(), { month: "long", timeZone: "UTC" });
 
   // "Period checked: July 1, 2026 – Dec 31, 2026" — note the design mixes a
   // full month on the start and an abbreviated one on the end. Reproduced.
-  const PERIOD_TEXT =
-    "Period checked: " +
-    fmtDate(PERIOD_START, { month: "long", year: "numeric" }) +
-    " – " +
-    fmtShort(PERIOD_END);
+  // A function, not a constant: it depends on the current language.
+  const periodText = () =>
+    t("period.checked", { range: fmtLong(PERIOD_START) + " – " + fmtShort(PERIOD_END) });
 
   // --- Criteria lines -----------------------------------------
   // No row carries a "Criteria:" line under its number any more. The review
@@ -81,10 +90,8 @@
   //
   // The node hardcodes 4.6 and 2%. These bind to the activity's own bars, as
   // every threshold here does — Porto's are 4.8 and 0.5%.
-  const ratingSentence = (a) =>
-    `The average star rating from customer reviews for this activity in this period must be ${a.rating_bar} or higher`;
-  const rateSentence = (kind, bar) =>
-    `The percentage of bookings with at least one ${kind} flagged in a review or customer care contact must be ${barPct(bar)} or lower`;
+  const ratingSentence = (a) => t("row.rating.desc", { bar: barNum(a.rating_bar) });
+  const rateSentence = (key, bar) => t(key, { bar: barPct(bar) });
 
   // --- Badge outcome ------------------------------------------
   // Recomputed rather than read from `has_badge`, with pickup ignored when the
@@ -135,10 +142,11 @@
   // review gate the page refuses to state customer-experience performance at
   // all, so chipping such a row "Quality not met" would link to a page that
   // declines to back it. Five of these 19 activities are in that state.
+  const chip = (id) => ({ id, label: t("chip." + id) });
   const CHIPS = {
-    review: { id: "reviews", label: "Reviews not met" },
-    operations: { id: "operations", label: "Operations not met" },
-    quality: { id: "quality", label: "Quality not met" },
+    get review() { return chip("reviews"); },
+    get operations() { return chip("operations"); },
+    get quality() { return chip("quality"); },
   };
   // A supplier-level exclusion (review manipulation, 2241:42264) fails
   // Operations on EVERY in-scope activity and wins the cascade — the design
@@ -152,7 +160,7 @@
     if (!s.review) return CHIPS.review;
     if (!s.operations) return CHIPS.operations;
     if (!s.quality) return CHIPS.quality;
-    return { id: "excellence", label: "Excellence" };
+    return chip("excellence");
   }
 
   // --- Ineligibility ------------------------------------------
@@ -165,8 +173,7 @@
   // the Reason stays one generic sentence even though the three groups are
   // distinguishable. Settled 2026-11-19; copy updated by Melanie 2026-11-20
   // (was "Activity type"). The overview adds an info tooltip beside it.
-  const INELIGIBLE_REASON = "Only guided tours and experiences are eligible for the program at this time";
-  const INELIGIBLE_TIP = "Think this activity should qualify? Contact Customer Care and we’ll check it for you";
+  // Copy lives in i18n.js: "ineligible.reason" and "ineligible.tip".
 
   // --- Disruption breakdown -----------------------------------
   // `quality_breakdown` / `pickup_breakdown` are {tag: distinctBookings},
@@ -194,21 +201,20 @@
     const baseSections = [
       {
         id: "review-count",
-        title: "Review count",
+        title: t("sec.review-count"),
         rows: [
           {
             id: "min-reviews",
-            bannerReason: "too few reviews",
+            bannerReason: t("row.reviews.reason"),
             // 2423:106466 / 2423:106417: "50 reviews from this period". The
             // count shows only when failing; passing is the glyph alone.
-            label: `${MIN_REVIEWS} reviews from this period`,
-            description:
-              "This minimum gives us enough evidence to understand the quality of your activity",
+            label: t("row.reviews.label", { n: MIN_REVIEWS }),
+            description: t("row.reviews.desc"),
             status: status(a.crit_min_reviews),
             ...(belowReviewGate
               ? {
                   metric: { value: String(a.reviews_in_window) },
-                  cta: { label: "Collect more reviews" },
+                  cta: { label: t("row.reviews.cta") },
                 }
               : {}),
           },
@@ -216,26 +222,24 @@
       },
       {
         id: "operational",
-        title: "Operational standards",
+        title: t("sec.operational"),
         rows: [
           {
             // Copy follows 720:66225, which 2423:106930 now draws — settling
             // round 1's four-string disagreement in its favour.
             id: "cancellation",
-            bannerReason: "its cancellation policy",
-            label: `${CANCELLATION_HOURS}-hour cancellation policy`,
-            description: "Our standard policy ensures the most flexibility for travelers.",
+            bannerReason: t("row.cancel.reason"),
+            label: t("row.cancel.label", { h: CANCELLATION_HOURS }),
+            description: t("row.cancel.desc"),
             status: status(a.crit_flexible_cancellation),
-            failDescription:
-              "Contact your Account Manager or customer care in order to adjust the cancellation policy on your activity to 24 hours.",
-            cta: { label: "Contact us" },
+            failDescription: t("row.cancel.fail"),
+            cta: { label: t("row.cancel.cta") },
           },
           {
             id: "trust-safety",
-            bannerReason: "a trust and safety issue",
-            label: "Trust and safety check",
-            description:
-              "We track complaints and reviews related to serious issues across all your activities.",
+            bannerReason: t("row.ts.reason"),
+            label: t("row.ts.label"),
+            description: t("row.ts.desc"),
             // Three rules collapse into one row. Two of them (case rate, tag
             // rate) are judged across ALL the supplier's activities, so this
             // row can fail because of a different activity entirely.
@@ -247,8 +251,8 @@
             // node; the row renders it as a mailto link.
             ...(exclusion
               ? {
-                  failDescription:
-                    "This activity is not eligible for the badge because your account has been flagged for review manipulation. Search for messages from {email} in your emails to find more details.",
+                  // {email} is left in place for the row to render as a link.
+                  failDescription: t("row.ts.failManipulation"),
                   failEmail: "supplierpartner.care@getyourguide.com",
                 }
               : {}),
@@ -263,24 +267,22 @@
             // `ts_cases`; the round-2 component needs only the date, not the
             // case table, but the six-month invariant still governs it.
             ...(exclusion ? {} : { failDescription: a.ts_excluded_until
-              ? `This activity is not eligible for the badge because it has a severe trust and safety case confirmed in the last 6 months. From ${fmtLong(
-                  a.ts_excluded_until
-                )} it will be eligible again.`
-              : "This activity is not eligible for the badge because it has a severe trust and safety case confirmed in the last 6 months." }),
+              ? t("row.ts.failSevereUntil", { date: fmtLong(a.ts_excluded_until) })
+              : t("row.ts.failSevere") }),
           },
         ],
       },
       {
         id: "quality",
-        title: "Quality standards",
+        title: t("sec.quality"),
         rows: [
           {
             id: "rating",
-            label: "Rating",
+            label: t("row.rating.label"),
             description: ratingSentence(a),
             status: status(a.crit_rating),
             metric: { value: ratingText(a.rating_in_window) },
-            bannerReason: "its rating",
+            bannerReason: t("row.rating.reason"),
             // TODO(data): the failing variant carries a "Review summary" AI
             // block ("AI summary based on N reviews … Updated weekly").
             // Nothing in the export backs it, so it renders only when a
@@ -296,17 +298,17 @@
             // "Complaints", per 2519:10642 — was "Complaint rate". Its
             // description now has its own wording ("general complaint"),
             // closing the copy bug where it repeated the pickup row's.
-            label: "Complaints",
-            description: rateSentence("general complaint", a.defect_rate_bar),
+            label: t("row.complaints.label"),
+            description: rateSentence("row.complaints.desc", a.defect_rate_bar),
             status: status(a.crit_defect_rate),
             metric: { value: pct(a.quality_defect_rate) },
-            bannerReason: "complaints",
+            bannerReason: t("row.complaints.reason"),
             // `0%` is its own component variant, and `Passing` (drawn at 1.2%,
             // under the bar) still expands. So expandability tracks "are there
             // tagged bookings", not "is the rate failing" — which is the only
             // gate the data supports.
             disruptions: qualityTags,
-            disruptionsTitle: "Top complaints for this activity",
+            disruptionsTitle: t("row.complaints.top"),
           },
           // The pickup bar applies only "if the activity has pickup" (deck,
           // Gate 4). Without pickup there is nothing to measure, so the row is
@@ -316,13 +318,13 @@
             ? [
                 {
                   id: "pickup-rate",
-                  label: "Pickup issues",   // was "Pickup problem rate"; 2519:10642
-                  description: rateSentence("pickup issue", pickupBar(a)),
+                  label: t("row.pickup.label"),   // was "Pickup problem rate"; 2519:10642
+                  description: rateSentence("row.pickup.desc", pickupBar(a)),
                   status: status(a.crit_pickup_rate),
                   metric: { value: pct(a.pickup_defect_rate) },
-                  bannerReason: "pickup issues",
+                  bannerReason: t("row.pickup.reason"),
                   disruptions: pickupTags,
-                  disruptionsTitle: "Top pickup problems for this activity",
+                  disruptionsTitle: t("row.pickup.top"),
                 },
               ]
             : []),
@@ -346,7 +348,7 @@
       byId("quality").rows = [
         {
           id: "quality-blocked",
-          label: `We can only show this activity’s quality metrics once there are ${MIN_REVIEWS} new reviews`,
+          label: t("row.blocked", { n: MIN_REVIEWS }),
           status: "not-met",
         },
       ];
@@ -386,7 +388,7 @@
       .flatMap((sec) => sec.rows.filter((r) => rowFailed(r) && r.bannerReason).map((r) => ({ sec: sec.id, r })));
     const reasons = failingRows.map((x) => x.r.bannerReason);
     const joinList = (xs) =>
-      xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1];
+      xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + t("list.and") + xs[xs.length - 1];
     const failingSectionCount = new Set(failingRows.map((x) => x.sec)).size;
     const topFailing = sections.find(sectionFailed);
     // Below the review gate the copy is Melanie's own (2026-11-20) — the
@@ -396,20 +398,22 @@
     const failBanner = exclusion
       ? {
           critical: true,
-          headline: "This activity does not meet the operational standards to be eligible for the program",
-          body: "This activity is not eligible for the badge because your supplier account has been flagged for review manipulation.",
+          headline: t("banner.excluded.headline"),
+          body: t("banner.excluded.body"),
         }
       : belowReviewGate
       ? {
-          headline: "This activity does not have enough reviews to be eligible for the program",
-          body: `This activity is not eligible for the badge because it doesn’t have ${MIN_REVIEWS} reviews in last 6 months.`,
+          headline: t("banner.reviews.headline"),
+          body: t("banner.reviews.body", { n: MIN_REVIEWS }),
         }
       : topFailing
       ? {
-          headline: `This activity does not meet the ${topFailing.title.toLowerCase()} to be awarded the badge`,
-          body:
-            `This activity doesn't meet the criteria due to ${joinList(reasons)}. ` +
-            `See ${failingSectionCount > 1 ? "those sections" : "that section"} below to find out how to improve.`,
+          // One key per section rather than lower-casing the title, which
+          // does not survive translation.
+          headline: t("banner.fail.headline." + topFailing.id),
+          body: t(failingSectionCount > 1 ? "banner.fail.body.many" : "banner.fail.body.one", {
+            reasons: joinList(reasons),
+          }),
         }
       : null;
 
@@ -429,7 +433,7 @@
         awardMonth: fmtMonth(AWARD_DATE),
         failBanner,
       },
-      period: { text: PERIOD_TEXT, start: PERIOD_START, end: PERIOD_END },
+      period: { text: periodText(), start: PERIOD_START, end: PERIOD_END },
       sections,
     };
   }
@@ -441,21 +445,21 @@
       title: a.activity_title,
       inScope: a.crit_in_scope,
       chip: chipFor(a, file.supplier_exclusion || null),
-      reason: INELIGIBLE_REASON,
+      reason: t("ineligible.reason"),
       activity: a,
     }));
     return {
       supplierId: file.supplier_id,
       supplierName: file.supplier_name,
-      period: { text: PERIOD_TEXT, start: PERIOD_START, end: PERIOD_END },
+      period: { text: periodText(), start: PERIOD_START, end: PERIOD_END },
       awardDate: fmtLong(AWARD_DATE),
       awardMonth: fmtMonth(AWARD_DATE),
       // 2241:42264: "Due to review manipulation, your activities are not
       // eligible for the program until February 1, 2027".
       exclusion: file.supplier_exclusion
         ? {
-            headline: `Due to review manipulation, your activities are not eligible for the program until ${fmtLong(file.supplier_exclusion.until)}`,
-            body: "Your supplier account has been flagged due to evidence you have engaged in behavior that goes against our review policy. Reviews must reflect the experience of genuine customers and must not be influenced or manipulated in any way. As a result, your activities are excluded from the program for now.",
+            headline: t("exclusion.headline", { date: fmtLong(file.supplier_exclusion.until) }),
+            body: t("exclusion.body"),
           }
         : null,
       eligible: rows.filter((r) => r.inScope),
@@ -468,11 +472,5 @@
     buildSupplier,
     chipFor,
     MIN_REVIEWS,
-    INELIGIBLE_TIP,
-    PERIOD_TEXT,
-    periodRange:
-      fmtDate(PERIOD_START, { month: "long", year: "numeric" }) + " – " + fmtShort(PERIOD_END),
-    awardDate: fmtLong(AWARD_DATE),
-    awardMonth: fmtMonth(AWARD_DATE),
   };
 })(window);

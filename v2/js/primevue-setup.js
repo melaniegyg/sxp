@@ -63,6 +63,20 @@ export function createSxpApp(rootComponent, props) {
     else console.warn("[sxp] PrimeVue has no component named " + name);
   });
 
+  // `t` in every template, reading js/i18n.js. Reactive on the language.
+  app.config.globalProperties.t = (key, vars) => window.SXP_I18N.t(key, vars);
+
+  // PrimeVue's own built-in labels follow the language too.
+  const syncPvLocale = () => {
+    const pv = app.config.globalProperties.$primevue;
+    if (!pv || !pv.config || !pv.config.locale) return;
+    pv.config.locale.emptyMessage = window.SXP_I18N.t("pv.empty");
+    pv.config.locale.emptyFilterMessage = window.SXP_I18N.t("pv.emptyFilter");
+    pv.config.locale.emptySelectionMessage = window.SXP_I18N.t("pv.empty");
+  };
+  syncPvLocale();
+  window.Vue.watch(() => window.SXP_I18N.state.lang, syncPvLocale);
+
   // v-tooltip — PrimeVue's Tooltip directive (the ineligible table's info
   // icon). The ported preset has no tooltip config, so its colours are
   // Lara's; css/round2.css restyles the one instance to the design.

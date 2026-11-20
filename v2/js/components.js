@@ -13,7 +13,11 @@
 // <Column> and <Tag>. In a string template Vue does its own parsing and the
 // casing survives.
 // ============================================================
-import { LOCKED, activityCount } from "./supplier-data.js";
+import { LOCKED, activityCount, supportsSpanish } from "./supplier-data.js";
+
+// Copy comes from js/i18n.js. Templates call the global `t` (registered in
+// primevue-setup.js); plain JS here uses this.
+const t = (key, vars) => window.SXP_I18N.t(key, vars);
 
 // ---------------------------------------------------------------
 // Icons
@@ -126,7 +130,7 @@ export const SupplierSwitcher = {
     <div class="topnav__user" :class="{ 'is-locked': locked }"
          :role="locked ? null : 'button'" :tabindex="locked ? null : 0"
          :aria-haspopup="locked ? null : 'true'"
-         :aria-label="locked ? null : 'Switch supplier'"
+         :aria-label="locked ? null : t('switcher.aria')"
          @click="locked || toggle($event)" @keydown.enter="locked || toggle($event)">
       <div class="topnav__avatar"></div>
       <div class="topnav__user-info">
@@ -164,24 +168,25 @@ export const SupplierSwitcher = {
 export const AppShell = {
   components: { SupplierSwitcher },
   props: { suppliers: Array, entry: Object, supplierName: String },
-  emits: ["select"],
+  emits: ["select", "lang"],
   data: () => ({
+    // `key` is the i18n key; the label is resolved at render time.
     navTop: [
-      { label: "Home", icon: "monument" },
-      { label: "Create", icon: "file-plus", chevron: true },
-      { label: "Manage", icon: "grid", chevron: true },
-      { label: "Bookings", icon: "calendar", chevron: true },
+      { key: "nav.home", icon: "monument" },
+      { key: "nav.create", icon: "file-plus", chevron: true },
+      { key: "nav.manage", icon: "grid", chevron: true },
+      { key: "nav.bookings", icon: "calendar", chevron: true },
       // The navy export, not the blue one the criteria cards use: in this
       // node Performance is the open parent, not the active item.
-      { label: "Performance", icon: "magnifier-bar-chart-nav", chevron: true },
+      { key: "nav.performance", icon: "magnifier-bar-chart-nav", chevron: true },
     ],
     navSub: [
-      { label: "Overview", active: false },
-      { label: "Excellence program", active: true },
+      { key: "nav.overview", active: false },
+      { key: "nav.excellence", active: true },
     ],
     navRest: [
-      { label: "Reviews", icon: "star" },
-      { label: "Finance", icon: "currency" },
+      { key: "nav.reviews", icon: "star" },
+      { key: "nav.finance", icon: "currency" },
     ],
     // Collapsing drops the nav to round 1's 56px icon rail and slides the
     // page left with it. Remembered per viewer, because the prototype is a
@@ -194,13 +199,27 @@ export const AppShell = {
       catch (e) { return false; }
     })(),
   }),
+  computed: {
+    // The language toggle shows only for suppliers offered Spanish.
+    bilingual() { return supportsSpanish(this.entry); },
+    langOptions() {
+      return [
+        { label: t("lang.en"), value: "en" },
+        { label: t("lang.es"), value: "es" },
+      ];
+    },
+    lang: {
+      get() { return window.SXP_I18N.state.lang; },
+      set(v) { this.$emit("lang", v); },
+    },
+  },
   methods: {
     // Collapsed, Performance is the active row, so it takes the blue export
     // of the magnifier — the same file the criteria cards use. Expanded it is
     // only the open parent and stays navy. One icon, two colours, two files:
     // the fill is baked in and CSS cannot recolour an <img>.
     navIcon(item) {
-      return this.collapsed && item.label === "Performance"
+      return this.collapsed && item.key === "nav.performance"
         ? "magnifier-bar-chart"
         : item.icon;
     },
@@ -215,8 +234,16 @@ export const AppShell = {
       <div style="display:flex;align-items:center;gap:24px;">
         <img src="assets/logo-gyg.svg" alt="GetYourGuide" class="topnav__logo">
       </div>
-      <SupplierSwitcher :suppliers="suppliers" :entry="entry"
-                        :supplier-name="supplierName" @select="$emit('select', $event)" />
+      <div class="topnav__right">
+        <!-- English / Español, for suppliers listed with Spanish in
+             data/suppliers.json. A SelectButton, the same control as the
+             month toggle. -->
+        <SelectButton v-if="bilingual" v-model="lang" :options="langOptions" optionLabel="label"
+                      optionValue="value" :allowEmpty="false" class="sx-lang"
+                      :aria-label="t('lang.aria')" />
+        <SupplierSwitcher :suppliers="suppliers" :entry="entry"
+                          :supplier-name="supplierName" @select="$emit('select', $event)" />
+      </div>
     </header>
 
     <aside class="sidenav" :class="{ 'is-collapsed': collapsed }">
@@ -226,39 +253,39 @@ export const AppShell = {
                accessible name. Performance takes the active treatment in that
                state because the page we are on is one of its children, which
                are themselves hidden. -->
-          <button v-for="i in navTop" :key="i.label" class="sidenav__item" type="button"
-                  :class="{ 'is-active': collapsed && i.label === 'Performance' }"
-                  :title="collapsed ? i.label : null"
-                  :aria-label="collapsed ? i.label : null">
+          <button v-for="i in navTop" :key="i.key" class="sidenav__item" type="button"
+                  :class="{ 'is-active': collapsed && i.key === 'nav.performance' }"
+                  :title="collapsed ? t(i.key) : null"
+                  :aria-label="collapsed ? t(i.key) : null">
             <img :src="'assets/icons/' + navIcon(i) + '.svg'" alt="" width="16" height="16">
-            <span class="sidenav__label">{{ i.label }}</span>
+            <span class="sidenav__label">{{ t(i.key) }}</span>
             <img v-if="i.chevron" class="sidenav__chev" src="assets/icons/chevron-down.svg"
                  alt="" width="16" height="16">
           </button>
 
-          <div v-for="s in navSub" :key="s.label" class="sidenav__subwrap">
+          <div v-for="s in navSub" :key="s.key" class="sidenav__subwrap">
             <button class="sidenav__sub" :class="{ 'is-active': s.active }" type="button"
                     :aria-current="s.active ? 'page' : null">
-              <span class="sidenav__label">{{ s.label }}</span>
+              <span class="sidenav__label">{{ t(s.key) }}</span>
             </button>
           </div>
 
-          <button v-for="i in navRest" :key="i.label" class="sidenav__item" type="button"
-                  :title="collapsed ? i.label : null"
-                  :aria-label="collapsed ? i.label : null">
+          <button v-for="i in navRest" :key="i.key" class="sidenav__item" type="button"
+                  :title="collapsed ? t(i.key) : null"
+                  :aria-label="collapsed ? t(i.key) : null">
             <img :src="'assets/icons/' + i.icon + '.svg'" alt="" width="16" height="16">
-            <span class="sidenav__label">{{ i.label }}</span>
+            <span class="sidenav__label">{{ t(i.key) }}</span>
           </button>
         </div>
 
         <div class="sidenav__bottom">
           <button class="sidenav__item" type="button" @click="toggleNav"
                   :aria-expanded="String(!collapsed)"
-                  :title="collapsed ? 'Expand menu' : null"
-                  :aria-label="collapsed ? 'Expand menu' : 'Collapse menu'">
+                  :title="collapsed ? t('nav.expandMenu') : null"
+                  :aria-label="collapsed ? t('nav.expandMenu') : t('nav.collapseMenu')">
             <img :src="'assets/icons/arrow-' + (collapsed ? 'right' : 'left') + '.svg'"
                  alt="" width="16" height="16">
-            <span class="sidenav__label">Collapse</span>
+            <span class="sidenav__label">{{ t('nav.collapse') }}</span>
           </button>
         </div>
       </div>
@@ -271,13 +298,13 @@ export const AppShell = {
       </div>
     </main>
 
-    <button class="help-btn" aria-label="Help">
+    <button class="help-btn" :aria-label="t('help')">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
         <circle cx="9" cy="9" r="7.5" stroke="white" stroke-width="1.5"/>
         <path d="M7 7c0-1.1.9-2 2-2s2 .9 2 2c0 1.1-.9 1.7-1.5 2.2S9 10.2 9 11" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
         <circle cx="9" cy="13.5" r=".75" fill="white"/>
       </svg>
-      Help
+      {{ t('help') }}
     </button>
   `,
 };
@@ -326,7 +353,7 @@ export const DisruptionList = {
       // "{count} recent reviews", so collapse that first or it reads
       // "recent recent".
       return ra
-        ? String(ra.title).replace(/\{count\}\s+recent\b/g, "recent").replace(/\{count\}/g, "recent")
+        ? String(ra.title).replace(/\{count\}\s+recent\b/g, t("dc.recent")).replace(/\{count\}/g, t("dc.recent"))
         : "";
     },
     isMostCommon(i) {
@@ -346,11 +373,11 @@ export const DisruptionList = {
             </span>
             <!-- severity="secondary", the preset's grey (Melanie, 2026-11-20) —
                  was contrast navy, which read as heavy as the earned badge. -->
-            <Tag v-if="isMostCommon(i)" value="Most common complaint" severity="secondary" rounded class="sx-dc__count" />
+            <Tag v-if="isMostCommon(i)" :value="t('dc.mostCommon')" severity="secondary" rounded class="sx-dc__count" />
           </AccordionHeader>
           <AccordionContent>
             <template v-if="doList(entry).length">
-              <h5 class="sx-dc__h">What you can do</h5>
+              <h5 class="sx-dc__h">{{ t('dc.whatYouCanDo') }}</h5>
               <ul class="sx-dc__list"><li v-for="r in doList(entry)" :key="r">{{ r }}</li></ul>
             </template>
 
@@ -362,11 +389,11 @@ export const DisruptionList = {
                   <p class="sx-ra__desc">{{ rec(entry).description }}</p>
                 </div>
               </div>
-              <Button :label="rec(entry).buttonLabel || 'Take action'" />
+              <Button :label="rec(entry).buttonLabel || t('dc.takeAction')" />
             </div>
 
             <template v-if="resources(entry).length">
-              <h5 class="sx-dc__h">Resources</h5>
+              <h5 class="sx-dc__h">{{ t('dc.resources') }}</h5>
               <ul class="sx-dc__links">
                 <li v-for="r in resources(entry)" :key="r.title">
                   <a v-if="r.url" :href="r.url" target="_blank" rel="noopener">
@@ -434,7 +461,7 @@ export const CriterionRow = {
         <template v-if="row.metric">
           <span class="sx-row__value">{{ row.metric.value }}</span>
           <span v-if="row.metric.criteria" class="sx-row__criteria">
-            Criteria:<br>{{ row.metric.criteria }}
+            {{ t('row.criteria') }}<br>{{ row.metric.criteria }}
           </span>
         </template>
       </div>
@@ -447,13 +474,13 @@ export const CriterionRow = {
         <!-- TODO(data): nothing in the export backs the Review summary block;
              it renders only when a fixture supplies review_summary. None does. -->
         <div v-if="failing && row.reviewSummary" class="sx-summary">
-          <p class="sx-summary__h"><span v-html="icons.sparkle"></span>Review summary</p>
+          <p class="sx-summary__h"><span v-html="icons.sparkle"></span>{{ t('row.reviewSummary') }}</p>
           <p class="sx-summary__body">{{ row.reviewSummary.text }}</p>
           <p class="sx-summary__meta">{{ row.reviewSummary.meta }}</p>
         </div>
 
         <template v-if="tags.length">
-          <Button class="sx-see" variant="text" :label="showDetails ? 'Hide details' : 'See details'"
+          <Button class="sx-see" variant="text" :label="showDetails ? t('row.hideDetails') : t('row.seeDetails')"
                   :icon="'pi'" :aria-expanded="String(showDetails)"
                   @click="showDetails = !showDetails">
             <template #icon>
@@ -463,7 +490,7 @@ export const CriterionRow = {
             </template>
           </Button>
           <DisruptionList v-if="showDetails"
-                          :title="row.disruptionsTitle || 'Top complaints for this activity'"
+                          :title="row.disruptionsTitle || t('row.complaints.top')"
                           :items="tags" :catalogue="catalogue" />
         </template>
 
@@ -529,12 +556,9 @@ export const BadgeBanner = {
   props: { badge: Object, tsExclusion: Boolean },
   template: `
     <Message v-if="badge.earned" severity="success" :closable="false" class="sx-banner">
-      <p class="sx-banner__h">
-        Nice work! This activity will receive an Excellent Experience badge in {{ badge.awardMonth }}
-      </p>
+      <p class="sx-banner__h">{{ t('banner.earned.headline', { month: badge.awardMonth }) }}</p>
       <p class="sx-banner__b">
-        As long as you continue to meet all the criteria below, the badge will be awarded on
-        <strong>{{ badge.awardDate }}</strong>
+        {{ t('banner.earned.body') }} <strong>{{ badge.awardDate }}</strong>
       </p>
     </Message>
     <!-- 2519:10642: warning icon beside a Title 3 headline, Body below it.
@@ -558,8 +582,7 @@ export const BadgeBanner = {
            documented copy bug. No round-2 activity fails T&S, so the second
            sentence is currently unreachable. -->
       <p class="sx-banner__b">
-        {{ badge.failBanner.body }}<template v-if="tsExclusion"> This is a
-        Trust &amp; Safety exclusion and applies across your activities.</template>
+        {{ badge.failBanner.body }}<template v-if="tsExclusion">{{ t('banner.tsExclusion') }}</template>
       </p>
     </Message>
   `,

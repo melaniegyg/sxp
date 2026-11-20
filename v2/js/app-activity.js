@@ -18,23 +18,25 @@ const { reactive } = window.Vue;
 // six-month ruler, not a ProgressBar or a Timeline, so it stays CSS.
 const PromoPanel = {
   emits: ["check"],
-  computed: { icons: () => ICONS },
+  computed: {
+    icons: () => ICONS,
+    // The month ruler's labels are one comma-separated string per language
+    // in js/i18n.js; the last one is the current month.
+    months() { return this.t("promo.months").split(","); },
+    current() { return this.months[this.months.length - 1]; },
+  },
+  // Keys into js/i18n.js.
   data: () => ({
-    months: ["JUL", "AUG", "SEP", "OCT", "NOV", "DEC"],
-    current: "DEC",
     criteria: [
-      ["compass-badge", "Review count", "At least 50 reviews"],
-      ["compass-eye", "Operational standards", "24-hour cancellation policy & trust and safety check"],
+      ["compass-badge", "sec.review-count", "promo.crit.reviews"],
+      ["compass-eye", "sec.operational", "promo.crit.operational"],
       // Matches the overview's Quality standards card — see app-overview.js.
-      ["magnifier-bar-chart", "Quality standards", "Rating and complaint rate"],
+      ["magnifier-bar-chart", "sec.quality", "promo.crit.quality"],
     ],
     benefits: [
-      ["compass-badge", "Get booked with confidence",
-       "The badge puts your commitment to quality front and center for travelers"],
-      ["compass-magnifier", "Be seen by more customers",
-       "Show up higher in search results and get featured in more emails to travelers"],
-      ["compass-eye", "Become the easy choice",
-       "When listings look alike, this badge is what sets you apart from competitors"],
+      ["compass-badge", "promo.b1.t", "promo.b1.d"],
+      ["compass-magnifier", "promo.b2.t", "promo.b2.d"],
+      ["compass-eye", "promo.b3.t", "promo.b3.d"],
     ],
   }),
   template: `
@@ -42,18 +44,15 @@ const PromoPanel = {
       <template #content>
         <div class="sx-promo__head">
           <div>
-            <h3 class="sx-promo__title">Get rewarded for your excellence!</h3>
-            <p class="sx-promo__desc">
-              Your activity is being evaluated on the last 6 months of performance data
-              (Jul 1 – Dec 31). Badges are awarded Jan 1, then reassessed every month after that.
-            </p>
+            <h3 class="sx-promo__title">{{ t('promo.title') }}</h3>
+            <p class="sx-promo__desc">{{ t('promo.desc') }}</p>
           </div>
           <!-- Default slot, not label + #icon: with a custom icon slot
                PrimeVue ignores iconPos and puts the arrow before the text.
                The arrow is inline SVG so it inherits the button's white — the
                exported file is #0071EB and vanished against the blue fill. -->
           <Button class="sx-promo__cta" rounded @click="$emit('check')">
-            <span class="p-button-label">Check your status</span>
+            <span class="p-button-label">{{ t('promo.cta') }}</span>
             <span class="sx-btn-icon" v-html="icons.arrowRight"></span>
           </Button>
         </div>
@@ -63,31 +62,31 @@ const PromoPanel = {
             <div v-for="m in months" :key="m" class="sx-tm" :class="{ 'is-current': m === current }">
               <span class="sx-tm__label">{{ m }}</span>
               <span class="sx-tm__bar"></span>
-              <span v-if="m === current" class="sx-tm__today">{{ m }} 1</span>
+              <span v-if="m === current" class="sx-tm__today">{{ t('promo.today', { m }) }}</span>
             </div>
           </div>
           <div class="sx-timeline__award">
-            <p class="sx-timeline__date">JAN 1</p>
-            <p class="sx-timeline__note">Badges awarded</p>
+            <p class="sx-timeline__date">{{ t('promo.awardDate') }}</p>
+            <p class="sx-timeline__note">{{ t('promo.awarded') }}</p>
           </div>
         </div>
 
-        <h4 class="sx-promo__h">What your activity will be evaluated on</h4>
+        <h4 class="sx-promo__h">{{ t('promo.evaluated') }}</h4>
         <ul class="sx-promo__list">
           <li v-for="[icon, title, desc] in criteria" :key="title">
             <img :src="'assets/icons/' + icon + '.svg'" alt="" width="20" height="20">
-            <span><strong>{{ title }}</strong><em>{{ desc }}</em></span>
-            <Tag value="Tracking since Jul 1" severity="secondary" rounded />
+            <span><strong>{{ t(title) }}</strong><em>{{ t(desc) }}</em></span>
+            <Tag :value="t('promo.tracking')" severity="secondary" rounded />
           </li>
         </ul>
 
-        <h4 class="sx-promo__h">Benefits</h4>
+        <h4 class="sx-promo__h">{{ t('promo.benefits') }}</h4>
         <div class="sx-benefits">
           <Card v-for="[icon, title, desc] in benefits" :key="title" class="sx-benefit">
             <template #content>
               <img :src="'assets/icons/' + icon + '.svg'" alt="" width="24" height="24">
-              <p class="sx-benefit__t">{{ title }}</p>
-              <p class="sx-benefit__d">{{ desc }}</p>
+              <p class="sx-benefit__t">{{ t(title) }}</p>
+              <p class="sx-benefit__d">{{ t(desc) }}</p>
             </template>
           </Card>
         </div>
@@ -99,15 +98,10 @@ const PromoPanel = {
 // ---------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------
-const MONTHS = [
-  { label: "This month", value: "this" },
-  { label: "Next month", value: "next" },
-];
-
 const App = {
   components: { AppShell, SectionCard, BadgeBanner, PromoPanel },
   setup() {
-    const model = reactive({ activity: null, catalogue: {} });
+    const model = reactive({ activity: null, catalogue: {}, catalogueEs: {} });
 
     // Awaited at render time, not assigned on arrival — the supplier fetch can
     // win the race and render an empty breakdown otherwise.
@@ -115,25 +109,52 @@ const App = {
       .then((r) => r.json())
       .then((c) => { model.catalogue = c; })
       .catch(() => {});
+    // The Spanish overlay: names, descriptions, advice and recommended
+    // actions per tag. Merged over the English at render time (see
+    // `catalogue` below); resources stay English, as their articles are.
+    fetch("data/defect-catalogue.es.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((c) => { model.catalogueEs = c; })
+      .catch(() => {});
 
-    const { state, init, select } = createSupplierState(reactive, (file, entry, tourId) => {
+    const { state, init, select, setLanguage } = createSupplierState(reactive, (file, entry, tourId) => {
       // No activity switcher: the activity comes from the hash, which the
       // overview's "View details" link sets. Falls back to the first.
       const list = file.activities || [];
       const a = list.find((x) => x.tour_id === tourId) || list[0];
       if (!a) return;
       model.activity = window.SXP.build(a, file.supplier_exclusion || null);
-      document.title = model.activity.activityTitle + " — Excellence program";
+      document.title = window.SXP_I18N.t("doc.title", { name: model.activity.activityTitle });
     });
     init();
-    return { state, model, select };
+    return { state, model, select, setLanguage };
   },
   // Opens on NEXT MONTH, like the overview (Melanie, 2026-11-20): the
   // assessment is what "View details" promises; the promo is one click away.
   // …unless "View details" was clicked on This month, which carries over.
-  data: () => ({ month: initialMonth(), months: MONTHS }),
+  data: () => ({ month: initialMonth() }),
   computed: {
     act() { return this.model.activity; },
+    months() {
+      return [
+        { label: this.t("months.this"), value: "this" },
+        { label: this.t("months.next"), value: "next" },
+      ];
+    },
+    // English catalogue, with the Spanish overlay laid over each tag and
+    // recommended action when the page is in Spanish.
+    catalogue() {
+      const base = this.model.catalogue || {};
+      const es = this.model.catalogueEs || {};
+      if (window.SXP_I18N.state.lang !== "es" || !es.tags) return base;
+      const tags = {};
+      Object.keys(base.tags || {}).forEach((k) => { tags[k] = { ...base.tags[k], ...(es.tags[k] || {}) }; });
+      const recActions = {};
+      Object.keys(base.recActions || {}).forEach((k) => {
+        recActions[k] = { ...base.recActions[k], ...((es.recActions || {})[k] || {}) };
+      });
+      return { ...base, tags, recActions };
+    },
     backHref() { return pageHref("index.html", this.state.entry ? this.state.entry.id : "", this.month); },
     // Round 1's banner said "keep working on it" even for a supplier-level
     // Trust & Safety ban that no work on this activity can lift. No round-2
@@ -159,14 +180,14 @@ const App = {
   },
   template: `
     <AppShell :suppliers="state.suppliers" :entry="state.entry"
-              :supplier-name="state.supplierName" @select="select">
+              :supplier-name="state.supplierName" @select="select" @lang="setLanguage">
 
       <a :href="backHref" class="back-link">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M19 12H5M12 5l-7 7 7 7" stroke="currentColor" stroke-width="1.5"
                 stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Back
+        {{ t('act.back') }}
       </a>
 
       <h1 class="page-title">{{ act ? act.activityTitle : '\\u00a0' }}</h1>
@@ -181,13 +202,13 @@ const App = {
            (No backticks in this comment: the template is a backtick string.) -->
       <Tabs value="excellence" class="sx-perf-tabs">
         <TabList>
-          <Tab value="overview" class="is-inert" tabindex="-1" aria-disabled="true">Performance overview</Tab>
-          <Tab value="excellence">Excellence program</Tab>
-          <Tab value="competitor" class="is-inert" tabindex="-1" aria-disabled="true">Competitor report</Tab>
+          <Tab value="overview" class="is-inert" tabindex="-1" aria-disabled="true">{{ t('act.tab.overview') }}</Tab>
+          <Tab value="excellence">{{ t('act.tab.excellence') }}</Tab>
+          <Tab value="competitor" class="is-inert" tabindex="-1" aria-disabled="true">{{ t('act.tab.competitor') }}</Tab>
         </TabList>
       </Tabs>
 
-      <h2 class="sx-h2 sx-h2--tight">Excellence program status</h2>
+      <h2 class="sx-h2 sx-h2--tight">{{ t('act.status') }}</h2>
       <SelectButton ref="months" v-model="month" :options="months" optionLabel="label"
                     optionValue="value" :allowEmpty="false" class="sx-months" />
 
@@ -198,7 +219,7 @@ const App = {
       <template v-else-if="act">
         <BadgeBanner :badge="act.badge" :ts-exclusion="tsExclusion" />
         <SectionCard v-for="s in act.sections" :key="s.id" :section="s"
-                     :period="act.period.text" :catalogue="model.catalogue" />
+                     :period="act.period.text" :catalogue="catalogue" />
       </template>
     </AppShell>
   `,

@@ -105,6 +105,32 @@ by hand, dropped `?supplier`, and brought the switcher back after one click.
 Still not access control: `suppliers.json` names all five suppliers, every
 fixture is readable at `data/*.json`, and editing the hash switches company.
 
+## Spanish (Taller Andaluz de Cocina only)
+
+Added 2026-11-20 at Melanie's request. A supplier whose entry in
+`data/suppliers.json` has `"languages": ["en", "es"]` gets an **English /
+Español** toggle in the top bar; today only Taller does.
+
+- **Every supplier-facing string lives in `js/i18n.js`**, English and Spanish
+  side by side. Templates call the global `t('key')`; the model calls the same
+  function. Never put copy back into a template or the model.
+- **The complaint cards' Spanish is `data/defect-catalogue.es.json`**, an
+  overlay keyed by internal tag name. Resources stay English, since their help
+  articles are English, and the heading reads "Recursos (en inglés)". If the
+  English catalogue is regenerated from the sheet, re-check the overlay.
+- **The Spanish is Claude's draft, not approved localisation copy.**
+  Peninsular, informal "tú"; "Excellent Experience" kept as the brand name.
+- **Activity titles stay English** (Melanie): they come from the data.
+- `?lang=es` carries through View details / Back like `?supplier` and
+  `?month=this`. On a supplier without Spanish it is ignored. The toggle
+  switches in place, keeping the month tab, and rewrites the URL.
+- Spanish formats numbers and dates the Spanish way: "0,78 %", "4,94",
+  "1 de julio de 2026 – 31 dic 2026".
+- The password gate follows `?lang=es` too.
+
+Taller's Spanish supplier link:
+`https://melaniegyg.github.io/sxp/v2/?supplier&lang=es#taller-andaluz-de-cocina-cooking-school`
+
 ## Round 2 is built from PrimeVue components
 
 Settled 2026-11-20 by Melanie: *"you should be using primevue for everything."*

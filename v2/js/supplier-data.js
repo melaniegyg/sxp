@@ -31,11 +31,40 @@ export const LOCKED = new URLSearchParams(location.search).has("supplier");
 // (Melanie, 2026-11-20): open "View details" from This month and the activity
 // page opens on This month too, and Back returns to the tab you were on.
 // Only "this" is written — "next" is both pages' default, so it is left off.
+//
+// `lang=es` rides along the same way when the page is in Spanish.
 export function pageHref(page, hash, month) {
   const q = [];
   if (LOCKED) q.push("supplier");
   if (month === "this") q.push("month=this");
+  if (window.SXP_I18N.state.lang === "es") q.push("lang=es");
   return page + (q.length ? "?" + q.join("&") : "") + "#" + hash;
+}
+
+// ---------------------------------------------------------------
+// Language
+// ---------------------------------------------------------------
+// Spanish is offered per supplier: an entry in data/suppliers.json lists the
+// languages it gets ("languages": ["en", "es"]), and only those suppliers
+// see the toggle. Taller Andaluz de Cocina is the only one (2026-11-20).
+// `?lang=es` on a supplier without Spanish is ignored.
+export const supportsSpanish = (entry) =>
+  !!(entry && Array.isArray(entry.languages) && entry.languages.includes("es"));
+
+let preferredLang = window.SXP_I18N.requested;
+
+function applyLang(entry) {
+  window.SXP_I18N.setLang(preferredLang === "es" && supportsSpanish(entry) ? "es" : "en");
+}
+
+// Rewrites `lang` in the address bar without reloading, keeping every other
+// parameter as written — `?supplier` has no value and URLSearchParams would
+// turn it into `supplier=`.
+function writeLangToUrl(lang) {
+  const parts = location.search.replace(/^\?/, "").split("&").filter((p) => p && !/^lang=/.test(p));
+  if (lang === "es") parts.push("lang=es");
+  const url = location.pathname + (parts.length ? "?" + parts.join("&") : "") + location.hash;
+  history.replaceState(null, "", url);
 }
 
 // The toggle a page should open on: "this" only when the link asked for it.
@@ -55,7 +84,8 @@ export const loadIndex = () =>
 
 export const loadSupplier = (entry) => getJson("data/" + entry.file);
 
-export const activityCount = (n) => n + (n === 1 ? " activity" : " activities");
+export const activityCount = (n) =>
+  window.SXP_I18N.t(n === 1 ? "activities.one" : "activities.many", { n });
 
 // Picks the entry the hash names, falling back to the first so a bare
 // `?supplier` link shows something rather than breaking.
@@ -84,7 +114,17 @@ export function createSupplierState(reactive, onFile) {
       return;
     }
     state.supplierName = state.file.supplier_name;
+    applyLang(state.entry);
     onFile(state.file, state.entry, state.tourId);
+  }
+
+  // The toggle: switch in place and rebuild the model, so the month tab and
+  // scroll position survive. Templates re-render on their own (t is reactive).
+  function setLanguage(lang) {
+    preferredLang = lang === "es" ? "es" : "en";
+    writeLangToUrl(preferredLang);
+    applyLang(state.entry);
+    if (state.file) onFile(state.file, state.entry, state.tourId);
   }
 
   function select(supplier) {
@@ -121,5 +161,5 @@ export function createSupplierState(reactive, onFile) {
     else location.hash = state.entry.id;
   }
 
-  return { state, init, select };
+  return { state, init, select, setLanguage };
 }

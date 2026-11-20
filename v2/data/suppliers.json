@@ -39,7 +39,12 @@
       "supplierId": 13075,
       "supplierName": "Taller Andaluz de Cocina -Cooking School",
       "activities": 5,
-      "badges": 2
+      "badges": 2,
+      "languages": [
+        "en",
+        "es"
+      ]
     }
-  ]
+  ],
+  "_note_languages": "A supplier with \"languages\": [\"en\", \"es\"] gets the English / Español toggle (see js/i18n.js). Only Taller Andaluz de Cocina, 2026-11-20."
 }

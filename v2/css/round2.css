@@ -296,6 +296,20 @@ a.p-button:hover { text-decoration: none; }
 }
 .sx-months .p-togglebutton { border-radius: 6px; padding: 0 12px; }
 
+/* English / Español in the top bar — the month toggle's look, a size down
+   so it sits level with the supplier chip. Shown only for suppliers offered
+   Spanish (data/suppliers.json "languages"). */
+.topnav__right { display: flex; align-items: center; gap: 16px; }
+.sx-lang {
+  background: var(--gyg-background-secondary);
+  border-radius: 8px;
+  height: 36px;
+  padding: 4px;
+  gap: 4px;
+  align-items: stretch;
+}
+.sx-lang .p-togglebutton { border-radius: 6px; padding: 0 10px; font-size: 14px; }
+
 /* The page-level Performance tabs ARE an underlined bar, which is Tabs. */
 .sx-perf-tabs { margin-bottom: 4px; }
 /* Two of the three go nowhere in this prototype. They keep the look of a real

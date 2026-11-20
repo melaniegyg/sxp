@@ -36,6 +36,22 @@
     }
   } catch (e) {}
 
+  // Spanish links (?lang=es) get a Spanish gate. The gate runs before any
+  // supplier data loads, so it follows the link rather than the supplier.
+  const i18n = window.SXP_I18N;
+  if (i18n && i18n.requested === "es") {
+    const prev = i18n.state.lang;
+    i18n.state.lang = "es";
+    const set = (sel, prop, key) => { const el = gate.querySelector(sel); if (el) el[prop] = i18n.t(key); };
+    set(".auth-gate__title", "textContent", "gate.title");
+    set(".auth-gate__desc", "textContent", "gate.desc");
+    set(".auth-gate__btn", "textContent", "gate.enter");
+    set(".auth-gate__error", "textContent", "gate.error");
+    input.placeholder = i18n.t("gate.placeholder");
+    input.setAttribute("aria-label", i18n.t("gate.placeholder"));
+    i18n.state.lang = prev;
+  }
+
   input.focus();
   form.addEventListener("submit", function (e) {
     e.preventDefault();

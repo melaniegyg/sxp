@@ -1,0 +1,117 @@
+{
+  "_note": "Spanish overlay for defect-catalogue.json — a DRAFT by Claude (2026-11-20), not approved localisation. Keyed by the same internal tag names; each entry replaces name, description and whatYouCanDo for that tag when the page is in Spanish. Resources are NOT translated: their help-centre articles are in English, and the page heads them 'Recursos (en inglés)'. Recommended-action titles drop the {count} placeholder, since no count is shown. If the English sheet is regenerated, re-check this file against it.",
+  "tags": {
+    "Activity Not As Advertised": {
+      "name": "La actividad no era como se describía",
+      "description": "La actividad realizada no coincidía con la descripción.",
+      "whatYouCanDo": [
+        "Revisa la descripción, los aspectos destacados, lo que incluye, las fotos, etc. de tu anuncio para asegurarte de que reflejan fielmente la experiencia real",
+        "Actualiza los detalles cada vez que cambie la experiencia y revisa las reseñas recientes para detectar diferencias entre lo que anuncias y lo que reciben los clientes"
+      ]
+    },
+    "Guide Language Wrong or Low Proficiency": {
+      "name": "Idioma incorrecto o difícil de entender",
+      "description": "El guía no hablaba el idioma que se reservó.",
+      "whatYouCanDo": [
+        "Ofrece solo los idiomas que puedas garantizar y comprueba el nivel de idioma de cada guía antes de asignarlo a una reserva",
+        "Elimina de inmediato un idioma de tu anuncio si ya no puedes ofrecerlo de forma constante"
+      ]
+    },
+    "Supplier Not Responsive": {
+      "name": "El proveedor no respondió al cliente",
+      "description": "El proveedor no respondió cuando el cliente intentó contactar con él.",
+      "whatYouCanDo": [
+        "Asegúrate de que tu correo de contacto en Gestión de cuenta es correcto y de que lo revisas a diario",
+        "Responde a los mensajes de los clientes desde la pestaña Mensajes en un plazo de un día laborable y asegúrate de que los guías llevan un teléfono operativo durante la actividad"
+      ]
+    },
+    "Unexpected Cancellation": {
+      "name": "La actividad se canceló sin previo aviso",
+      "description": "La actividad se canceló sin avisar con antelación.",
+      "whatYouCanDo": [
+        "Bloquea las fechas en las que no puedas operar en cuanto lo sepas y configura horas límite para que las reservas se cierren con tiempo suficiente para organizarte",
+        "Avisa de inmediato a todos los clientes afectados desde la pestaña Mensajes y revisa periódicamente tus límites de participantes"
+      ]
+    },
+    "Unclear Meeting Point Location": {
+      "name": "Punto de encuentro poco claro",
+      "description": "La descripción del punto de encuentro de la actividad no era clara o era incorrecta.",
+      "whatYouCanDo": [
+        "Comprueba que la dirección de tu punto de encuentro se encuentra fácilmente en una aplicación de mapas y añade una foto del punto de encuentro en el Portal de proveedores",
+        "Incluye puntos de referencia o indicaciones desde la parada de transporte más cercana en la sección Información importante"
+      ]
+    },
+    "Extra Charge": {
+      "name": "Cargo adicional inesperado en la actividad",
+      "description": "Se pidió a los clientes que pagaran cargos adicionales inesperados en el lugar.",
+      "whatYouCanDo": [
+        "Incluye todos los costes en el precio de GetYourGuide: no debe haber cargos sorpresa el día de la actividad",
+        "Indica claramente cualquier coste no incluido (entradas, propinas, equipo) en la sección «Qué no incluye»"
+      ]
+    },
+    "Attraction Closed": {
+      "name": "La atracción o una parada estaba cerrada",
+      "description": "Los clientes llegaron y se encontraron la atracción cerrada de forma inesperada.",
+      "whatYouCanDo": [
+        "Bloquea las fechas en las que la atracción esté cerrada (por ejemplo, festivos u obras de mantenimiento) en cuanto lo sepas",
+        "Consulta con regularidad el calendario de apertura de la atracción y mantén tu disponibilidad en GetYourGuide actualizada",
+        "Si el cierre es inesperado, informa a los clientes afectados lo antes posible desde la pestaña Mensajes del Portal"
+      ]
+    },
+    "Activity Oversubscribed": {
+      "name": "La actividad estaba completa o con overbooking y el cliente no pudo participar",
+      "description": "La actividad tenía overbooking y el cliente no pudo acceder a ella.",
+      "whatYouCanDo": [
+        "Revisa y actualiza el número máximo de participantes de cada opción de la actividad",
+        "Configura horas límite para tu producto para que las reservas se cierren antes de alcanzar el aforo",
+        "Mantén tu disponibilidad sincronizada en todos los canales de venta para evitar el overbooking"
+      ]
+    },
+    "Unsuitable For Disabled Customers": {
+      "name": "No apta para clientes con discapacidad",
+      "description": "La actividad no era accesible para clientes con discapacidad.",
+      "whatYouCanDo": [
+        "Indica claramente en tu anuncio todas las limitaciones de accesibilidad (escaleras, terreno irregular, sin acceso para sillas de ruedas)",
+        "Añade una nota específica de accesibilidad en la pestaña Información importante que explique qué partes de la actividad son accesibles y cuáles no"
+      ]
+    },
+    "Unclear Pickup Information": {
+      "name": "Información de recogida poco clara",
+      "description": "No se facilitó información sobre el lugar o la recogida, o el proveedor no la confirmó.",
+      "whatYouCanDo": [
+        "Usa el Planificador de recogidas para confirmar las horas y los lugares de recogida con los clientes al menos 24 horas antes de la actividad mediante la función «Enviar mensaje a varios clientes»",
+        "Incluye la hora y el lugar de recogida, el nombre del conductor y los datos del vehículo en tu mensaje previo a la actividad"
+      ]
+    },
+    "Pickup/Guide Late or No Show": {
+      "name": "El conductor o el guía llegó tarde o no se presentó",
+      "description": "El guía o el conductor llegó tarde o no se presentó en el punto de encuentro o de recogida.",
+      "whatYouCanDo": [
+        "Asigna guías y conductores el día anterior y asegúrate de que llegan al menos 10–15 minutos antes",
+        "Si un retraso es inevitable, contacta de inmediato con todos los clientes afectados por Mensajes o por tu número de contacto de emergencia"
+      ]
+    }
+  },
+  "recActions": {
+    "Booking defect - Not as advertised": {
+      "title": "Revisa las reseñas recientes que dicen que la actividad no era como se anunciaba",
+      "description": "Asegúrate de que la descripción de tu actividad coincide con la experiencia que ofreces. Incluye los detalles clave para que los viajeros sepan qué esperar.",
+      "buttonLabel": "Tomar medidas"
+    },
+    "Catalog - Update guide details": {
+      "title": "Añade más información sobre los guías",
+      "description": "Añade información sobre el personal que dirige o ayuda durante la actividad. Así los clientes saben qué esperar y puedes conseguir más reservas.",
+      "buttonLabel": "Añadir información"
+    },
+    "VizOps - Add meeting point picture": {
+      "title": "Añade una foto para que los clientes encuentren tu punto de encuentro",
+      "description": "Los comentarios recientes de los clientes indican que tu punto de encuentro es difícil de encontrar. Una foto del lugar exacto reduce la confusión, las ausencias y las reseñas negativas.",
+      "buttonLabel": "Tomar medidas"
+    },
+    "Booking defect - Activity overcrowded": {
+      "title": "Revisa las reseñas recientes que mencionan el aforo",
+      "description": "Revisa el tamaño máximo de tu grupo y actualízalo si es necesario. Para evitar aglomeraciones, asegúrate de que no se pueda reservar por encima del tamaño máximo del grupo.",
+      "buttonLabel": "Tomar medidas"
+    }
+  }
+}
