@@ -232,6 +232,19 @@ open parent and its two children are 44px rows behind a 2px left rule — grey
 for Overview, blue for Excellence program, the active page. Collapse is pinned
 to the bottom by a `flex: 1` spacer, as the node's Bottom frame does.
 
+**It collapses** to round 1's 56px icon rail and back, via the Collapse item
+(Melanie, 2026-11-20). The design only draws the expanded state, so the rail
+follows round 1's: labels, chevrons and the two children hidden, icons centred,
+and the label moved to `title` / `aria-label` so a collapsed icon still says
+what it is. Performance takes the active treatment in that state, because the
+page you are on is one of the children it has just hidden.
+
+The choice is remembered in `localStorage` under `sxp-nav-collapsed`. It has to
+be: this is a click-through prototype of two separate documents, so without it
+the rail springs back open on every **View details**. Every access is wrapped
+in try/catch and falls back to expanded — that storage throws in a private
+window or with site data blocked.
+
 **Performance uses `magnifier-bar-chart-nav.svg`, not `magnifier-bar-chart.svg`.**
 Same icon, two exports: the nav one is `#1a2b49` because in this node
 Performance is merely the open parent, while the criteria card's is `#0071eb`.

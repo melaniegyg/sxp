@@ -168,7 +168,33 @@ export const AppShell = {
       { label: "Reviews", icon: "star" },
       { label: "Finance", icon: "currency" },
     ],
+    // Collapsing drops the nav to round 1's 56px icon rail and slides the
+    // page left with it. Remembered per viewer, because the prototype is a
+    // click-through: the overview and the activity page are separate
+    // documents, so without this the rail would spring back open on every
+    // "View details". localStorage can throw (private windows, blocked site
+    // data), so every touch of it is guarded and false is the fallback.
+    collapsed: (() => {
+      try { return localStorage.getItem("sxp-nav-collapsed") === "1"; }
+      catch (e) { return false; }
+    })(),
   }),
+  methods: {
+    // Collapsed, Performance is the active row, so it takes the blue export
+    // of the magnifier — the same file the criteria cards use. Expanded it is
+    // only the open parent and stays navy. One icon, two colours, two files:
+    // the fill is baked in and CSS cannot recolour an <img>.
+    navIcon(item) {
+      return this.collapsed && item.label === "Performance"
+        ? "magnifier-bar-chart"
+        : item.icon;
+    },
+    toggleNav() {
+      this.collapsed = !this.collapsed;
+      try { localStorage.setItem("sxp-nav-collapsed", this.collapsed ? "1" : "0"); }
+      catch (e) { /* not worth failing the click over */ }
+    },
+  },
   template: `
     <header class="topnav">
       <div style="display:flex;align-items:center;gap:24px;">
@@ -178,11 +204,18 @@ export const AppShell = {
                         :supplier-name="supplierName" @select="$emit('select', $event)" />
     </header>
 
-    <aside class="sidenav">
+    <aside class="sidenav" :class="{ 'is-collapsed': collapsed }">
       <div class="sidenav__container">
         <div class="sidenav__top">
-          <button v-for="i in navTop" :key="i.label" class="sidenav__item" type="button">
-            <img :src="'assets/icons/' + i.icon + '.svg'" alt="" width="16" height="16">
+          <!-- Collapsed, the label is gone, so it becomes the tooltip and the
+               accessible name. Performance takes the active treatment in that
+               state because the page we are on is one of its children, which
+               are themselves hidden. -->
+          <button v-for="i in navTop" :key="i.label" class="sidenav__item" type="button"
+                  :class="{ 'is-active': collapsed && i.label === 'Performance' }"
+                  :title="collapsed ? i.label : null"
+                  :aria-label="collapsed ? i.label : null">
+            <img :src="'assets/icons/' + navIcon(i) + '.svg'" alt="" width="16" height="16">
             <span class="sidenav__label">{{ i.label }}</span>
             <img v-if="i.chevron" class="sidenav__chev" src="assets/icons/chevron-down.svg"
                  alt="" width="16" height="16">
@@ -195,22 +228,28 @@ export const AppShell = {
             </button>
           </div>
 
-          <button v-for="i in navRest" :key="i.label" class="sidenav__item" type="button">
+          <button v-for="i in navRest" :key="i.label" class="sidenav__item" type="button"
+                  :title="collapsed ? i.label : null"
+                  :aria-label="collapsed ? i.label : null">
             <img :src="'assets/icons/' + i.icon + '.svg'" alt="" width="16" height="16">
             <span class="sidenav__label">{{ i.label }}</span>
           </button>
         </div>
 
         <div class="sidenav__bottom">
-          <button class="sidenav__item" type="button">
-            <img src="assets/icons/arrow-left.svg" alt="" width="16" height="16">
+          <button class="sidenav__item" type="button" @click="toggleNav"
+                  :aria-expanded="String(!collapsed)"
+                  :title="collapsed ? 'Expand menu' : null"
+                  :aria-label="collapsed ? 'Expand menu' : 'Collapse menu'">
+            <img :src="'assets/icons/arrow-' + (collapsed ? 'right' : 'left') + '.svg'"
+                 alt="" width="16" height="16">
             <span class="sidenav__label">Collapse</span>
           </button>
         </div>
       </div>
     </aside>
 
-    <main class="page-main">
+    <main class="page-main" :class="{ 'is-nav-collapsed': collapsed }">
       <div class="page-inner">
         <slot></slot>
         <div style="height:60px;"></div>

@@ -138,6 +138,32 @@ a.p-button:hover { text-decoration: none; }
 .sidenav__sub.is-active { border-left-color: var(--gyg-interactive-primary); }
 .sidenav__sub.is-active .sidenav__label { color: var(--gyg-interactive-primary); }
 
+/* ---------- Collapsed rail ----------
+   Collapse drops the nav to round 1's 56px icon rail. The design only draws
+   the expanded state, so the rail follows round 1's: icons centred, labels
+   and chevrons gone, children hidden — which is why Performance takes the
+   active treatment here, as the page we are on is one of them. */
+.sidenav.is-collapsed { width: 56px; }
+.sidenav.is-collapsed .sidenav__label,
+.sidenav.is-collapsed .sidenav__chev,
+.sidenav.is-collapsed .sidenav__subwrap { display: none; }
+.sidenav.is-collapsed .sidenav__item {
+  justify-content: center;
+  gap: 0;
+  height: 40px;
+  padding: 8px 4px;
+  margin-bottom: 4px;
+}
+.sidenav.is-collapsed .sidenav__item.is-active { background: #e1f0ff; }
+
+/* Width and margin animate together so the page does not jump. */
+.sidenav, .page-main { transition: width .15s ease, margin-left .15s ease; }
+.page-main.is-nav-collapsed { margin-left: 56px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sidenav, .page-main { transition: none; }
+}
+
 /* Page Container 2423:103413: left 288, width 1152, padding 24 — so the
    content column is 1104. Overridden here rather than in css/styles.css so
    that file stays a verbatim copy of round 1's and stays easy to diff. */
