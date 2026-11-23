@@ -569,13 +569,13 @@ a.p-button:hover { text-decoration: none; }
    An Accordion drawn as a stack of separate cards rather than one panel, so
    each tag reads as its own object (2423:103908). */
 /* Each panel is its own card: a full 1px grey border, 8px radius, 10px apart
-   — 2423:105848's 1px #ebeef1, without its 2px blue open state. History, all
-   2026-11-20 and all Melanie: the blue went first (one panel open at a time,
-   so the outline duplicated the expansion); then the whole border, leaving
-   the preset's top-rule divider list; then she asked for the full grey
-   border back — the divider read as a line, not as one object per tag.
-   So the open panel looks like the closed ones, and the header carries no
-   rule of its own. */
+   — 2423:105848's 1px #ebeef1. The open panel takes 2519:45248's 2px
+   #0071eb. History, all Melanie: the blue went first (2026-11-20, one panel
+   open at a time, so the outline duplicated the expansion); then the whole
+   border, leaving the preset's top-rule divider list; then the full grey
+   border came back — the divider read as a line, not as one object per tag;
+   then the blue open state came back too (2026-11-23, per 2519:45248). The
+   header carries no rule of its own. */
 .sx-acc { display: flex; flex-direction: column; gap: 10px; }
 .sx-acc .p-accordionpanel {
   border: 1px solid var(--sx-line);
@@ -595,6 +595,9 @@ a.p-button:hover { text-decoration: none; }
    hoverBackground to {surface.0}, i.e. white on white. The portal's accordion
    leans on the border, the chevron and the pointer cursor instead, and this
    follows it rather than inventing a tint. */
+/* 2px blue when open. The 2px border eats into the box, so the header's
+   12px top padding (14px closed) keeps the title where the node puts it. */
+.sx-acc .p-accordionpanel-active { border: 2px solid var(--gyg-interactive-primary); }
 .sx-acc .p-accordionpanel-active > .p-accordionheader { border-radius: 8px 8px 0 0; padding: 12px 16px; }
 .sx-acc .p-accordioncontent-content { background: transparent; border: 0; padding: 0 16px 16px; }
 .sx-dc__text { display: block; min-width: 0; flex: 1 1 auto; }
