@@ -773,6 +773,15 @@ fixture renders.
 
 ### Booking counts are not shown — a "Most common complaint" Tag instead
 
+**Shares are shown (Melanie, 2026-11-23).** Each complaint carries "74% of
+complaints" (pickup: "of pickup issues") — its count over the total of the
+tags *listed*, not over bookings. Shares sum to ~100% (whole-percent rounding
+can give 99 or 101) and never have to agree with the rate above. A share of
+bookings would have to, and often can't: the pub crawl's pickup tags come to
+1.08% of bookings under a 0.81% pickup rate. Raw counts are still never
+printed. The "Most common complaint" tag stays, though it now repeats the
+top share.
+
 Settled by Melanie 2026-11-20, reversing her 2026-11-19 call to show the
 `6 bookings` chips the design draws. The list is still ranked by count; the
 first card carries a `Most common complaint` Tag (`severity="secondary"`, grey) and no

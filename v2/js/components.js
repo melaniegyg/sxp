@@ -371,7 +371,7 @@ export const RecommendedActionCard = {
 // "most common" would be vacuous.
 export const DisruptionList = {
   components: { RecommendedActionCard },
-  props: { title: String, items: Array, catalogue: Object },
+  props: { title: String, items: Array, catalogue: Object, shareKey: { type: String, default: "dc.share" } },
   // Single-open, not `multiple`: opening one closes the rest (Melanie,
   // 2026-11-20). A tag card carries what you can do about it, so several open
   // at once is several competing instructions and a lot of scrolling past
@@ -400,6 +400,19 @@ export const DisruptionList = {
         ? String(ra.title).replace(/\{count\}\s+recent\b/g, t("dc.recent")).replace(/\{count\}/g, t("dc.recent"))
         : "";
     },
+    // Each complaint's share of the complaints LISTED, not of bookings
+    // (Melanie, 2026-11-23). Shares sum to ~100% (whole-percent rounding can
+    // give 99 or 101) and so never have to agree with the rate above them —
+    // a share of bookings would, and often can't: the pub crawl's pickup
+    // tags come to 1.08% of bookings under a 0.81% pickup rate.
+    share(entry) {
+      const total = (this.items || []).reduce((n, e) => n + (e.count || 0), 0);
+      return total ? Math.round((entry.count / total) * 100) : null;
+    },
+    shareText(entry) {
+      const I = window.SXP_I18N;
+      return t(this.shareKey, { pct: I.num(this.share(entry), 0, 0) + I.pctSuffix() });
+    },
     isMostCommon(i) {
       const it = this.items || [];
       return i === 0 && it.length > 1 && it[0].count > it[1].count;
@@ -418,6 +431,7 @@ export const DisruptionList = {
             <!-- severity="secondary", the preset's grey (Melanie, 2026-11-20) —
                  was contrast navy, which read as heavy as the earned badge. -->
             <Tag v-if="isMostCommon(i)" :value="t('dc.mostCommon')" severity="secondary" rounded class="sx-dc__count" />
+            <span v-if="share(entry) != null" class="sx-dc__share">{{ shareText(entry) }}</span>
           </AccordionHeader>
           <AccordionContent>
             <template v-if="doList(entry).length">
@@ -536,7 +550,8 @@ export const CriterionRow = {
           </Button>
           <DisruptionList v-if="showDetails"
                           :title="row.disruptionsTitle || t('row.complaints.top')"
-                          :items="tags" :catalogue="catalogue" />
+                          :items="tags" :catalogue="catalogue"
+                          :share-key="row.id === 'pickup-rate' ? 'dc.share.pickup' : 'dc.share'" />
         </template>
 
         <!-- Primary outlined — #0071eb border and label, as 2423:106466 draws

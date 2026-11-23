@@ -780,3 +780,6 @@ a.p-button:hover { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .sx-celebrate *, .sx-celebrate { animation: none !important; }
 }
+
+/* Complaint share ("74% of complaints"), Caption 14/20 secondary. */
+.sx-dc__share { flex: none; font: var(--font-caption); color: var(--sx-muted); white-space: nowrap; }
