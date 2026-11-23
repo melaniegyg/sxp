@@ -59,7 +59,13 @@
   const barPct = (n) => I18N.num((n || 0) * 100, 0, 2) + I18N.pctSuffix();
   const barNum = (n) => I18N.num(n, 0, 2);
   // Ratings keep two decimals but drop a trailing zero: "4.82", "4.9".
-  const ratingText = (n) => (n == null ? "—" : I18N.num(Number(n.toFixed(2)), 1, 2));
+  // Truncated, never rounded: split-local-tours 862564 has 4.7957 against a
+  // 4.8 bar, which rounding printed as a failing "4.8". Rounding down means a
+  // rating below its bar can never display as reaching it, and a passing one
+  // can't drop below, since bars are whole tenths. The 1e-9 absorbs float
+  // error (4.8 * 100 is 479.99999999999994 in JS).
+  const ratingText = (n) =>
+    n == null ? "—" : I18N.num(Math.floor(n * 100 + 1e-9) / 100, 1, 2);
   const status = (ok) => (ok ? "met" : "not-met");
 
   const fmtDate = (iso, opts) =>
