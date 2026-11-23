@@ -12,11 +12,11 @@ const { reactive } = window.Vue;
 // 2423:105656 / 2423:106930.
 // [icon, title key, description key] — copy is in js/i18n.js.
 const CRITERIA = [
-  ["compass-badge", "sec.review-count",
+  ["star", "sec.review-count",
    // NOTE(copy): this node keeps "new"; 2423:106930 and 2241:42264 drop it.
    // Unresolved — see CLAUDE.md.
    "ov.crit.reviews.d"],
-  ["compass-eye", "sec.operational", "ov.crit.operational.d"],
+  ["shield-check", "sec.operational", "ov.crit.operational.d"],
   // magnifier-bar-chart, not compass-magnifier: it is the sidebar's
   // Performance icon, which is where this criterion's numbers come from.
   // Settled by Melanie 2026-11-20.
@@ -26,7 +26,7 @@ const CRITERIA = [
   // the compass ring is 2 units of 24 and these bars are 1.333 of 16, so at
   // the 20px both render at each comes to 1.667px. Re-check that if either
   // icon is re-exported at a different size.
-  ["magnifier-bar-chart", "sec.quality", "ov.crit.quality.d"],
+  ["magnifier-bar-chart-ink", "sec.quality", "ov.crit.quality.d"],
 ];
 
 const App = {

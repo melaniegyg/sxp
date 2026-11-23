@@ -52,10 +52,10 @@ const PromoPanel = {
   // Keys into js/i18n.js.
   data: () => ({
     criteria: [
-      ["compass-badge", "sec.review-count", "promo.crit.reviews"],
-      ["compass-eye", "sec.operational", "promo.crit.operational"],
+      ["star", "sec.review-count", "promo.crit.reviews"],
+      ["shield-check", "sec.operational", "promo.crit.operational"],
       // Matches the overview's Quality standards card — see app-overview.js.
-      ["magnifier-bar-chart", "sec.quality", "promo.crit.quality"],
+      ["magnifier-bar-chart-ink", "sec.quality", "promo.crit.quality"],
     ],
     benefits: [
       ["compass-badge", "promo.b1.t", "promo.b1.d"],
