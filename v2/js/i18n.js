@@ -152,12 +152,13 @@
       "row.pickup.desc":
         "The percentage of bookings with at least one pickup issue flagged in a review or customer care contact must be {bar} or lower",
       "row.pickup.reason": "pickup issues",
-      "row.pickup.top": "Top pickup problems for this activity",
+      "row.pickup.top": "Top pickup issues for this activity",
       "row.blocked": "We can only show this activity’s quality metrics once there are {n} new reviews",
       "row.criteria": "Criteria:",
       "row.seeDetails": "See details",
       "row.hideDetails": "Hide details",
-      "row.reviewSummary": "Review summary",
+      "row.reviewSummary": "Areas for improvement",
+      "row.reviewSummary.related": "See {n} related reviews",
 
       // --- Complaint cards (chrome; card copy is in the catalogue) -
       "dc.mostCommon": "Most common complaint",
@@ -324,7 +325,8 @@
       "row.criteria": "Criterios:",
       "row.seeDetails": "Ver detalles",
       "row.hideDetails": "Ocultar detalles",
-      "row.reviewSummary": "Resumen de reseñas",
+      "row.reviewSummary": "Aspectos a mejorar",
+      "row.reviewSummary.related": "Ver {n} reseñas relacionadas",
 
       "dc.mostCommon": "Queja más frecuente",
       "dc.whatYouCanDo": "Qué puedes hacer",

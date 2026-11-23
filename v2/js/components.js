@@ -45,8 +45,10 @@ export const ICONS = {
     '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="0" y="0" width="24" height="24" rx="4" fill="currentColor"/><path d="M8 8l8 8M16 8l-8 8" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>',
   external:
     '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M6 2h8v8M14 2L6.5 9.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M11 10.5V14H2V5h3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  // everyday-objects / sparks, from Figma 2588:100101; currentColor so it
+  // takes the ink of the text beside it.
   sparkle:
-    '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3l1.8 4.9L18.7 9.7l-4.9 1.8L12 16.4l-1.8-4.9L5.3 9.7l4.9-1.8z" fill="currentColor"/><path d="M18.5 14l.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9z" fill="currentColor"/></svg>',
+    '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M9.44824 7.93359C9.53919 8.20643 9.63188 8.5628 9.72363 8.91602L9.74121 8.98242C9.84305 9.37412 9.95232 9.79131 10.0801 10.2041C10.352 11.0826 10.6497 11.7357 10.957 12.043C11.2643 12.3503 11.9174 12.648 12.7959 12.9199C13.2087 13.0477 13.6259 13.1569 14.0176 13.2588L14.084 13.2764C14.4372 13.3681 14.7936 13.4608 15.0664 13.5518V15.4482C14.7936 15.5392 14.4372 15.6319 14.084 15.7236L14.0176 15.7412C13.6259 15.8431 13.2087 15.9523 12.7959 16.0801C11.9174 16.352 11.2643 16.6497 10.957 16.957C10.6497 17.2643 10.352 17.9174 10.0801 18.7959C9.95232 19.2087 9.84305 19.6259 9.74121 20.0176L9.72363 20.084C9.63187 20.4372 9.53919 20.7936 9.44824 21.0664H7.55176C7.46081 20.7936 7.36812 20.4372 7.27637 20.084L7.25879 20.0176C7.15695 19.6259 7.04768 19.2087 6.91992 18.7959C6.64801 17.9174 6.35028 17.2643 6.04297 16.957C5.73566 16.6497 5.08259 16.352 4.2041 16.0801C3.79131 15.9523 3.37412 15.8431 2.98242 15.7412L2.91602 15.7236C2.5628 15.6319 2.20643 15.5392 1.93359 15.4482V13.5518C2.20641 13.4608 2.56283 13.3681 2.91602 13.2764L2.98242 13.2588C3.37412 13.1569 3.79131 13.0477 4.2041 12.9199C5.08259 12.648 5.73566 12.3503 6.04297 12.043C6.35028 11.7357 6.64801 11.0826 6.91992 10.2041C7.04768 9.79131 7.15695 9.37412 7.25879 8.98242L7.27637 8.91602C7.36812 8.5628 7.46081 8.20643 7.55176 7.93359H9.44824ZM8.5 11.7402C8.24803 12.368 7.91371 13.0004 7.45703 13.457C7.00035 13.9137 6.36797 14.248 5.74023 14.5C6.36797 14.752 7.00035 15.0863 7.45703 15.543C7.91371 15.9996 8.24803 16.632 8.5 17.2598C8.75197 16.632 9.08629 15.9996 9.54297 15.543C9.99965 15.0863 10.632 14.752 11.2598 14.5C10.632 14.248 9.99965 13.9137 9.54297 13.457C9.08629 13.0004 8.75197 12.368 8.5 11.7402Z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"/><path d="M18.5 2C18.5 3.01708 18.9162 4.00217 19.457 4.54297C19.9978 5.08376 20.9829 5.5 22 5.5V7.5C20.9829 7.5 19.9978 7.91624 19.457 8.45703C18.9162 8.99783 18.5 9.98292 18.5 11H16.5C16.5 9.98292 16.0838 8.99783 15.543 8.45703C15.0022 7.91624 14.0171 7.5 13 7.5V5.5C14.0171 5.5 15.0022 5.08376 15.543 4.54297C16.0838 4.00217 16.5 3.01708 16.5 2H18.5ZM17.5 5.29883C17.3362 5.53831 17.1545 5.75954 16.957 5.95703C16.7595 6.15452 16.5383 6.33616 16.2988 6.5C16.5383 6.66384 16.7595 6.84548 16.957 7.04297C17.1545 7.24046 17.3362 7.4617 17.5 7.70117C17.6638 7.4617 17.8455 7.24046 18.043 7.04297C18.2405 6.84548 18.4617 6.66384 18.7012 6.5C18.4617 6.33616 18.2405 6.15452 18.043 5.95703C17.8455 5.75954 17.6638 5.5383 17.5 5.29883Z" fill-rule="evenodd" clip-rule="evenodd" fill="currentColor"/></svg>',
   // The same path as assets/icons/arrow-right-24.svg, but `currentColor`
   // instead of that file's baked-in #0071EB. It has to be inline: this arrow
   // rides on two different buttons — white on the filled primary "Check your
@@ -506,11 +508,19 @@ export const CriterionRow = {
         <p v-if="descParts" class="sx-row__desc">{{ descParts.before }}<a class="sx-row__email" :href="'mailto:' + descParts.email">{{ descParts.email }}</a>{{ descParts.after }}</p>
         <p v-else-if="desc" class="sx-row__desc">{{ desc }}</p>
 
-        <!-- TODO(data): nothing in the export backs the Review summary block;
-             it renders only when a fixture supplies review_summary. None does. -->
-        <div v-if="failing && row.reviewSummary" class="sx-summary">
-          <p class="sx-summary__h"><span v-html="icons.sparkle"></span>{{ t('row.reviewSummary') }}</p>
-          <p class="sx-summary__body">{{ row.reviewSummary.text }}</p>
+        <!-- Areas for improvement, 2588:100101. Hand-written: nothing in the
+             export backs it, so it renders only when a fixture supplies
+             review_summary (today only Party Deck's pub crawl). Shown whether
+             or not the rating passes. The related-reviews links have no
+             destination yet. -->
+        <div v-if="row.reviewSummary" class="sx-summary">
+          <p class="sx-summary__h"><span class="sx-summary__icon" v-html="icons.sparkle"></span>{{ t('row.reviewSummary') }}</p>
+          <div class="sx-summary__body">
+            <p v-for="it in row.reviewSummary.items" :key="it.title">
+              <strong>{{ it.title }}</strong> {{ it.text }}
+              <a v-if="it.relatedReviews" class="sx-summary__link" href="#" @click.prevent>{{ t('row.reviewSummary.related', { n: it.relatedReviews }) }}</a>
+            </p>
+          </div>
           <p class="sx-summary__meta">{{ row.reviewSummary.meta }}</p>
         </div>
 

@@ -507,7 +507,28 @@
         "Unclear Pickup Information": 1
       },
       "_note_pickup_breakdown": "Re-filtered from pickup_problem_rate.applicable_records, which the export builds from the Pickup Problems CATEGORY and therefore includes Change Pick Up Time / Change Pick Up Location. Those two tags are not counted by the pickup rate. Distinct booking_id.",
-      "_note_raw_tags": "dbr_tags and pickup_problem_rate.applicable_records are raw rows, not display data. Render quality_breakdown / pickup_breakdown."
+      "_note_raw_tags": "dbr_tags and pickup_problem_rate.applicable_records are raw rows, not display data. Render quality_breakdown / pickup_breakdown.",
+      "review_summary": {
+        "_note": "HAND-WRITTEN, not from the export: copy verbatim from Figma 2588:100101 (Melanie, 2026-11-23). No AI review summary exists in sxp_activity_criteria. The design draws it on a failing rating; this activity's rating passes (4.82 vs 4.8) and it is shown anyway at Melanie's request. The 128 and the related-review counts are the design's, not this activity's (it has 557 reviews in window).",
+        "items": [
+          {
+            "title": "Communication Issues:",
+            "text": "Customers reported difficulties in getting timely responses from the supplier, which affected their overall experience.",
+            "relatedReviews": 2
+          },
+          {
+            "title": "Meeting Point Confusion:",
+            "text": "Several guests mentioned that the meeting point was not clearly indicated, leading to confusion and delays.",
+            "relatedReviews": 2
+          },
+          {
+            "title": "Safety Concerns:",
+            "text": "Some reviews raised concerns about safety during the tour, indicating that guests felt uncomfortable at times.",
+            "relatedReviews": 2
+          }
+        ],
+        "meta": "AI summary based on 128 reviews from the last 6 months · Updated weekly"
+      }
     },
     {
       "tour_id": 697227,

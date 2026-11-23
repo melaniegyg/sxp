@@ -842,6 +842,14 @@ summary based on 128 reviews from the last 6 months · Updated weekly". It
 appears only on the failing variant. **No source exists** for it anywhere in
 `sxp_activity_criteria`; it will have to be hand-written in fixtures.
 
+**Built 2026-11-23 as "Areas for improvement"** (2588:100101), on Party Deck's
+pub crawl (694395) only, copy verbatim from the node (Melanie). It lives in
+that activity's hand-written `review_summary` ({items: [{title, text,
+relatedReviews}], meta}) and renders whenever a fixture supplies one — **not**
+only on a failing rating: the pub crawl passes (4.82 vs 4.8) and shows it
+anyway. The "128 reviews" and "See 2 related reviews" are the design's
+numbers, not the activity's, and the links go nowhere yet.
+
 ### More threshold and copy contradictions
 
 - The review row reads **`At least 50 reviews`** with **`Criteria: >50`**. Those

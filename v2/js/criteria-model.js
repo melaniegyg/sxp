@@ -289,10 +289,10 @@
             status: status(a.crit_rating),
             metric: { value: ratingText(a.rating_in_window) },
             bannerReason: t("row.rating.reason"),
-            // TODO(data): the failing variant carries a "Review summary" AI
-            // block ("AI summary based on N reviews … Updated weekly").
-            // Nothing in the export backs it, so it renders only when a
-            // fixture supplies one. None currently does.
+            // TODO(data): "Areas for improvement", the AI review summary
+            // (2588:100101). Nothing in the export backs it, so it renders
+            // only when a fixture hand-writes review_summary — today only
+            // Party Deck's pub crawl (694395).
             reviewSummary: a.review_summary || null,
           },
           {
